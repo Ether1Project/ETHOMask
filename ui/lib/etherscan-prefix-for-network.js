@@ -5,7 +5,7 @@ module.exports = function (network) {
     case 1: // main net
       prefix = ''
       break
-    case 3: // ropsten test net
+    /*case 3: // ropsten test net
       prefix = 'ropsten.'
       break
     case 4: // rinkeby test net
@@ -13,7 +13,7 @@ module.exports = function (network) {
       break
     case 42: // kovan test net
       prefix = 'kovan.'
-      break
+      break*/
     default:
       prefix = ''
   }

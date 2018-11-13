@@ -222,7 +222,7 @@ ConfigScreen.prototype.render = function () {
               },
             }, 'Clear privacy data'),
           ]),
-          
+
           h('hr.horizontal-line'),
 
           h('div', {
@@ -253,7 +253,7 @@ ConfigScreen.prototype.render = function () {
               'Enable privacy mode'
             ),
           ]),
-          
+
           h('hr.horizontal-line'),
 
           h('div', {
@@ -353,9 +353,9 @@ function currentProviderDisplay (metamaskState) {
 
     case 'mainnet':
       title = 'Current Network'
-      value = 'Main Ethereum Network'
+      value = 'Main Ether 1 Network'
       break
-
+/*
     case 'ropsten':
       title = 'Current Network'
       value = 'Ropsten Test Network'
@@ -370,7 +370,7 @@ function currentProviderDisplay (metamaskState) {
       title = 'Current Network'
       value = 'Rinkeby Test Network'
       break
-
+*/
     default:
       title = 'Current RPC'
       value = metamaskState.provider.rpcTarget

@@ -87,7 +87,7 @@
     "message": "Amount + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Ether1 Browser Extension",
     "description": "The description of the application"
   },
   "appName": {
@@ -219,7 +219,7 @@
     "message": "Connecting to Kovan Test Network"
   },
   "connectingToMainnet": {
-    "message": "Connecting to Main Ethereum Network"
+    "message": "Connecting to Main Ether1 Network"
   },
   "connectingToRopsten": {
     "message": "Connecting to Ropsten Test Network"
@@ -407,10 +407,10 @@
     "message": "Enter password to continue"
   },
   "eth": {
-    "message": "ETH"
+    "message": "ETHO"
   },
   "etherscanView": {
-    "message": "View account on Etherscan"
+    "message": "View account on Ether 1 Explorer"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -666,7 +666,7 @@
     "message": "seed words only have lowercase characters"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Ether1 Network"
   },
   "menu": {
     "message": "Menu"
@@ -675,7 +675,7 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask is a secure identity vault for Ethereum."
+    "message": "MetaMask is a secure identity vault for Ether1."
   },
   "metamaskSeedWords": {
     "message": "MetaMask Seed Words"
@@ -792,10 +792,10 @@
     "message": "You have returned to the old UI. You can switch back to the New UI through the option in the top right dropdown menu."
   },
   "onlySendToEtherAddress": {
-    "message": "Only send ETH to an Ethereum address."
+    "message": "Only send ETHO to an Ether1 address."
   },
   "onlySendTokensToAccountAddress": {
-    "message": "Only send $1 to an Ethereum account address.",
+    "message": "Only send $1 to an Ether1 account address.",
     "description": "displays token symbol"
   },
   "openInTab": {
@@ -1067,7 +1067,7 @@
     "message": "If you don't see your existing Ledger accounts below, try switching paths to \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
-    "message": "Send Tokens to anyone with an Ethereum account"
+    "message": "Send Tokens to anyone with an Ether1 account"
   },
   "settings": {
     "message": "Settings"
@@ -1148,7 +1148,7 @@
     "message": "3. Start using dApps and more!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Use your hardware account like you would with any Ethereum account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
+    "message": "Use your hardware account like you would with any Ether1 account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
   "submit": {
     "message": "Submit"

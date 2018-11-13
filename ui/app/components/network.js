@@ -74,9 +74,9 @@ Network.prototype.render = function () {
       className: classnames({
         'network-component--disabled': this.props.disabled,
         'ethereum-network': providerName === 'mainnet',
-        'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
+        /*'ropsten-test-network': providerName === 'ropsten' || parseInt(networkNumber) === 3,
         'kovan-test-network': providerName === 'kovan',
-        'rinkeby-test-network': providerName === 'rinkeby',
+        'rinkeby-test-network': providerName === 'rinkeby',*/
       }),
       title: hoverText,
       onClick: (event) => {
@@ -96,7 +96,7 @@ Network.prototype.render = function () {
               h('.network-name', context.t('mainnet')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
             ])
-          case 'ropsten-test-network':
+          /*case 'ropsten-test-network':
             return h('.network-indicator', [
               h(NetworkDropdownIcon, {
                 backgroundColor: '#e91550', // $crimson
@@ -122,7 +122,7 @@ Network.prototype.render = function () {
               }),
               h('.network-name', context.t('rinkeby')),
               h('i.fa.fa-chevron-down.fa-lg.network-caret'),
-            ])
+            ])*/
           default:
             return h('.network-indicator', [
               h('i.fa.fa-question-circle.fa-lg', {
