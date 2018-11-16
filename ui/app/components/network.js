@@ -52,7 +52,7 @@ Network.prototype.render = function () {
   } else if (providerName === 'mainnet') {
     hoverText = context.t('mainnet')
     iconName = 'ethereum-network'
-  } else if (providerName === 'ropsten') {
+  } /*else if (providerName === 'ropsten') {
     hoverText = context.t('ropsten')
     iconName = 'ropsten-test-network'
   } else if (parseInt(networkNumber) === 3) {
@@ -64,7 +64,7 @@ Network.prototype.render = function () {
   } else if (providerName === 'rinkeby') {
     hoverText = context.t('rinkeby')
     iconName = 'rinkeby-test-network'
-  } else {
+  } */ else {
     hoverText = context.t('unknownNetwork')
     iconName = 'unknown-private-network'
   }

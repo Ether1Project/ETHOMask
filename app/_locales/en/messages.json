@@ -319,7 +319,7 @@
     "message": "Decimals of Precision"
   },
   "defaultNetwork": {
-    "message": "The default network for Ether transactions is Main Net."
+    "message": "The default network for Ether-1 transactions is Main Net."
   },
   "denExplainer": {
     "message": "Your DEN is your password-encrypted storage within MetaMask."
@@ -335,10 +335,10 @@
     "description": "Tells the user what coin they have selected to deposit with shapeshift"
   },
   "depositEth": {
-    "message": "Deposit Eth"
+    "message": "Deposit ETHO"
   },
   "depositEther": {
-    "message": "Deposit Ether"
+    "message": "Deposit Ether-1"
   },
   "depositFiat": {
     "message": "Deposit with Fiat"
@@ -350,7 +350,7 @@
     "message": "Deposit with ShapeShift"
   },
   "depositShapeShiftExplainer": {
-    "message": "If you own other cryptocurrencies, you can trade and deposit Ether directly into your MetaMask wallet. No Account Needed."
+    "message": "If you own other cryptocurrencies, you can trade and deposit Ether-1 directly into your MetaMask wallet. No Account Needed."
   },
   "details": {
     "message": "Details"
@@ -359,10 +359,10 @@
     "message": "Direct Deposit"
   },
   "directDepositEther": {
-    "message": "Directly Deposit Ether"
+    "message": "Directly Deposit Ether-1"
   },
   "directDepositEtherExplainer": {
-    "message": "If you already have some Ether, the quickest way to get Ether in your new wallet by direct deposit."
+    "message": "If you already have some Ether-1, the quickest way to get Ether-1 in your new wallet by direct deposit."
   },
   "done": {
     "message": "Done"
@@ -410,7 +410,7 @@
     "message": "ETHO"
   },
   "etherscanView": {
-    "message": "View account on Ether 1 Explorer"
+    "message": "View account on Ether-1 Explorer"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -491,11 +491,11 @@
     "message": "Generating transaction"
   },
   "getEther": {
-    "message": "Get Ether"
+    "message": "Get Ether-1"
   },
   "getEtherFromFaucet": {
     "message": "Get Ether from a faucet for the $1",
-    "description": "Displays network name for Ether faucet"
+    "description": "Displays network name for Ether-1 faucet"
   },
   "getHelp": {
     "message": "Get Help."
@@ -542,10 +542,10 @@
     "message": "History"
   },
   "howToDeposit": {
-    "message": "How would you like to deposit Ether?"
+    "message": "How would you like to deposit Ether-1?"
   },
   "holdEther": {
-    "message": "It allows you to hold ether & tokens, and serves as your bridge to decentralized applications."
+    "message": "It allows you to hold ether-1 & tokens, and serves as your bridge to decentralized applications."
   },
   "import": {
     "message": "Import",
