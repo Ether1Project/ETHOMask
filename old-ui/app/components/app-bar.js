@@ -240,12 +240,12 @@ module.exports = class AppBar extends Component {
         },
       }, [
         h('.menu-icon.diamond'),
-        'Main Ethereum Network',
+        'Main Ether-1 Network',
         providerType === 'mainnet'
           ? h('.check', '✓')
           : null,
       ]),
-      h(DropdownMenuItem, {
+      /*h(DropdownMenuItem, {
         key: 'ropsten',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),
         onClick: () => dispatch(actions.setProviderType('ropsten')),
@@ -286,7 +286,7 @@ module.exports = class AppBar extends Component {
         providerType === 'rinkeby'
           ? h('.check', '✓')
           : null,
-      ]),
+      ]),*/
       h(DropdownMenuItem, {
         key: 'default',
         closeMenu: () => this.setState({ isNetworkMenuOpen: !isOpen }),

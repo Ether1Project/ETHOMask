@@ -10,9 +10,9 @@ import {
 
 const networkToClassHash = {
   [MAINNET_CODE]: 'mainnet',
-  [ROPSTEN_CODE]: 'ropsten',
+  /*[ROPSTEN_CODE]: 'ropsten',
   [RINKEYBY_CODE]: 'rinkeby',
-  [KOVAN_CODE]: 'kovan',
+  [KOVAN_CODE]: 'kovan',*/
 }
 
 export default class NetworkDisplay extends Component {
