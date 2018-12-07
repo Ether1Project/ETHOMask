@@ -252,14 +252,14 @@ SendTransactionScreen.prototype.onSubmit = function () {
   let message
 
   if (isNaN(input) || input === '') {
-    message = 'Invalid ether value.'
+    message = 'Invalid ETHO value.'
     return this.props.dispatch(actions.displayWarning(message))
   }
 
   if (parts[1]) {
     var decimal = parts[1]
     if (decimal.length > 18) {
-      message = 'Ether amount is too precise.'
+      message = 'Ether-1 amount is too precise.'
       return this.props.dispatch(actions.displayWarning(message))
     }
   }

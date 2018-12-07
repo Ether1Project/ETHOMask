@@ -91,7 +91,7 @@
     "description": "The description of the application"
   },
   "appName": {
-    "message": "MetaMask",
+    "message": "MetaMask (ETHO Edition)",
     "description": "The name of the application"
   },
   "approve": {
@@ -1337,7 +1337,7 @@
     "message": "View Account"
   },
   "viewOnEtherscan": {
-    "message": "View on Etherscan"
+    "message": "View on Ether-1 Block explorer"
   },
   "visitWebSite": {
     "message": "Visit our web site"

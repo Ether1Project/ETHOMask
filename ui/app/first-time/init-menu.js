@@ -38,24 +38,31 @@ class InitializeMenuScreen extends Component {
     return (
       h('.initialize-screen.flex-column.flex-center', [
 
-        h(Mascot, {
+        /*h(Mascot, {
           animationEventEmitter: this.animationEventEmitter,
+        }),*/
+        h('img', {
+          src: "images/icon-512.png",
+          style: {
+            width: "50%",
+            marginBottom: '30px'
+          },
         }),
 
         h('h1', {
           style: {
             fontSize: '1.3em',
             textTransform: 'uppercase',
-            color: '#7F8082',
+            color: '#7a1336',
             marginBottom: 10,
           },
-        }, this.context.t('appName')),
+        }, 'MetaMask (ETHO Edition)'),
 
         h('div', [
           h('h3', {
             style: {
               fontSize: '0.8em',
-              color: '#7F8082',
+              color: '#7a1336',
               display: 'inline',
             },
           }, this.context.t('encryptNewDen')),
@@ -67,7 +74,7 @@ class InitializeMenuScreen extends Component {
               style: {
                 fontSize: '18px',
                 position: 'relative',
-                color: 'rgb(247, 134, 28)',
+                color: 'rgb(122,19,54)',
                 top: '2px',
                 marginLeft: '4px',
               },
@@ -115,7 +122,7 @@ class InitializeMenuScreen extends Component {
             onClick: () => this.showRestoreVault(),
             style: {
               fontSize: '0.8em',
-              color: 'rgb(247, 134, 28)',
+              color: 'rgb(122,19,54)',
               textDecoration: 'underline',
             },
           }, this.context.t('importDen')),
@@ -126,7 +133,7 @@ class InitializeMenuScreen extends Component {
             onClick: this.showOldUI.bind(this),
             style: {
               fontSize: '0.8em',
-              color: '#aeaeae',
+              color: '#7a1336',
               textDecoration: 'underline',
               marginTop: '32px',
             },

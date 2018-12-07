@@ -44,19 +44,25 @@ InitializeMenuScreen.prototype.renderMenu = function (state) {
 
     h('.initialize-screen.flex-column.flex-center.flex-grow', [
 
-      h(Mascot, {
+      /*h(Mascot, {
         animationEventEmitter: this.animationEventEmitter,
+      }),*/
+      h('img', {
+        src: "images/icon-512.png",
+        style: {
+          width: "50%",
+          marginBottom: '30px'
+        },
       }),
 
       h('h1', {
         style: {
           fontSize: '1.3em',
           textTransform: 'uppercase',
-          color: '#7F8082',
+          color: '#7a1336',
           marginBottom: 10,
         },
-      }, 'MetaMask'),
-
+      }, 'MetaMask (ETHO Edition)'),
 
       h('div', [
         h('h3', {

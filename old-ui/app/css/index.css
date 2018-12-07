@@ -14,7 +14,7 @@ application specific styles
 }
 
 html, body {
-  font-family: 'Montserrat Regular', Arial;
+  font-family: 'Roboto', Helvetica;
   color: #4D4D4D;
   font-weight: 300;
   line-height: 1.4em;
@@ -77,8 +77,8 @@ button, input[type="submit"] {
   transform-origin: center center;
   transition: transform 50ms ease-in;
   /* default orange */
-  background: rgba(247, 134, 28, 1);
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  background: rgba(122,19,54, 1);
+  box-shadow: 0px 3px 6px rgba(122,19,54, 0.36);
 }
 
 .btn-green, input[type="submit"].btn-green {
@@ -131,19 +131,19 @@ app
 
 button.primary {
   padding: 8px 12px;
-  background: #F7861C;
-  box-shadow: 0px 3px 6px rgba(247, 134, 28, 0.36);
+  background: #7a1336;
+  box-shadow: 0px 3px 6px rgba(122,19,54, 0.36);
   color: white;
   font-size: 1.1em;
-  font-family: 'Montserrat Regular';
+  font-family: 'Roboto';
   text-transform: uppercase;
 }
 
 button.btn-thin {
   border: 1px solid;
-  border-color: #4D4D4D;
-  color: #4D4D4D;
-  background: rgb(255, 174, 41);
+  border-color: #7a1336;
+  color: #FFF;
+  background: rgb(122,19,54);
   border-radius: 4px;
   min-width: 200px;
   margin: 12px 0;
@@ -156,13 +156,13 @@ button.btn-thin {
 }
 
 .app-header h1 {
-  font-family: 'Montserrat Regular';
+  font-family: 'Roboto';
   text-transform: uppercase;
   color: #AEAEAE;
 }
 
 h2.page-subtitle {
-  font-family: 'Montserrat Regular';
+  font-family: 'Roboto';
   text-transform: uppercase;
   color: #AEAEAE;
   font-size: 1em;
@@ -206,7 +206,7 @@ textarea.twelve-word-phrase {
 
 .check {
   margin-left: 12px;
-  color: #F7861C;
+  color: #7a1336;
   flex: 1 0 auto;
   display: flex;
   justify-content: flex-end;
@@ -220,7 +220,7 @@ app sections
 .initialize-screen hr {
   width: 60px;
   margin: 12px;
-  border-color: #F7861C;
+  border-color: #7a1336;
   border-style: solid;
 }
 
@@ -239,16 +239,16 @@ app sections
 
 /* unlock */
 .error {
-  color: #f7861c;
+  color: #7a1336;
   margin-bottom: 9px;
 }
 
 .warning {
-  color: #FFAE00;
+  color: #7a1336;
 }
 
 .dropped {
-  color: #6195ED;
+  color: #7a1336;
 }
 
 .lock {
@@ -277,11 +277,11 @@ app sections
 }
 .lock.unlocked:hover {
   border-radius: 4px;
-  background: #e5e5e5;
-  border: 1px solid #b1b1b1;
+  background: #7a1336;
+  border: 1px solid #7a1336;
 }
 .lock.unlocked:active {
-  background: #c3c3c3;
+  background: #7a1336;
 }
 
 .section-title .fa-arrow-left {
@@ -421,14 +421,14 @@ input.large-input {
 }
 
 .identity-section .identity-panel {
-  background: #E9E9E9;
-  border-bottom: 1px solid #B1B1B1;
+  background: #7a1336;
+  border-bottom: 1px solid #7a1336;
   cursor: pointer;
 }
 
 .identity-section .identity-panel.selected {
   background: white;
-  color: #F3C83E;
+  color: #7a1336;
 }
 
 .identity-section .identity-panel.selected .identicon {
@@ -466,8 +466,8 @@ input.large-input {
 .unapproved-tx-icon {
   height: 16px;
   width: 16px;
-  background: rgb(47, 174, 244);
-  border-color: #AEAEAE;
+  background: rgb(122,19,54);
+  border-color: #7a1336;
   border-radius: 13px;
 }
 
@@ -482,7 +482,7 @@ input.large-input {
   margin-bottom: 2px;
   font-size: 11px;
   text-rendering: geometricPrecision;
-  color: #F7861C;
+  color: #7a1336;
 }
 .name-label:hover .edit-text {
   visibility: visible;
@@ -495,8 +495,8 @@ input.large-input {
   margin: 12px;
   margin-bottom: 24px;
   border-radius: 4px;
-  border: 2px solid #F3C83E;
-  background: #FAF6F0;
+  border: 2px solid #7a1336;
+  background: #7a1336;
 }
 
 /* Send Screen */
@@ -517,16 +517,16 @@ input.large-input {
 /* Ether Balance Widget */
 
 .ether-balance-amount {
-  color: #F7861C;
+  color: #7a1336;
 }
 
 .ether-balance-label {
-  color: #ABA9AA;
+  color: #7a1336;
 }
 
 /* Info screen */
 .info-gray{
-  font-family: 'Montserrat Regular';
+  font-family: 'Roboto', Helvetica;
   text-transform: uppercase;
   color: #AEAEAE;
 }
@@ -536,7 +536,7 @@ input.large-input {
 }
 
 .info{
-  font-family: 'Montserrat Regular', Arial;
+  font-family: 'Roboto', Helvetica;
   padding-bottom: 10px;
   display: inline-block;
   padding-left: 5px;
@@ -556,8 +556,8 @@ input.large-input {
   border-style: double;
   border-radius: 15px;
   border-width: 5px;
-  background: rgba(247, 134, 28, 1);
-  border-color: #F7F7F7;
+  background: rgba(122,19,54,1)
+  border-color: #7a1336;
 }
 
 .custom-radio-inactive {
@@ -570,7 +570,7 @@ input.large-input {
 }
 
 .radio-titles {
-  color: rgba(247, 134, 28, 1);
+  color: rgba(122,19,54, 1);
 }
 
 .radio-titles-subtext {
@@ -598,7 +598,7 @@ input.large-input {
 }
 
 .buy-inputs{
-  font-family: 'Montserrat Light';
+  font-family: 'Roboto';
   font-size: 13px;
   height: 20px;
   background: transparent;
@@ -612,14 +612,14 @@ input.large-input {
 .input-container:hover .buy-inputs{
   box-sizing: inherit;
   border: solid;
-  border-color: #F7861C;
+  border-color: #7a1336;
   border-width: 0.5px;
   border-radius: 2px;
 }
 
 .buy-inputs:focus{
   border: solid;
-  border-color: #F7861C;
+  border-color: #7a1336;
   border-width: 0.5px;
   border-radius: 2px;
 }
@@ -643,7 +643,7 @@ input.large-input {
 }
 
 .ex-coins {
-  font-family: 'Montserrat Regular';
+  font-family: 'Roboto';
   text-transform: uppercase;
   text-align: center;
   font-size: 33px;
@@ -654,7 +654,7 @@ input.large-input {
 }
 
 .marketinfo{
-  font-family: 'Montserrat light';
+  font-family: 'Roboto';
   color: #AEAEAE;
   font-size: 15px;
   line-height: 17px;
@@ -696,7 +696,7 @@ input.large-input {
   text-overflow: ellipsis;
   width: 5em;
   font-size: 14px;
-  font-family: "Montserrat Light";
+  font-family: "Roboto";
   margin-left: 5px;
 }
 
@@ -707,7 +707,7 @@ input.large-input {
 
 .qr-message {
   font-size: 12px;
-  color: #F7861C;
+  color: #7a1336;
 }
 
 div.message-container > div:first-child {
@@ -725,8 +725,8 @@ div.message-container > div:first-child {
   flex-direction: column;
   height: 100%;
   background: white;
-  color: #4D4D4D;
-  font-family: Roboto, Arial, sans-serif;
+  color: #7a1336;
+  font-family: "Roboto", Helvetica, sans-serif;
   padding: 1.5rem;
 }
 

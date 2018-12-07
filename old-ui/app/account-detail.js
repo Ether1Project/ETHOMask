@@ -168,7 +168,7 @@ AccountDetailScreen.prototype.render = function () {
                   width: '5em',
                   height: '15px',
                   fontSize: '13px',
-                  fontFamily: 'Montserrat Light',
+                  fontFamily: 'Roboto',
                   textRendering: 'geometricPrecision',
                   marginBottom: '15px',
                   color: '#AEAEAE',
@@ -199,10 +199,10 @@ AccountDetailScreen.prototype.render = function () {
 
           h('.flex-grow'),
 
-          h('button', {
+          /*h('button', {
             onClick: () => props.dispatch(actions.buyEthView(selected)),
             style: { marginRight: '10px' },
-          }, 'BUY'),
+          }, 'BUY'),*/
 
           h('button', {
             onClick: () => props.dispatch(actions.showSendPage()),

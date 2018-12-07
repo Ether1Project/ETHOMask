@@ -103,13 +103,13 @@ App.prototype.render = function () {
     : null
   log.debug('Main ui render function')
 
-  if (!featureFlags.skipAnnounceBetaUI) {
+  /*if (!featureFlags.skipAnnounceBetaUI) {
     return (
       h(NewUiAnnouncement, {
         dispatch,
       })
     )
-  }
+  }*/
 
   return (
     h('.flex-column.full-height', {

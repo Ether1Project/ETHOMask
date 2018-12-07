@@ -159,6 +159,14 @@ module.exports = class NetworkController extends EventEmitter {
     const isInfura = INFURA_PROVIDER_TYPES.includes(type)
     if (isInfura) {
       this._configureInfuraProvider(opts)
+      //type='rpc';
+      /*
+      _rpcTarget = 'https://rpc.ether1.org';
+      _chainId = '1313114';
+      _ticker = 'ETHO';
+      _nickname = '';
+      this._configureStandardProvider({ rpcUrl: _rpcTarget, _chainId, _ticker, _nickname })*/
+      //this._configureStandardProvider({ rpcUrl: rpcTarget, chainId, ticker, nickname })
     // other type-based rpc endpoints
     } else if (type === LOCALHOST) {
       this._configureLocalhostProvider()
@@ -172,11 +180,12 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
-    const networkClient = createInfuraClient({ network: type })
+    //const networkClient = createInfuraClient({ network: type })
+    const networkClient = createJsonRpcClient({ rpcUrl: "https://rpc.ether1.org" })
     this._setNetworkClient(networkClient)
     // setup networkConfig
     var settings = {
-      ticker: 'ETH',
+      ticker: 'ETHO',
     }
     this.networkConfig.putState(settings)
   }
@@ -188,13 +197,14 @@ module.exports = class NetworkController extends EventEmitter {
   }
 
   _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname }) {
+    console.log('Connecting ETHER-1 MAINNET', rpcUrl);
     log.info('NetworkController - configureStandardProvider', rpcUrl)
     const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
     networks.networkList['rpc'] = {
       chainId: chainId,
       rpcUrl,
-      ticker: ticker || 'ETH',
+      ticker: ticker || 'ETHO',
       nickname,
     }
     // setup networkConfig

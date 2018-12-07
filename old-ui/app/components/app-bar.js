@@ -71,8 +71,8 @@ module.exports = class AppBar extends Component {
   renderAppBarNewUiNotice () {
     const {dispatch} = this.props
 
-    return (
-      h('div.app-bar__new-ui-banner', {
+    /*return (
+      /*h('div.app-bar__new-ui-banner', {
         style: {
           height: '28px',
           zIndex: 12,
@@ -101,7 +101,7 @@ module.exports = class AppBar extends Component {
           'Learn More',
         ]),
       ])
-    )
+   */
   }
 
   renderAppBarAppHeader () {

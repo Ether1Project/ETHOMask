@@ -74,7 +74,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
           style: {
             alignItems: 'flex-end',
             lineHeight: lineHeight || '13px',
-            fontFamily: fontFamily || 'Montserrat Light',
+            fontFamily: fontFamily || 'Roboto',
             textRendering: 'geometricPrecision',
           },
         }, [
@@ -88,7 +88,7 @@ EthBalanceComponent.prototype.renderBalance = function (value) {
           }, incoming ? `+${balanceToRender}` : balanceToRender),
           h('div', {
             style: {
-              color: color || '#AEAEAE',
+              color: color || '#7a1336',
               fontSize: fontSize || '12px',
               marginLeft: '5px',
             },

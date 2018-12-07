@@ -29,7 +29,7 @@ class CurrencyController {
       currentCurrency: 'usd',
       conversionRate: 0,
       conversionDate: 'N/A',
-      nativeCurrency: 'ETH',
+      nativeCurrency: 'ETHO',
     }, opts.initState)
     this.store = new ObservableStore(initState)
   }
@@ -139,7 +139,7 @@ class CurrencyController {
         // ETH
         apiUrl = `https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`
       } else {
-       // ETC
+       // ETC and ETHO
         apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
       }
       // attempt request
@@ -161,7 +161,7 @@ class CurrencyController {
         return
       }
       // set conversion rate
-      if (nativeCurrency === 'ETH') {
+      if (nativeCurrency === 'ETHO') {
         // ETH
         this.setConversionRate(Number(parsedResponse.bid))
         this.setConversionDate(Number(parsedResponse.timestamp))
