@@ -22,10 +22,10 @@ temp
 app/.DS_Store
 
 coverage/
-dist
-builds/
+#dist
+#builds/
 disc/
-builds.zip
+#builds.zip
 docs/jsdocs
 
 development/bundle.js
