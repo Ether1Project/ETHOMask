@@ -163,17 +163,15 @@ class CurrencyController {
       let chkCurrency = Object.keys(parsedResponse)[0];
       if (chkCurrency === currentCurrency.toUpperCase()) {
         log.warn("Curreny Response Matched!");
+        this.setConversionRate(Number(uniresult))
+        this.setConversionDate(unix);
+
       } else {
         this.setConversionRate(0)
         this.setConversionDate('N/A')
         log.warn("Conversion Api did something else :(");
       }
 
-      if (nativeCurrency === 'ETHO') {
-
-        this.setConversionRate(Number(uniresult))
-        this.setConversionDate(unix);
-      }
     } catch (err) {
       // reset current conversion rate
       log.warn(`MetaMask - Failed to query currency conversion:`, nativeCurrency, currentCurrency, err)
