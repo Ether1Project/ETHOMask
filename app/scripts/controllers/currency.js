@@ -166,13 +166,10 @@ class CurrencyController {
       } else {
         this.setConversionRate(0)
         this.setConversionDate('N/A')
-        log.war("Conversion Api did something else :(");
+        log.warn("Conversion Api did something else :(");
       }
 
       if (nativeCurrency === 'ETHO') {
-        log.warn("We are in side currency.js the conversion rate was updated to: "+uniresult+ " "+chkCurrency+" response was validated against: "+currentCurrency);
-        let vd = JSON.stringify(parsedResponse);
-        log.warn(vd);
 
         this.setConversionRate(Number(uniresult))
         this.setConversionDate(unix);
