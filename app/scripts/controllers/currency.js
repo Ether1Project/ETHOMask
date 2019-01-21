@@ -133,15 +133,10 @@ class CurrencyController {
     try {
       currentCurrency = this.getCurrentCurrency()
       nativeCurrency = this.getNativeCurrency()
-      // select api
       let apiUrl
-      if (nativeCurrency === 'ETH') {
-        // ETH
-        apiUrl = `https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`
-      } else {
-       // ETC and ETHO
-        apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
-      }
+      //ETHO
+      apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
+
       // attempt request
       let response
       try {
@@ -153,6 +148,7 @@ class CurrencyController {
       // parse response
       let rawResponse
       let parsedResponse
+      let unix
       try {
         rawResponse = await response.text()
         parsedResponse = JSON.parse(rawResponse)
@@ -161,20 +157,25 @@ class CurrencyController {
         return
       }
       // set conversion rate
-      if (nativeCurrency === 'ETHO') {
-        // ETHO
-        let unix = Math.round(+new Date()/1000);
-        this.setConversionRate(Number(parsedResponse.USD))
-        this.setConversionDate(Number(unix))
+      unix = parseInt((new Date()).getTime() / 1000);
+      let uniresult = parsedResponse[Object.keys(parsedResponse)[0]];
+
+      let chkCurrency = Object.keys(parsedResponse)[0];
+      if (chkCurrency === currentCurrency.toUpperCase()) {
+        log.warn("Curreny Response Matched!");
       } else {
-        // ETC
-        if (parsedResponse[currentCurrency.toUpperCase()]) {
-          this.setConversionRate(Number(parsedResponse[currentCurrency.toUpperCase()]))
-          this.setConversionDate(parseInt((new Date()).getTime() / 1000))
-        } else {
-          this.setConversionRate(0)
-          this.setConversionDate('N/A')
-        }
+        this.setConversionRate(0)
+        this.setConversionDate('N/A')
+        log.war("Conversion Api did something else :(");
+      }
+
+      if (nativeCurrency === 'ETHO') {
+        log.warn("We are in side currency.js the conversion rate was updated to: "+uniresult+ " "+chkCurrency+" response was validated against: "+currentCurrency);
+        let vd = JSON.stringify(parsedResponse);
+        log.warn(vd);
+
+        this.setConversionRate(Number(uniresult))
+        this.setConversionDate(unix);
       }
     } catch (err) {
       // reset current conversion rate
