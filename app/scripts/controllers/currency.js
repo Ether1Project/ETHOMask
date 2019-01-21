@@ -134,11 +134,10 @@ class CurrencyController {
       currentCurrency = this.getCurrentCurrency()
       nativeCurrency = this.getNativeCurrency()
       let apiUrl
-      //ETHO
+      let response
       apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
 
       // attempt request
-      let response
       try {
         response = await fetch(apiUrl)
       } catch (err) {
@@ -149,6 +148,9 @@ class CurrencyController {
       let rawResponse
       let parsedResponse
       let unix
+      let uniresult
+      let chkCurrency
+
       try {
         rawResponse = await response.text()
         parsedResponse = JSON.parse(rawResponse)
@@ -158,18 +160,15 @@ class CurrencyController {
       }
       // set conversion rate
       unix = parseInt((new Date()).getTime() / 1000);
-      let uniresult = parsedResponse[Object.keys(parsedResponse)[0]];
-
-      let chkCurrency = Object.keys(parsedResponse)[0];
+      uniresult = parsedResponse[Object.keys(parsedResponse)[0]]
+      chkCurrency = Object.keys(parsedResponse)[0]
       if (chkCurrency === currentCurrency.toUpperCase()) {
-        log.warn("Curreny Response Matched!");
         this.setConversionRate(Number(uniresult))
         this.setConversionDate(unix);
-
       } else {
         this.setConversionRate(0)
         this.setConversionDate('N/A')
-        log.warn("Conversion Api did something else :(");
+        log.warn("Conversion Api did something else :(")
       }
 
     } catch (err) {
