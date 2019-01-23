@@ -141,7 +141,7 @@ class CurrencyController {
       try {
         response = await fetch(apiUrl)
       } catch (err) {
-        log.error(new Error(`CurrencyController - Failed to request currency from Infura:\n${err.stack}`))
+        log.error(new Error(`CurrencyController - Failed to request currency from cryptocompare:\n${err.stack}`))
         return
       }
       // parse response
