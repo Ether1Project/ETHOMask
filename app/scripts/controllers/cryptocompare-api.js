@@ -22,8 +22,7 @@ class CryptoCompareController {
   // ok, degraded, or down.
   async checkcryptoCompareNetworkStatus () {
     const response = await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETHO&tsyms=USD')
-    //const parsedResponse = await response.json()
-    const fakseResponse = '{"mainnet": "ok", "ropsten": "ok", "kovan": "ok", "rinkeby": "ok"}'
+    const fakeResponse = '{"mainnet": "ok", "ropsten": "ok", "kovan": "ok", "rinkeby": "ok"}'
     const parsedResponse = JSON.parse(fakeResponse);
     this.store.updateState({
       cryptoCompareNetworkStatus: parsedResponse,
