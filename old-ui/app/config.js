@@ -3,7 +3,7 @@ const Component = require('react').Component
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../ui/app/actions')
-const infuraCurrencies = require('./infura-conversion.json').objects.sort((a, b) => {
+const cryptocompareCurrencies = require('./cryptocompare-conversion.json').objects.sort((a, b) => {
       return a.quote.name.toLocaleLowerCase().localeCompare(b.quote.name.toLocaleLowerCase())
     })
 const validUrl = require('valid-url')
@@ -338,7 +338,7 @@ function currentConversionInformation (metamaskState, state) {
         state.dispatch(actions.setCurrentCurrency(newCurrency))
       },
       defaultValue: currentCurrency,
-    }, infuraCurrencies.map((currency) => {
+    }, cryptocompareCurrencies.map((currency) => {
       return h('option', {key: currency.quote.code, value: currency.quote.code}, `${currency.quote.code.toUpperCase()} - ${currency.quote.name}`)
     })
   ),
