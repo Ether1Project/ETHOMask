@@ -133,6 +133,61 @@
       }
     },
     {
+      "symbol": "ethbchabc",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "bchabc",
+        "name": "Bitcoin ABC"
+      }
+    },
+    {
+      "symbol": "ethbchsv",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "bchsv",
+        "name": "Bitcoin SV"
+      }
+    },
+    {
+      "symbol": "ethc20",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "c20",
+        "name": "Crypto20"
+      }
+    },
+    {
+      "symbol": "ethtrx",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "trx",
+        "name": "Tron"
+      }
+    },
+    {
+      "symbol": "ethada",
+      "base": {
+        "code": "eth",
+        "name": "Ethereum"
+      },
+      "quote": {
+        "code": "ada",
+        "name": "Cardano"
+      }
+    },
+    {
       "symbol": "ethcad",
       "base": {
         "code": "eth",
