@@ -1,1 +1,1 @@
-To use ETHO mask on Opera simply install the Chrome Build.
+To use ETHO mask in Opera simply install the Chrome Build.
