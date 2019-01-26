@@ -30,6 +30,7 @@ If you're a web dapp developer, we've got two types of guides for you:
    - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
    - Select npm 6.1.0: ```npm install -g npm@6.1.0```
  - Install dependencies: ```npm install```
+ - After installing dependancies go to node_modules/etherscan-link and change explorer-link.js and acount-link.js to read 'return `http://explorer.ether1.org/tx/${hash}`' and 'return `http://explorer.ether1.org/addr/${address}`' respectively
  - Install gulp globally with `npm install -g gulp-cli`.
  - Build the project to the `./dist/` folder with `gulp build`.
  - Optionally, to rebuild on file changes, run `gulp dev`.
