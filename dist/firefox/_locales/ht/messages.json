@@ -30,13 +30,13 @@
     "message": "Klè Done sou vi prive"
   },
   "providerAPIRequest": {
-    "message": "Ethereum API Mande"
+    "message": "Ether-1 API Mande"
   },
   "reviewProviderRequest": {
-    "message": "Tanpri revize sa API demann Ethereum."
+    "message": "Tanpri revize sa API demann Ether-1."
   },
   "providerRequestInfo": {
-    "message": "Domèn ki nan lis anba a ap mande pou jwenn aksè a blòkchou Ethereum ak pou wè kont ou ye kounye a. Toujou double tcheke ke ou sou sit ki kòrèk la anvan apwouve aksè."
+    "message": "Domèn ki nan lis anba a ap mande pou jwenn aksè a blòkchou Ether-1 ak pou wè kont ou ye kounye a. Toujou double tcheke ke ou sou sit ki kòrèk la anvan apwouve aksè."
   },
   "accept": {
     "message": "Aksepte"
@@ -87,7 +87,7 @@
     "message": "Kantite lajan + Gaz"
   },
   "appDescription": {
-    "message": "Ekstansyon Navigatè Ethereum",
+    "message": "Ekstansyon Navigatè Ether-1",
     "description": "The description of the application"
   },
   "appName": {
@@ -153,7 +153,7 @@
     "message": "Achte sou Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase se fason ki pi popilè nan mond lan yo achte ak vann Bitcoin, Ethereum, ak Litecoin."
+    "message": "Coinbase se fason ki pi popilè nan mond lan yo achte ak vann Bitcoin, Ether-1, ak Litecoin."
   },
   "bytes": {
     "message": "Bytes"
@@ -216,7 +216,7 @@
     "message": "Konekte nan Kovan Tès Rezo a"
   },
   "connectingToMainnet": {
-    "message": "Konekte ak Prensipal Ethereum Rezo a"
+    "message": "Konekte ak Prensipal Ether-1 Rezo a"
   },
   "connectingToRopsten": {
     "message": "Konekte ak Ropsten Tès Rezo a"
@@ -407,7 +407,7 @@
     "message": "ETH"
   },
   "etherscanView": {
-    "message": "Gade kont sou Etherscan"
+    "message": "Gade kont sou Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Chanje to"
@@ -663,7 +663,7 @@
     "message": "seed mo sèlman gen karaktè miniskil"
   },
   "mainnet": {
-    "message": "Prensipal Ethereum Rezo a"
+    "message": "Prensipal Ether-1 Rezo a"
   },
   "menu": {
     "message": "Opsyon"
@@ -672,7 +672,7 @@
     "message": "Mesaje"
   },
   "metamaskDescription": {
-    "message": "MetaMask sekirize idantite pou Ethereum."
+    "message": "MetaMask sekirize idantite pou Ether-1."
   },
   "metamaskSeedWords": {
     "message": "MetaMask Seed Mo"
@@ -771,10 +771,10 @@
     "message": "Ou te retounen nan Ansyen Itilizatè kouòdone. Ou ka chanje tounen nan nouvo Ansyen Itilizatè nan opsyon a nan meni an tèt la."
   },
   "onlySendToEtherAddress": {
-    "message": "Sèlman voye ETH nan yon adrès Ethereum."
+    "message": "Sèlman voye ETH nan yon adrès Ether-1."
   },
   "onlySendTokensToAccountAddress": {
-    "message": "Sèlman voye $ 1 nan yon adrès kont Ethereum.",
+    "message": "Sèlman voye $ 1 nan yon adrès kont Ether-1.",
     "description": "displays token symbol"
   },
   "openInTab": {
@@ -1049,7 +1049,7 @@
     "message": "Si ou pa wè kont Ledger ou te genyen an anba a, eseye chanje chemen an \"Eritaj (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
-    "message": "Voye Tokens pou nenpòt moun ki gen yon kont Ethereum"
+    "message": "Voye Tokens pou nenpòt moun ki gen yon kont Ether-1"
   },
   "settings": {
     "message": "Paramèt"
@@ -1313,7 +1313,7 @@
     "message": "Wè Kont"
   },
   "viewOnEtherscan": {
-    "message": "Wè sou Etherscan"
+    "message": "Wè sou Ether-1 explorer"
   },
   "visitWebSite": {
     "message": "Vizite sit entènèt nou an"

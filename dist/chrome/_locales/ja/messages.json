@@ -39,10 +39,10 @@
     "message": "Web3 APIリクエスト"
   },
   "reviewProviderRequest": {
-    "message": "このEthereum APIリクエストを確認してください。"
+    "message": "このEther-1 APIリクエストを確認してください。"
   },
   "providerRequestInfo": {
-    "message": "下記のドメインは、Ethereumブロックチェーンとやり取りできるようにEthereum APIへのアクセスをリクエストしようとしています。 Web3アクセスを承認する前に、正しいサイトにいることを常に確認してください。"
+    "message": "下記のドメインは、Ether-1ブロックチェーンとやり取りできるようにEther-1 APIへのアクセスをリクエストしようとしています。 Web3アクセスを承認する前に、正しいサイトにいることを常に確認してください。"
   },
   "accept": {
     "message": "承認"
@@ -75,7 +75,7 @@
     "message": "金額 + ガス"
   },
   "appDescription": {
-    "message": "Ethereumのブラウザ・エクステンション",
+    "message": "Ether-1のブラウザ・エクステンション",
     "description": "The description of the application"
   },
   "appName": {
@@ -120,7 +120,7 @@
     "message": "Coinbaseのサイトで購入"
   },
   "buyCoinbaseExplainer": {
-    "message": "Etherを購入できます。Coinbaseは、世界的なBitcoin、Ethereum、そしてLitecoinの取引所です。"
+    "message": "Etherを購入できます。Coinbaseは、世界的なBitcoin、Ether-1、そしてLitecoinの取引所です。"
   },
   "cancel": {
     "message": "キャンセル"
@@ -269,7 +269,7 @@
     "message": "パスワードを入力"
   },
   "etherscanView": {
-    "message": "Etherscanでアカウントを確認"
+    "message": "Ether-1 explorerでアカウントを確認"
   },
   "exchangeRate": {
     "message": "交換レート"
@@ -438,7 +438,7 @@
     "message": "最大"
   },
   "mainnet": {
-    "message": "Ethereumメインネットワーク"
+    "message": "Ether-1メインネットワーク"
   },
   "menu": {
     "message": "メニュー"
@@ -785,7 +785,7 @@
     "message": "アカウントを見る"
   },
   "viewOnEtherscan": {
-    "message": "Etherscan で見る"
+    "message": "Ether-1 explorer で見る"
   },
   "warning": {
     "message": "警告"

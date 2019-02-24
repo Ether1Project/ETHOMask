@@ -77,7 +77,7 @@ class ExtensionPlatform {
     const nonce = parseInt(txMeta.txParams.nonce, 16)
 
     const title = 'Confirmed transaction'
-    const message = `Transaction ${nonce} confirmed! View on EtherScan`
+    const message = `Transaction ${nonce} confirmed! Click to view the transaction on the Ether-1 Explorer`
     this._showNotification(title, message, url)
   }
 

@@ -36,10 +36,10 @@
     "message": "Richiesta API Web3"
   },
   "reviewProviderRequest": {
-    "message": "Si prega di rivedere questa richiesta API Ethereum."
+    "message": "Si prega di rivedere questa richiesta API Ether-1."
   },
   "providerRequestInfo": {
-    "message": "Il dominio elencato di seguito sta tentando di richiedere l'accesso all'API Ethereum in modo che possa interagire con la blockchain di Ethereum. Controlla sempre di essere sul sito corretto prima di approvare l'accesso a Ethereum."
+    "message": "Il dominio elencato di seguito sta tentando di richiedere l'accesso all'API Ether-1 in modo che possa interagire con la blockchain di Ether-1. Controlla sempre di essere sul sito corretto prima di approvare l'accesso a Ether-1."
   },
   "accept": {
     "message": "Accetta"
@@ -90,7 +90,7 @@
     "message": "Importo + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Ether-1 Browser Extension",
     "description": "La descrizione dell'applicazione"
   },
   "appName": {
@@ -156,7 +156,7 @@
     "message": "Compra su Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere Bitcoin, Ethereum e Litecoin."
+    "message": "Coinbase è il servizio più popolare al mondo per comprare e vendere Bitcoin, Ether-1 e Litecoin."
   },
   "bytes": {
     "message": "Bytes"
@@ -216,7 +216,7 @@
     "message": "Connessione alla Rete di test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Connessione alla Rete Ethereum Principale"
+    "message": "Connessione alla Rete Ether-1 Principale"
   },
   "connectingToRopsten": {
     "message": "Connessione alla Rete di test Ropsten"
@@ -316,7 +316,7 @@
     "message": "Precisione Decimali"
   },
   "defaultNetwork": {
-    "message": "La rete predefinita per transazioni in Ether è la Rete Ethereum Principale."
+    "message": "La rete predefinita per transazioni in Ether è la Rete Ether-1 Principale."
   },
   "denExplainer": {
     "message": "Il DEN è il tuo archivio crittato con password dentro MetaMask."
@@ -404,7 +404,7 @@
     "message": "Inserisci la tua password per continuare"
   },
   "etherscanView": {
-    "message": "Vedi account su Etherscan"
+    "message": "Vedi account su Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Tasso di cambio"
@@ -657,7 +657,7 @@
     "message": "le frasi seed hanno solo lettere minuscole"
   },
   "mainnet": {
-    "message": "Rete Ethereum Principale"
+    "message": "Rete Ether-1 Principale"
   },
   "menu": {
     "message": "Menu"
@@ -666,7 +666,7 @@
     "message": "Messaggio"
   },
   "metamaskDescription": {
-    "message": "MetaMask è una cassaforte sicura per identità su Ethereum."
+    "message": "MetaMask è una cassaforte sicura per identità su Ether-1."
   },
   "metamaskSeedWords": {
     "message": "Parole Seed di MetaMask"
@@ -762,10 +762,10 @@
     "message": "Sei ritornato alla vecchia interfaccia. Puoi ritornare alla nuova interfaccia tramite l'opzione nel menu a discesa in alto a destra."
   },
   "onlySendToEtherAddress": {
-    "message": "Invia ETH solamente ad un account Ethereum."
+    "message": "Invia ETH solamente ad un account Ether-1."
   },
   "onlySendTokensToAccountAddress": {
-    "message": "Invia solamente $1 ad un account Ethereum.",
+    "message": "Invia solamente $1 ad un account Ether-1.",
     "description": "mostra il simbolo del token"
   },
   "openInTab": {
@@ -1031,7 +1031,7 @@
     "message": "Se non vedi il tuo account Ledger esistente di seguito, prova a cambiare il percorso in \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
-    "message": "Invia Tokens a chiunque abbia un account Ethereum"
+    "message": "Invia Tokens a chiunque abbia un account Ether-1"
   },
   "settings": {
     "message": "Impostazioni"
@@ -1112,7 +1112,7 @@
     "message": "3. Inizia a usare dApps e molto altro ancora!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Usa il tuo account hardware come utilizzeresti qualsiasi account Ethereum. Accedi alle dApps, invia Eth, compra e conserva token ERC20 e token non fungibili come CryptoKitties"
+    "message": "Usa il tuo account hardware come utilizzeresti qualsiasi account Ether-1. Accedi alle dApps, invia Eth, compra e conserva token ERC20 e token non fungibili come CryptoKitties"
   },
   "submit": {
     "message": "Invia"
@@ -1295,7 +1295,7 @@
     "message": "Vedi Account"
   },
   "viewOnEtherscan": {
-    "message": "Vedi su Etherscan"
+    "message": "Vedi su Ether-1 explorer"
   },
   "visitWebSite": {
     "message": "Visita il nostro sito web"

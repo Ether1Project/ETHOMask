@@ -25,7 +25,7 @@ export default class TransactionListItemDetails extends PureComponent {
     const { hash, metamaskNetworkId } = this.props.transaction
 
     const prefix = prefixForNetwork(metamaskNetworkId)
-    const etherscanUrl = `https://${prefix}etherscan.io/tx/${hash}`
+    const etherscanUrl = `https://explorer.ether1.org/tx/${hash}`
     global.platform.openWindow({ url: etherscanUrl })
     this.setState({ showTransactionDetails: true })
   }

@@ -39,10 +39,10 @@
     "message": "Solicitação de API do Web3"
   },
   "reviewProviderRequest": {
-    "message": "Por favor, revise esta solicitação da API da Ethereum."
+    "message": "Por favor, revise esta solicitação da API da Ether-1."
   },
   "providerRequestInfo": {
-    "message": "O domínio listado abaixo está tentando solicitar acesso à API Ethereum para que ele possa interagir com o blockchain Ethereum. Sempre verifique se você está no site correto antes de aprovar o acesso à Ethereum."
+    "message": "O domínio listado abaixo está tentando solicitar acesso à API Ether-1 para que ele possa interagir com o blockchain Ether-1. Sempre verifique se você está no site correto antes de aprovar o acesso à Ether-1."
   },
   "accept": {
     "message": "Aceitar"
@@ -75,7 +75,7 @@
     "message": "Valor + Gas"
   },
   "appDescription": {
-    "message": "Extensão para o browser de Ethereum",
+    "message": "Extensão para o browser de Ether-1",
     "description": "A descrição da aplicação"
   },
   "appName": {
@@ -126,7 +126,7 @@
     "message": "Comprar no Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase é a forma mais conhecida para comprar e vender Bitcoin, Ethereum, e Litecoin."
+    "message": "Coinbase é a forma mais conhecida para comprar e vender Bitcoin, Ether-1, e Litecoin."
   },
   "cancel": {
     "message": "Cancelar"
@@ -290,7 +290,7 @@
     "message": "Introduza a sua palavra-passe para confirmar"
   },
   "etherscanView": {
-    "message": "Ver conta no Etherscan"
+    "message": "Ver conta no Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Taxa de Câmbio"
@@ -480,13 +480,13 @@
     "message": "palavras da seed apenas têm caracteres minúsculos"
   },
   "mainnet": {
-    "message": "Rede Principal de Ethereum"
+    "message": "Rede Principal de Ether-1"
   },
   "message": {
     "message": "Mensagem"
   },
   "metamaskDescription": {
-    "message": "O MetaMask é um lugar seguro para guardar a sua identidade em em Ethereum."
+    "message": "O MetaMask é um lugar seguro para guardar a sua identidade em em Ether-1."
   },
   "min": {
     "message": "Mínimo"
@@ -694,7 +694,7 @@
     "message": "Enviar Tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Enviar Tokens para qualquer pessoa com uma conta Ethereum"
+    "message": "Enviar Tokens para qualquer pessoa com uma conta Ether-1"
   },
   "settings": {
     "message": "Definições"

@@ -133,26 +133,24 @@ class CurrencyController {
     try {
       currentCurrency = this.getCurrentCurrency()
       nativeCurrency = this.getNativeCurrency()
-      // select api
       let apiUrl
-      if (nativeCurrency === 'ETH') {
-        // ETH
-        apiUrl = `https://api.infura.io/v1/ticker/eth${currentCurrency.toLowerCase()}`
-      } else {
-       // ETC and ETHO
-        apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
-      }
-      // attempt request
       let response
+      apiUrl = `https://min-api.cryptocompare.com/data/price?fsym=${nativeCurrency.toUpperCase()}&tsyms=${currentCurrency.toUpperCase()}`
+
+      // attempt request
       try {
         response = await fetch(apiUrl)
       } catch (err) {
-        log.error(new Error(`CurrencyController - Failed to request currency from Infura:\n${err.stack}`))
+        log.error(new Error(`CurrencyController - Failed to request currency from cryptocompare:\n${err.stack}`))
         return
       }
       // parse response
       let rawResponse
       let parsedResponse
+      let unix
+      let uniresult
+      let chkCurrency
+
       try {
         rawResponse = await response.text()
         parsedResponse = JSON.parse(rawResponse)
@@ -161,20 +159,18 @@ class CurrencyController {
         return
       }
       // set conversion rate
-      if (nativeCurrency === 'ETHO') {
-        // ETH
-        this.setConversionRate(Number(parsedResponse.bid))
-        this.setConversionDate(Number(parsedResponse.timestamp))
+      unix = parseInt((new Date()).getTime() / 1000);
+      uniresult = parsedResponse[Object.keys(parsedResponse)[0]]
+      chkCurrency = Object.keys(parsedResponse)[0]
+      if (chkCurrency === currentCurrency.toUpperCase()) {
+        this.setConversionRate(Number(uniresult))
+        this.setConversionDate(unix);
       } else {
-        // ETC
-        if (parsedResponse[currentCurrency.toUpperCase()]) {
-          this.setConversionRate(Number(parsedResponse[currentCurrency.toUpperCase()]))
-          this.setConversionDate(parseInt((new Date()).getTime() / 1000))
-        } else {
-          this.setConversionRate(0)
-          this.setConversionDate('N/A')
-        }
+        this.setConversionRate(0)
+        this.setConversionDate('N/A')
+        log.warn("Conversion Api did something else :(")
       }
+
     } catch (err) {
       // reset current conversion rate
       log.warn(`MetaMask - Failed to query currency conversion:`, nativeCurrency, currentCurrency, err)

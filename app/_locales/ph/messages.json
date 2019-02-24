@@ -39,10 +39,10 @@
     "message": "Kahilingan sa Web3 API"
   },
   "reviewProviderRequest": {
-    "message": "Mangyaring suriin ang kahilingan sa Ethereum API na ito."
+    "message": "Mangyaring suriin ang kahilingan sa Ether-1 API na ito."
   },
   "providerRequestInfo": {
-    "message": "Ang domain na nakalista sa ibaba ay sinusubukang humiling ng access sa Ethereum API upang maaari itong makipag-ugnayan sa Ethereum blockchain. Laging i-double check na ikaw ay nasa tamang site bago aprubahan ang Ethereum access."
+    "message": "Ang domain na nakalista sa ibaba ay sinusubukang humiling ng access sa Ether-1 API upang maaari itong makipag-ugnayan sa Ether-1 blockchain. Laging i-double check na ikaw ay nasa tamang site bago aprubahan ang Ether-1 access."
   },
   "accept": {
     "message": "Tanggapin"
@@ -69,7 +69,7 @@
     "message": "Halaga + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser Extension",
+    "message": "Ether-1 Browser Extension",
     "description": "Ang deskripsyon ng application"
   },
   "appName": {
@@ -108,7 +108,7 @@
     "message": "Bumili sa Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Ang Coinbase ang pinakasikat na paraan upang bumili at magbenta ng Bitcoin, Ethereum, at Litecoin sa buong mundo."
+    "message": "Ang Coinbase ang pinakasikat na paraan upang bumili at magbenta ng Bitcoin, Ether-1, at Litecoin sa buong mundo."
   },
   "cancel": {
     "message": "Kanselahin"
@@ -242,7 +242,7 @@
     "message": "I-enter ang password"
   },
   "etherscanView": {
-    "message": "Tingnan ang account sa Etherscan"
+    "message": "Tingnan ang account sa Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Exchange Rate"
@@ -313,7 +313,7 @@
     "message": "i-click ito",
     "description": "tulad ng -i-click dito- para sa mas maraming impormasyon (kasama ng troubleTokenBalances)"
   },
-  "hide": { 
+  "hide": {
     "message": "Itago"
   },
   "hideToken": {
@@ -387,7 +387,7 @@
     "message": "Loose"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Ether-1 Network"
   },
   "message": {
     "message": "Mensahe"
@@ -541,7 +541,7 @@
     "message": "Magpadala ng Tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Magpadala ng Tokens sa sinumang may Ethereum account"
+    "message": "Magpadala ng Tokens sa sinumang may Ether-1 account"
   },
   "settings": {
     "message": "Mga Setting"

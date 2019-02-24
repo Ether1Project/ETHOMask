@@ -416,13 +416,6 @@ module.exports = class AppBar extends Component {
         closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
         onClick: () => { dispatch(actions.showInfoPage()) },
       }, 'Info/Help'),
-
-      h(DropdownMenuItem, {
-        closeMenu: () => this.setState({ isMainMenuOpen: !isOpen }),
-        onClick: () => {
-          dispatch(actions.setFeatureFlag('betaUI', true, 'BETA_UI_NOTIFICATION_MODAL'))
-        },
-      }, 'Try Beta!'),
     ])
   }
 

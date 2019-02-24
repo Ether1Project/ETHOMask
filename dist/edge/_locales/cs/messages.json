@@ -36,13 +36,13 @@
     "message": "Odmítnout"
   },
   "providerAPIRequest": {
-    "message": "Požadavek API Ethereum"
+    "message": "Požadavek API Ether-1"
   },
   "reviewProviderRequest": {
-    "message": "Přečtěte si prosím tuto žádost API Ethereum."
+    "message": "Přečtěte si prosím tuto žádost API Ether-1."
   },
   "providerRequestInfo": {
-    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ethereum, aby mohla komunikovat s blokádou Ethereum. Před schválením přístupu Ethereum vždy zkontrolujte, zda jste na správném místě."
+    "message": "Níže uvedená doména se pokouší požádat o přístup k API Ether-1, aby mohla komunikovat s blokádou Ether-1. Před schválením přístupu Ether-1 vždy zkontrolujte, zda jste na správném místě."
   },
   "accept": {
     "message": "Přijmout"
@@ -75,7 +75,7 @@
     "message": "Částka + palivo"
   },
   "appDescription": {
-    "message": "Ethereum rozšíření prohlížeče",
+    "message": "Ether-1 rozšíření prohlížeče",
     "description": "The description of the application"
   },
   "appName": {
@@ -311,7 +311,7 @@
     "message": "Hesla nejsou stejná"
   },
   "etherscanView": {
-    "message": "Prohlédněte si účet na Etherscan"
+    "message": "Prohlédněte si účet na Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Směnný kurz"
@@ -513,13 +513,13 @@
     "message": "slova klíčové fráze mají pouze malá písmena"
   },
   "mainnet": {
-    "message": "Main Ethereum Network"
+    "message": "Main Ether-1 Network"
   },
   "message": {
     "message": "Zpráva"
   },
   "metamaskDescription": {
-    "message": "MetaMask je bezpečný osobní trezor pro Ethereum."
+    "message": "MetaMask je bezpečný osobní trezor pro Ether-1."
   },
   "min": {
     "message": "Minimum"
@@ -695,7 +695,7 @@
     "message": "Současné RPC"
   },
   "connectingToMainnet": {
-    "message": "Připojuji se k Main Ethereum Network"
+    "message": "Připojuji se k Main Ether-1 Network"
   },
   "connectingToRopsten": {
     "message": "Připojuji se k Ropsten Test Network"
@@ -763,13 +763,13 @@
     "message": "Odeslat tokeny"
   },
   "onlySendToEtherAddress": {
-    "message": "Posílejte jen ETH na Ethereum adresu."
+    "message": "Posílejte jen ETH na Ether-1 adresu."
   },
   "searchTokens": {
     "message": "Hledat tokeny"
   },
   "sendTokensAnywhere": {
-    "message": "Posílejte tokeny komukoli s Ethereum účtem"
+    "message": "Posílejte tokeny komukoli s Ether-1 účtem"
   },
   "settings": {
     "message": "Nastavení"

@@ -39,10 +39,10 @@
     "message": "Solicitud de API Web3"
   },
   "reviewProviderRequest": {
-    "message": "Por favor, revise esta solicitud API Ethereum."
+    "message": "Por favor, revise esta solicitud API Ether-1."
   },
   "providerRequestInfo": {
-    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ethereum para que pueda interactuar con la cadena de bloques de Ethereum. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ethereum."
+    "message": "El dominio que se muestra a continuación intenta solicitar acceso a la API Ether-1 para que pueda interactuar con la cadena de bloques de Ether-1. Siempre verifique que esté en el sitio correcto antes de aprobar el acceso Ether-1."
   },
   "accept": {
     "message": "Aceptar"
@@ -75,7 +75,7 @@
     "message": "Cantidad + Gas"
   },
   "appDescription": {
-    "message": "Extensión del navegador para Ethereum",
+    "message": "Extensión del navegador para Ether-1",
     "description": "La descripción de la aplicación"
   },
   "appName": {
@@ -129,7 +129,7 @@
     "message": "Comprar en Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase es la plataforma global más popular para comprar y vender Bitcoin, Ethereum y Litecoin"
+    "message": "Coinbase es la plataforma global más popular para comprar y vender Bitcoin, Ether-1 y Litecoin"
   },
   "cancel": {
     "message": "Cancelar"
@@ -156,7 +156,7 @@
     "message": "Confirmar transacción"
   },
   "connectingToMainnet": {
-    "message": "Conectando a la red principal de Ethereum (Main Net)"
+    "message": "Conectando a la red principal de Ether-1 (Main Net)"
   },
   "connectingToRopsten": {
     "message": "Conectando a la red de test Ropsten"
@@ -317,7 +317,7 @@
     "message": "Ingresa tu contraseña para confirmar"
   },
   "etherscanView": {
-    "message": "Ver la cuenta en Etherscan"
+    "message": "Ver la cuenta en Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Tipo de cambio"
@@ -513,7 +513,7 @@
     "message": "las frases semilla sólo pueden tener minúsculas"
   },
   "mainnet": {
-    "message": "Red principal de Ethereum (Main Net)"
+    "message": "Red principal de Ether-1 (Main Net)"
   },
   "max": {
     "message": "Max"
@@ -522,7 +522,7 @@
     "message": "Mensaje"
   },
   "metamaskDescription": {
-    "message": "MetaMask es una identidad segura en Ethereum"
+    "message": "MetaMask es una identidad segura en Ether-1"
   },
   "min": {
     "message": "Mínimo"
@@ -600,7 +600,7 @@
     "message": "Regresaste a la antigua UI (Interfaz de Usuario). Puedes regresar a la nueva UI mediante la opcion en la barra desplegable del menu de arriba a la derecha."
   },
   "onlySendToEtherAddress": {
-    "message": "Sólo envía a una dirección de Ethereum"
+    "message": "Sólo envía a una dirección de Ether-1"
   },
   "or": {
     "message": "o",
@@ -748,7 +748,7 @@
     "message": "Enviar tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Enviar tokens a cualquiera con una cuenta de Ethereum"
+    "message": "Enviar tokens a cualquiera con una cuenta de Ether-1"
   },
   "settings": {
     "message": "Configuración"

@@ -39,10 +39,10 @@
     "message": "คำขอ Web3 API"
   },
   "reviewProviderRequest": {
-    "message": "โปรดอ่านคำขอ Ethereum API นี้"
+    "message": "โปรดอ่านคำขอ Ether-1 API นี้"
   },
   "providerRequestInfo": {
-    "message": "โดเมนที่แสดงด้านล่างกำลังพยายามขอเข้าถึง API ของ Ethereum เพื่อให้สามารถโต้ตอบกับบล็อค Ethereum ได้ ตรวจสอบว่าคุณอยู่ในไซต์ที่ถูกต้องก่อนที่จะอนุมัติการเข้าถึง Ethereum เสมอ"
+    "message": "โดเมนที่แสดงด้านล่างกำลังพยายามขอเข้าถึง API ของ Ether-1 เพื่อให้สามารถโต้ตอบกับบล็อค Ether-1 ได้ ตรวจสอบว่าคุณอยู่ในไซต์ที่ถูกต้องก่อนที่จะอนุมัติการเข้าถึง Ether-1 เสมอ"
   },
   "accept": {
     "message": "ยอมรับ"
@@ -290,7 +290,7 @@
     "message": "ใส่รหัสผ่านอีกครั้งเพื่อยืนยัน"
   },
   "etherscanView": {
-    "message": "ดูบัญชีบน Etherscan"
+    "message": "ดูบัญชีบน Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "อัตราแลกเปลี่ยน"

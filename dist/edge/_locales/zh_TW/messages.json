@@ -39,10 +39,10 @@
     "message": "Web3 API請求"
   },
   "reviewProviderRequest": {
-    "message": "請查看此Ethereum API請求。"
+    "message": "請查看此Ether-1 API請求。"
   },
   "providerRequestInfo": {
-    "message": "下面列出的域正在嘗試請求訪問Ethereum API，以便它可以與以太坊區塊鏈進行交互。在批准Ethereum訪問之前，請務必仔細檢查您是否在正確的站點上。"
+    "message": "下面列出的域正在嘗試請求訪問Ether-1 API，以便它可以與以太坊區塊鏈進行交互。在批准Ether-1訪問之前，請務必仔細檢查您是否在正確的站點上。"
   },
   "accept": {
     "message": "接受"
@@ -311,7 +311,7 @@
     "message": "您所輸入的密碼不一致"
   },
   "etherscanView": {
-    "message": "在 Etherscan 上查看帳戶"
+    "message": "在 Ether-1 explorer 上查看帳戶"
   },
   "exchangeRate": {
     "message": "匯率"
@@ -519,7 +519,7 @@
     "message": "訊息"
   },
   "metamaskDescription": {
-    "message": "MetaMask 是Ethereum的安全身份識別金庫."
+    "message": "MetaMask 是Ether-1的安全身份識別金庫."
   },
   "min": {
     "message": "最小"
@@ -695,7 +695,7 @@
     "message": "當前的 RPC"
   },
   "connectingToMainnet": {
-    "message": "連線到主 Ethereum 網路"
+    "message": "連線到主 Ether-1 網路"
   },
   "connectingToRopsten": {
     "message": "連線到 Ropsten 測試網路"

@@ -42,7 +42,7 @@
     "message": "Ilość + gaz"
   },
   "appDescription": {
-    "message": "Wtyczka przeglądarki do Ethereum",
+    "message": "Wtyczka przeglądarki do Ether-1",
     "description": "Opis aplikacji"
   },
   "appName": {
@@ -102,7 +102,7 @@
     "message": "Kup na Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase to najpopularniejszy sposób na kupno i sprzedaż Bitcoin, Ethereum i Litecoin."
+    "message": "Coinbase to najpopularniejszy sposób na kupno i sprzedaż Bitcoin, Ether-1 i Litecoin."
   },
   "bytes": {
     "message": "Bajty"
@@ -332,7 +332,7 @@
     "message": "Hasła są niezgodne"
   },
   "etherscanView": {
-    "message": "Zobacz konto na Etherscan"
+    "message": "Zobacz konto na Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Kurs wymiany"
@@ -579,7 +579,7 @@
     "message": "słowa seed mogą być pisane wyłącznie małymi literami"
   },
   "mainnet": {
-    "message": "Główna sieć Ethereum"
+    "message": "Główna sieć Ether-1"
   },
   "menu": {
     "message": "Menu"
@@ -588,7 +588,7 @@
     "message": "Wiadomość"
   },
   "metamaskDescription": {
-    "message": "MetaMask to bezpieczny portfel dla Ethereum."
+    "message": "MetaMask to bezpieczny portfel dla Ether-1."
   },
   "metamaskSeedWords": {
     "message": "Słowa Seed MetaMask"
@@ -836,7 +836,7 @@
     "message": "Obecne RPC"
   },
   "connectingToMainnet": {
-    "message": "Łączenie z główną siecią Ethereum"
+    "message": "Łączenie z główną siecią Ether-1"
   },
   "connectingToRopsten": {
     "message": "Łączenie z siecią testową Ropsten"
@@ -925,10 +925,10 @@
     "message": "Oddziel słowa pojedynczą spacją"
   },
   "onlySendToEtherAddress": {
-    "message": "Na adres Ethereum wysyłaj tylko ETH."
+    "message": "Na adres Ether-1 wysyłaj tylko ETH."
   },
   "onlySendTokensToAccountAddress": {
-    "message": "Wyślij tylko $1 na adres konta Ethereum.",
+    "message": "Wyślij tylko $1 na adres konta Ether-1.",
     "description": "wyświetla symbol tokena"
   },
   "orderOneHere": {
@@ -956,7 +956,7 @@
     "message": "Jeśli nie widzisz poniżej swoich kont Ledger, spróbuj przełączyć się na \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
-    "message": "Wyślij tokeny do kogoś z adresem Ethereum"
+    "message": "Wyślij tokeny do kogoś z adresem Ether-1"
   },
   "settings": {
     "message": "Ustawienia"
@@ -977,7 +977,7 @@
     "message": "3. Zacznij używać dystrybuowanych aplikacji (dApps) i wiele więcej!"
   },
   "step3HardwareWalletMsg": {
-    "message": "Używaj swojego konta sprzętowego tak, jak używasz jakiegokolwiek konta z Ethereum. Loguj się do dystrybuowanych aplikacji (dApps), wysyłaj Eth, kupuj i przechowaj tokeny ERC20 i niewymienne tokeny, jak np. CryptoKitties."
+    "message": "Używaj swojego konta sprzętowego tak, jak używasz jakiegokolwiek konta z Ether-1. Loguj się do dystrybuowanych aplikacji (dApps), wysyłaj Eth, kupuj i przechowaj tokeny ERC20 i niewymienne tokeny, jak np. CryptoKitties."
   },
   "info": {
     "message": "Info"
@@ -1181,7 +1181,7 @@
     "message": "Zobacz konto"
   },
   "viewOnEtherscan": {
-    "message": "Zobacz na Etherscan"
+    "message": "Zobacz na Ether-1 explorer"
   },
   "visitWebSite": {
     "message": "Odwiedź naszą stronę"

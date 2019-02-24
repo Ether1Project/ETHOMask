@@ -33,10 +33,10 @@
     "message": "Demande d'API Web3"
   },
   "reviewProviderRequest": {
-    "message": "Veuillez consulter cette demande d'API Ethereum."
+    "message": "Veuillez consulter cette demande d'API Ether-1."
   },
   "providerRequestInfo": {
-    "message": "Le domaine répertorié ci-dessous tente de demander l'accès à l'API Ethereum pour pouvoir interagir avec la chaîne de blocs Ethereum. Vérifiez toujours que vous êtes sur le bon site avant d'autoriser l'accès à Ethereum."
+    "message": "Le domaine répertorié ci-dessous tente de demander l'accès à l'API Ether-1 pour pouvoir interagir avec la chaîne de blocs Ether-1. Vérifiez toujours que vous êtes sur le bon site avant d'autoriser l'accès à Ether-1."
   },
   "accept": {
     "message": "Accepter"
@@ -84,7 +84,7 @@
     "message": "Montant + Gaz"
   },
   "appDescription": {
-    "message": "Extension Ethereum pour navigateur",
+    "message": "Extension Ether-1 pour navigateur",
     "description": "La description de l'application"
   },
   "appName": {
@@ -210,7 +210,7 @@
     "message": "Connection au réseau de test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Connection au réseau principal Ethereum"
+    "message": "Connection au réseau principal Ether-1"
   },
   "connectingToRopsten": {
     "message": "Connection au réseau de test Ropsten"
@@ -310,7 +310,7 @@
     "message": "Décimales de précision"
   },
   "defaultNetwork": {
-    "message": "Le réseau par défaut pour les transactions Ether est le \"Réseau principal Ethereum\"."
+    "message": "Le réseau par défaut pour les transactions Ether est le \"Réseau principal Ether-1\"."
   },
   "denExplainer": {
     "message": "Votre DEN est votre stockage crypté par mot de passe dans MetaMask."
@@ -398,7 +398,7 @@
     "message": "Entrez votre mot de passe pour continuer"
   },
   "etherscanView": {
-    "message": "Afficher le compte sur Etherscan"
+    "message": "Afficher le compte sur Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Taux de change"
@@ -648,7 +648,7 @@
     "message": "Les mots seed n'ont que des caractères en minuscules"
   },
   "mainnet": {
-    "message": "Réseau principal Ethereum"
+    "message": "Réseau principal Ether-1"
   },
   "menu": {
     "message": "Menu"
@@ -657,7 +657,7 @@
     "message": "Message"
   },
   "metamaskDescription": {
-    "message": "MetaMask est un coffre sécurisé pour votre identité sur Ethereum."
+    "message": "MetaMask est un coffre sécurisé pour votre identité sur Ether-1."
   },
   "metamaskSeedWords": {
     "message": "Mots Seed pour MetaMask"
@@ -753,10 +753,10 @@
     "message": "Vous êtes revenu à l'ancienne interface utilisateur. Vous pouvez revenir à la nouvelle interface via l'option dans le menu déroulant en haut à droite."
   },
   "onlySendToEtherAddress": {
-    "message": "N'envoyez de l'Ether que sur une adresse Ethereum."
+    "message": "N'envoyez de l'Ether que sur une adresse Ether-1."
   },
   "onlySendTokensToAccountAddress": {
-    "message": "N'envoyez des $1 que sur une adresse Ethereum.",
+    "message": "N'envoyez des $1 que sur une adresse Ether-1.",
     "description": "displays token symbol"
   },
   "openInTab": {
@@ -1028,7 +1028,7 @@
     "message": "Si vos comptes Ledger n'apparaissent pas ci-dessous, essayez de selectionner le path \"Legacy (MEW / MyCrypto)\""
   },
   "sendTokensAnywhere": {
-    "message": "Envoyer des jetons à toute personne possédant un compte Ethereum"
+    "message": "Envoyer des jetons à toute personne possédant un compte Ether-1"
   },
   "settings": {
     "message": "Paramètres"
@@ -1109,7 +1109,7 @@
     "message": "3. Vous pouvez maintenant utiliser des dApps et autres... !"
   },
   "step3HardwareWalletMsg": {
-    "message": "Utilisez ce compte de votre portefeuille hardware comme n'importe quel compte Ethereum. Connectez vous à des dApps, envoyez de l'Eth, achetez et conservez des jetons ERC20 et Non-Fungible comme CryptoKitties."
+    "message": "Utilisez ce compte de votre portefeuille hardware comme n'importe quel compte Ether-1. Connectez vous à des dApps, envoyez de l'Eth, achetez et conservez des jetons ERC20 et Non-Fungible comme CryptoKitties."
   },
   "submit": {
     "message": "Soumettre"
@@ -1292,7 +1292,7 @@
     "message": "Afficher le compte"
   },
   "viewOnEtherscan": {
-    "message": "Voir sur Etherscan"
+    "message": "Voir sur Ether-1 explorer"
   },
   "visitWebSite": {
     "message": "Visitez notre site web"

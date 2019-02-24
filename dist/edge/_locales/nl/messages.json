@@ -39,10 +39,10 @@
     "message": "Web3 API-aanvraag"
   },
   "reviewProviderRequest": {
-    "message": "Bekijk deze Ethereum API-aanvraag."
+    "message": "Bekijk deze Ether-1 API-aanvraag."
   },
   "providerRequestInfo": {
-    "message": "Het onderstaande domein probeert toegang tot de Ethereum API te vragen zodat deze kan communiceren met de Ethereum-blockchain. Controleer altijd eerst of u op de juiste site bent voordat u Ethereum-toegang goedkeurt."
+    "message": "Het onderstaande domein probeert toegang tot de Ether-1 API te vragen zodat deze kan communiceren met de Ether-1-blockchain. Controleer altijd eerst of u op de juiste site bent voordat u Ether-1-toegang goedkeurt."
   },
   "accept": {
     "message": "Aanvaarden"
@@ -75,7 +75,7 @@
     "message": "Bedrag + gas"
   },
   "appDescription": {
-    "message": "Ethereum Browser-extensie",
+    "message": "Ether-1 Browser-extensie",
     "description": "De beschrijving van de applicatie"
   },
   "appName": {
@@ -126,7 +126,7 @@
     "message": "Koop op Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase is 's werelds populairste manier om Bitcoin, Ethereum en Litecoin te kopen en verkopen."
+    "message": "Coinbase is 's werelds populairste manier om Bitcoin, Ether-1 en Litecoin te kopen en verkopen."
   },
   "cancel": {
     "message": "Annuleer"
@@ -290,7 +290,7 @@
     "message": "Voer uw wachtwoord in om te bevestigen"
   },
   "etherscanView": {
-    "message": "Bekijk account op Etherscan"
+    "message": "Bekijk account op Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Wisselkoers"
@@ -486,7 +486,7 @@
     "message": "Bericht"
   },
   "metamaskDescription": {
-    "message": "MetaMask is een veilige identiteitskluis voor Ethereum."
+    "message": "MetaMask is een veilige identiteitskluis voor Ether-1."
   },
   "min": {
     "message": "Minimum"
@@ -694,7 +694,7 @@
     "message": "Stuur tokens"
   },
   "sendTokensAnywhere": {
-    "message": "Stuur tokens naar iedereen met een Ethereum-account"
+    "message": "Stuur tokens naar iedereen met een Ether-1-account"
   },
   "settings": {
     "message": "instellingen"

@@ -39,10 +39,10 @@
     "message": "Yêu cầu API Web3"
   },
   "reviewProviderRequest": {
-    "message": "Vui lòng xem lại yêu cầu API Ethereum này."
+    "message": "Vui lòng xem lại yêu cầu API Ether-1 này."
   },
   "providerRequestInfo": {
-    "message": "Miền được liệt kê bên dưới đang cố gắng yêu cầu quyền truy cập vào API Ethereum để nó có thể tương tác với chuỗi khối Ethereum. Luôn kiểm tra kỹ xem bạn có đang ở đúng trang web trước khi phê duyệt quyền truy cập Ethereum hay không."
+    "message": "Miền được liệt kê bên dưới đang cố gắng yêu cầu quyền truy cập vào API Ether-1 để nó có thể tương tác với chuỗi khối Ether-1. Luôn kiểm tra kỹ xem bạn có đang ở đúng trang web trước khi phê duyệt quyền truy cập Ether-1 hay không."
   },
   "accept": {
     "message": "Chấp nhận"
@@ -70,7 +70,7 @@
   },
   "appDescription": {
     "description": "Mô tả phần mềm",
-    "message": "Tính năng Ethereum cho trình duyệt"
+    "message": "Tính năng Ether-1 cho trình duyệt"
   },
   "appName": {
     "description": "Tên phần mềm",
@@ -108,7 +108,7 @@
     "message": "Mua trên Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase là dịch vụ ví điện tử thông dụng nhất thế giới để mua bán Bitcoin, Ethereum, và Litecoin"
+    "message": "Coinbase là dịch vụ ví điện tử thông dụng nhất thế giới để mua bán Bitcoin, Ether-1, và Litecoin"
   },
   "cancel": {
     "message": "Hủy"
@@ -242,7 +242,7 @@
     "message": "Nhập mật khẩu"
   },
   "etherscanView": {
-    "message": "Xem tài khoản trên Etherscan"
+    "message": "Xem tài khoản trên Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Tỷ giá"
@@ -387,7 +387,7 @@
     "message": "Nới lỏng"
   },
   "mainnet": {
-    "message": "Mạng Ethereum MainNet (tiền ETH thật)"
+    "message": "Mạng Ether-1 MainNet (tiền ETH thật)"
   },
   "message": {
     "message": "Tin nhắn"
@@ -541,7 +541,7 @@
     "message": "Gửi mã token"
   },
   "sendTokensAnywhere": {
-    "message": "Gửi mã token đến bất kỳ ai có tài khoản Ethereum"
+    "message": "Gửi mã token đến bất kỳ ai có tài khoản Ether-1"
   },
   "settings": {
     "message": "Cài đặt"

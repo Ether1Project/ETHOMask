@@ -39,10 +39,10 @@
     "message": "Запрос API Web3"
   },
   "reviewProviderRequest": {
-    "message": "Просмотрите этот запрос API Ethereum."
+    "message": "Просмотрите этот запрос API Ether-1."
   },
   "providerRequestInfo": {
-    "message": "Домен, указанный ниже, пытается запросить доступ к API-интерфейсу Ethereum, чтобы он мог взаимодействовать с блокчейном Ethereum. Всегда проверяйте, что вы находитесь на правильном сайте, прежде чем одобрять доступ к веб-сайту."
+    "message": "Домен, указанный ниже, пытается запросить доступ к API-интерфейсу Ether-1, чтобы он мог взаимодействовать с блокчейном Ether-1. Всегда проверяйте, что вы находитесь на правильном сайте, прежде чем одобрять доступ к веб-сайту."
   },
   "accept": {
     "message": "Принять"
@@ -75,7 +75,7 @@
     "message": "Сумма + газ"
   },
   "appDescription": {
-    "message": "Расширение браузера для Ethereum",
+    "message": "Расширение браузера для Ether-1",
     "description": "The description of the application"
   },
   "appName": {
@@ -129,7 +129,7 @@
     "message": "Купить на Coinbase"
   },
   "buyCoinbaseExplainer": {
-    "message": "Биржа Coinbase – это наиболее популярный способ купить или продать Bitcoin, Ethereum и Litecoin."
+    "message": "Биржа Coinbase – это наиболее популярный способ купить или продать Bitcoin, Ether-1 и Litecoin."
   },
   "ok": {
     "message": "ОК"
@@ -232,7 +232,7 @@
     "message": "Количество десятичных разрядов"
   },
   "defaultNetwork": {
-    "message": "Основная сеть Ethereum – это сеть по умолчанию для Ether транзакций."
+    "message": "Основная сеть Ether-1 – это сеть по умолчанию для Ether транзакций."
   },
   "denExplainer": {
     "message": "DEN – это зашифрованное паролем хранилище внутри MetaMask."
@@ -305,7 +305,7 @@
     "message": "Введите ваш пароль для подтверждения"
   },
   "etherscanView": {
-    "message": "Просмотреть счет на Etherscan"
+    "message": "Просмотреть счет на Ether-1 explorer"
   },
   "exchangeRate": {
     "message": "Обменный курс"
@@ -507,13 +507,13 @@
     "message": "ключевая фраза может содержать только символы нижнего регистра"
   },
   "mainnet": {
-    "message": "Основная сеть Ethereum"
+    "message": "Основная сеть Ether-1"
   },
   "message": {
     "message": "Сообщение"
   },
   "metamaskDescription": {
-    "message": "MetaMask – безопасный кошелек для Ethereum."
+    "message": "MetaMask – безопасный кошелек для Ether-1."
   },
   "min": {
     "message": "Минимум"
@@ -689,7 +689,7 @@
     "message": "Current RPC"
   },
   "connectingToMainnet": {
-    "message": "Соединение с основной сетью Ethereum"
+    "message": "Соединение с основной сетью Ether-1"
   },
   "connectingToRopsten": {
     "message": "Соединение с тестовой сетью Ropsten"
@@ -751,13 +751,13 @@
     "message": "Отправить токены"
   },
   "onlySendToEtherAddress": {
-    "message": "Отправляйте ETH только на Ethereum адреса."
+    "message": "Отправляйте ETH только на Ether-1 адреса."
   },
   "searchTokens": {
     "message": "Поиск токенов"
   },
   "sendTokensAnywhere": {
-    "message": "Отправить токены любому, у кого есть счет Ethereum"
+    "message": "Отправить токены любому, у кого есть счет Ether-1"
   },
   "settings": {
     "message": "Настройки"

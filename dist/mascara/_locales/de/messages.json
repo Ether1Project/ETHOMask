@@ -39,10 +39,10 @@
     "message": "Web3-API-Anfrage"
   },
   "reviewProviderRequest": {
-    "message": "Bitte lesen Sie diese Ethereum-API-Anfrage."
+    "message": "Bitte lesen Sie diese Ether-1-API-Anfrage."
   },
   "providerRequestInfo": {
-    "message": "Die unten aufgeführte Domäne versucht, Zugriff auf die Ethereum-API anzufordern, damit sie mit der Ethereum-Blockchain interagieren kann. Überprüfen Sie immer, dass Sie sich auf der richtigen Website befinden, bevor Sie den Web3-Zugriff genehmigen."
+    "message": "Die unten aufgeführte Domäne versucht, Zugriff auf die Ether-1-API anzufordern, damit sie mit der Ether-1-Blockchain interagieren kann. Überprüfen Sie immer, dass Sie sich auf der richtigen Website befinden, bevor Sie den Web3-Zugriff genehmigen."
   },
   "accept": {
     "message": "Annehmen"
@@ -75,7 +75,7 @@
     "message": "Betrag + Gas"
   },
   "appDescription": {
-    "message": "Ethereum Browsererweiterung",
+    "message": "Ether-1 Browsererweiterung",
     "description": "Die Beschreibung der Erweiterung"
   },
   "appName": {
@@ -129,7 +129,7 @@
     "message": "Auf Coinbase kaufen"
   },
   "buyCoinbaseExplainer": {
-    "message": "Coinbase ist die weltweit bekannteste Art und Weise um Bitcoin, Ethereum und Litecoin zu kaufen und verkaufen."
+    "message": "Coinbase ist die weltweit bekannteste Art und Weise um Bitcoin, Ether-1 und Litecoin zu kaufen und verkaufen."
   },
   "ok": {
     "message": "Ok"
@@ -308,7 +308,7 @@
     "message": "Passwörter stimmen nicht überein"
   },
   "etherscanView": {
-    "message": "Account auf Etherscan anschauen"
+    "message": "Account auf Ether-1 explorer anschauen"
   },
   "exchangeRate": {
     "message": "Wechselrate"
@@ -504,13 +504,13 @@
     "message": "Die Wörter der Seed-Wörterfolgen sind alle kleingeschrieben"
   },
   "mainnet": {
-    "message": "Ethereum Main Net"
+    "message": "Ether-1 Main Net"
   },
   "message": {
     "message": "Nachricht"
   },
   "metamaskDescription": {
-    "message": "MetaMask ist ein sicherer Identitätssafe für Ethereum."
+    "message": "MetaMask ist ein sicherer Identitätssafe für Ether-1."
   },
   "min": {
     "message": "Minimum"
@@ -683,7 +683,7 @@
     "message": "Aktueller RPC"
   },
   "connectingToMainnet": {
-    "message": "Verbinde zum Ethereum Main Net"
+    "message": "Verbinde zum Ether-1 Main Net"
   },
   "connectingToRopsten": {
     "message": " Verbinde zum Ropsten Testnetzwerk"
@@ -745,10 +745,10 @@
     "message": "Token senden"
   },
   "onlySendToEtherAddress": {
-    "message": "ETH unbedingt nur zu einer Ethereum Adresse senden."
+    "message": "ETH unbedingt nur zu einer Ether-1 Adresse senden."
   },
   "sendTokensAnywhere": {
-    "message": "Token zu einer beliebigen Person mit einem Ethereumaccount senden"
+    "message": "Token zu einer beliebigen Person mit einem Ether-1 senden"
   },
   "settings": {
     "message": "Einstellungen"
