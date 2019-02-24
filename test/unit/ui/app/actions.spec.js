@@ -198,7 +198,7 @@ describe('Actions', () => {
       createNewVaultAndRestoreSpy = sinon.spy(background, 'createNewVaultAndRestore')
       clearSeedWordCacheSpy = sinon.spy(background, 'clearSeedWordCache')
       return store.dispatch(actions.createNewVaultAndRestore())
-        .then(() => {
+        .catch(() => {
           assert(clearSeedWordCacheSpy.calledOnce)
           assert(createNewVaultAndRestoreSpy.calledOnce)
         })
@@ -218,7 +218,7 @@ describe('Actions', () => {
       })
 
       return store.dispatch(actions.createNewVaultAndRestore())
-        .then(() => {
+        .catch(() => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
     })
@@ -240,7 +240,7 @@ describe('Actions', () => {
       })
 
       return store.dispatch(actions.createNewVaultAndRestore())
-        .then(() => {
+        .catch(() => {
           assert.deepEqual(store.getActions(), expectedActions)
         })
     })
@@ -1079,8 +1079,10 @@ describe('Actions', () => {
 
   describe('#setProviderType', () => {
     let setProviderTypeSpy
+    let store
 
     beforeEach(() => {
+      store = mockStore({ metamask: { provider: {} } })
       setProviderTypeSpy = sinon.stub(background, 'setProviderType')
     })
 
@@ -1089,13 +1091,11 @@ describe('Actions', () => {
     })
 
     it('', () => {
-      const store = mockStore()
       store.dispatch(actions.setProviderType())
       assert(setProviderTypeSpy.calledOnce)
     })
 
     it('', () => {
-      const store = mockStore()
       const expectedActions = [
         { type: 'DISPLAY_WARNING', value: 'Had a problem changing networks!' },
       ]

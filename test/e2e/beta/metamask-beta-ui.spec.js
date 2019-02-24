@@ -22,6 +22,7 @@ const {
   verboseReportOnFailure,
   waitUntilXWindowHandles,
 } = require('./helpers')
+const fetchMockResponses = require('./fetch-mocks.js')
 
 describe('MetaMask', function () {
   let extensionId
@@ -37,23 +38,48 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
+    let extensionUrl
     switch (process.env.SELENIUM_BROWSER) {
       case 'chrome': {
         const extPath = path.resolve('dist/chrome')
         driver = buildChromeWebDriver(extPath)
         extensionId = await getExtensionIdChrome(driver)
-        await driver.get(`chrome-extension://${extensionId}/popup.html`)
+        await delay(largeDelayMs)
+        extensionUrl = `chrome-extension://${extensionId}/home.html`
         break
       }
       case 'firefox': {
         const extPath = path.resolve('dist/firefox')
         driver = buildFirefoxWebdriver()
         await installWebExt(driver, extPath)
-        await delay(700)
+        await delay(largeDelayMs)
         extensionId = await getExtensionIdFirefox(driver)
-        await driver.get(`moz-extension://${extensionId}/popup.html`)
+        extensionUrl = `moz-extension://${extensionId}/home.html`
+        break
       }
     }
+    // Depending on the state of the application built into the above directory (extPath) and the value of
+    // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
+    // are closing any extraneous windows to reset us to a single window before continuing.
+    const [tab1] = await driver.getAllWindowHandles()
+    await closeAllWindowHandlesExcept(driver, [tab1])
+    await driver.switchTo().window(tab1)
+    await driver.get(extensionUrl)
+  })
+
+  beforeEach(async function () {
+    await driver.executeScript(
+      'window.origFetch = window.fetch.bind(window);' +
+      'window.fetch = ' +
+      '(...args) => { ' +
+      'if (args[0] === "https://ethgasstation.info/json/ethgasAPI.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasBasic + '\')) }); } else if ' +
+      '(args[0] === "https://ethgasstation.info/json/predictTable.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.ethGasPredictTable + '\')) }); } else if ' +
+      '(args[0] === "https://dev.blockscale.net/api/gasexpress.json") { return ' +
+      'Promise.resolve({ json: () => Promise.resolve(JSON.parse(\'' + fetchMockResponses.gasExpress + '\')) }); } ' +
+      'return window.origFetch(...args); }'
+    )
   })
 
   afterEach(async function () {
@@ -74,73 +100,17 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('New UI setup', async function () {
-    it('switches to first tab', async function () {
-      await delay(tinyDelayMs)
-      const [firstTab] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(firstTab)
-      await delay(regularDelayMs)
-    })
-
-    it('selects the new UI option', async () => {
-      try {
-        const overlay = await findElement(driver, By.css('.full-flex-height'))
-        await driver.wait(until.stalenessOf(overlay))
-      } catch (e) {}
-
-      let button
-      try {
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      } catch (e) {
-        await loadExtension(driver, extensionId)
-        await delay(largeDelayMs)
-        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
-      }
-      await button.click()
-      await delay(regularDelayMs)
-
-      // Close all other tabs
-      const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(tab0)
-      await delay(tinyDelayMs)
-
-      let selectedUrl = await driver.getCurrentUrl()
-      await delay(tinyDelayMs)
-      if (tab0 && selectedUrl.match(/popup.html/)) {
-        await closeAllWindowHandlesExcept(driver, tab0)
-      } else if (tab1) {
-        await driver.switchTo().window(tab1)
-        selectedUrl = await driver.getCurrentUrl()
-        await delay(tinyDelayMs)
-        if (selectedUrl.match(/popup.html/)) {
-          await closeAllWindowHandlesExcept(driver, tab1)
-        } else if (tab2) {
-          await driver.switchTo().window(tab2)
-          selectedUrl = await driver.getCurrentUrl()
-          selectedUrl.match(/popup.html/) && await closeAllWindowHandlesExcept(driver, tab2)
-        }
-      } else {
-        throw new Error('popup.html not found')
-      }
-      await delay(regularDelayMs)
-      const [appTab] = await driver.getAllWindowHandles()
-      await driver.switchTo().window(appTab)
-      await delay(tinyDelayMs)
-
-      await loadExtension(driver, extensionId)
-      await delay(regularDelayMs)
-
-      const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
-      await continueBtn.click()
-      await delay(regularDelayMs)
-    })
-  })
-
   describe('Going through the first time flow', () => {
+    it('clicks the continue button on the welcome screen', async () => {
+      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-page .first-time-flow__button'))
+      welcomeScreenBtn.click()
+      await delay(largeDelayMs)
+    })
+
     it('accepts a secure password', async () => {
-      const passwordBox = await findElement(driver, By.css('.create-password #create-password'))
-      const passwordBoxConfirm = await findElement(driver, By.css('.create-password #confirm-password'))
-      const button = await findElement(driver, By.css('.create-password button'))
+      const passwordBox = await findElement(driver, By.css('.first-time-flow__form #create-password'))
+      const passwordBoxConfirm = await findElement(driver, By.css('.first-time-flow__form #confirm-password'))
+      const button = await findElement(driver, By.css('.first-time-flow__form button'))
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
@@ -149,19 +119,21 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the unique image screen', async () => {
-      const nextScreen = await findElement(driver, By.css('.unique-image button'))
+      await findElement(driver, By.css('.first-time-flow__unique-image'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the ToS', async () => {
       // terms of use
-      const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
+      await findElement(driver, By.css('.first-time-flow__markdown'))
+      const canClickThrough = await driver.findElement(By.css('button.first-time-flow__button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
       const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('.tou button'))
+      const acceptTos = await findElement(driver, By.css('button.first-time-flow__button'))
       driver.wait(until.elementIsEnabled(acceptTos))
       await acceptTos.click()
       await delay(regularDelayMs)
@@ -169,17 +141,17 @@ describe('MetaMask', function () {
 
     it('clicks through the privacy notice', async () => {
       // privacy notice
-      const nextScreen = await findElement(driver, By.css('.tou button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the phishing notice', async () => {
       // phishing notice
-      const noticeElement = await driver.findElement(By.css('.markdown'))
+      const noticeElement = await driver.findElement(By.css('.first-time-flow__markdown'))
       await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
       await delay(regularDelayMs)
-      const nextScreen = await findElement(driver, By.css('.tou button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
@@ -187,24 +159,23 @@ describe('MetaMask', function () {
     let seedPhrase
 
     it('reveals the seed phrase', async () => {
-      const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
+      const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
       await driver.wait(until.elementLocated(byRevealButton, 10000))
       const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
       await revealSeedPhraseButton.click()
       await delay(regularDelayMs)
 
-      seedPhrase = await driver.findElement(By.css('.backup-phrase__secret-words')).getText()
+      seedPhrase = await driver.findElement(By.css('.reveal-seed-phrase__secret-words')).getText()
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
+      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     async function clickWordAndWait (word) {
-      const xpathClass = 'backup-phrase__confirm-seed-option backup-phrase__confirm-seed-option--unselected'
-      const xpath = `//button[@class='${xpathClass}' and contains(text(), '${word}')]`
+      const xpath = `//div[contains(@class, 'confirm-seed-phrase__seed-word--shuffled') and not(contains(@class, 'confirm-seed-phrase__seed-word--selected')) and contains(text(), '${word}')]`
       const word0 = await findElement(driver, By.xpath(xpath), 10000)
 
       await word0.click()
@@ -214,13 +185,13 @@ describe('MetaMask', function () {
     async function retypeSeedPhrase (words, wasReloaded, count = 0) {
       try {
         if (wasReloaded) {
-          const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
+          const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
           await driver.wait(until.elementLocated(byRevealButton, 10000))
           const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
           await revealSeedPhraseButton.click()
           await delay(regularDelayMs)
 
-          const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
+          const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
           await nextScreen.click()
           await delay(regularDelayMs)
         }
@@ -381,8 +352,8 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Send ETH from inside MetaMask', () => {
-    it('starts to send a transaction', async function () {
+  describe('Send ETH from inside MetaMask using default gas', () => {
+    it('starts a send transaction', async function () {
       const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
       await sendButton.click()
       await delay(regularDelayMs)
@@ -394,17 +365,6 @@ describe('MetaMask', function () {
 
       const inputValue = await inputAmount.getAttribute('value')
       assert.equal(inputValue, '1')
-
-      // Set the gas limit
-      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
-      await configureGas.click()
-      await delay(regularDelayMs)
-
-      const gasModal = await driver.findElement(By.css('span .modal'))
-
-      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
-      await save.click()
-      await driver.wait(until.stalenessOf(gasModal))
       await delay(regularDelayMs)
 
       // Continue to next screen
@@ -430,11 +390,125 @@ describe('MetaMask', function () {
     })
   })
 
-  describe('Send ETH from dapp', () => {
+  describe('Send ETH from inside MetaMask using fast gas option', () => {
+    it('starts a send transaction', async function () {
+      const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
+      await sendButton.click()
+      await delay(regularDelayMs)
+
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAmount.sendKeys('1')
+
+      const inputValue = await inputAmount.getAttribute('value')
+      assert.equal(inputValue, '1')
+
+      // Set the gas price
+      const fastGas = await findElement(driver, By.xpath(`//button/div/div[contains(text(), "Fast")]`))
+      await fastGas.click()
+      await delay(regularDelayMs)
+
+      // Continue to next screen
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    it('confirms the transaction', async function () {
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(largeDelayMs)
+    })
+
+    it('finds the transaction in the transactions list', async function () {
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
+      assert.equal(transactions.length, 2)
+
+      if (process.env.SELENIUM_BROWSER !== 'firefox') {
+        const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+        await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
+      }
+    })
+  })
+
+  describe('Send ETH from inside MetaMask using advanced gas modal', () => {
+    it('starts a send transaction', async function () {
+      const sendButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`))
+      await sendButton.click()
+      await delay(regularDelayMs)
+
+      const inputAddress = await findElement(driver, By.css('input[placeholder="Recipient Address"]'))
+      const inputAmount = await findElement(driver, By.css('.unit-input__input'))
+      await inputAddress.sendKeys('0x2f318C334780961FB129D2a6c30D0763d9a5C970')
+      await inputAmount.sendKeys('1')
+
+      const inputValue = await inputAmount.getAttribute('value')
+      assert.equal(inputValue, '1')
+
+      // Set the gas limit
+      const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
+      await configureGas.click()
+      await delay(regularDelayMs)
+
+      const gasModal = await driver.findElement(By.css('span .modal'))
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      await save.click()
+      await driver.wait(until.stalenessOf(gasModal))
+      await delay(regularDelayMs)
+
+      // Continue to next screen
+      const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
+      await nextScreen.click()
+      await delay(regularDelayMs)
+    })
+
+    it('confirms the transaction', async function () {
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
+      await confirmButton.click()
+      await delay(largeDelayMs)
+    })
+
+    it('finds the transaction in the transactions list', async function () {
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
+      assert.equal(transactions.length, 3)
+
+      if (process.env.SELENIUM_BROWSER !== 'firefox') {
+        const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+        await driver.wait(until.elementTextMatches(txValues, /-1\s*ETH/), 10000)
+      }
+    })
+  })
+
+  describe('Send ETH from dapp using advanced gas controls', () => {
     let windowHandles
     let extension
     let popup
     let dapp
+
+    it('goes to the settings screen', async () => {
+      await driver.findElement(By.css('.account-menu__icon')).click()
+      await delay(regularDelayMs)
+
+      const settingsButton = await findElement(driver, By.xpath(`//div[contains(text(), 'Settings')]`))
+      settingsButton.click()
+
+      await findElement(driver, By.css('.tab-bar'))
+
+      const advancedGasTitle = await findElement(driver, By.xpath(`//span[contains(text(), 'Advanced gas controls')]`))
+      await driver.executeScript('arguments[0].scrollIntoView(true)', advancedGasTitle)
+
+      const advancedGasToggle = await findElement(driver, By.css('.settings-page__content-row:nth-of-type(11) .settings-page__content-item-col > div'))
+      await advancedGasToggle.click()
+      windowHandles = await driver.getAllWindowHandles()
+      extension = windowHandles[0]
+      await closeAllWindowHandlesExcept(driver, [extension])
+
+      const metamaskHomeButton = await findElement(driver, By.css('.app-header__logo-container'))
+      await metamaskHomeButton.click()
+
+      await delay(largeDelayMs)
+    })
 
     it('starts a send transaction inside the dapp', async () => {
       await openNewPage(driver, 'http://127.0.0.1:8080/')
@@ -450,12 +524,12 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
       const approveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Connect')]`))
       await approveButton.click()
+
+      await driver.switchTo().window(dapp)
+      await delay(regularDelayMs)
     })
 
     it('initiates a send from the dapp', async () => {
-      await driver.switchTo().window(dapp)
-      await delay(regularDelayMs)
-
       const send3eth = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`), 10000)
       await send3eth.click()
       await delay(5000)
@@ -465,6 +539,17 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       await assertElementNotPresent(webdriver, driver, By.xpath(`//li[contains(text(), 'Data')]`))
+
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-gas-inputs__gas-edit-row__input'))
+      await gasPriceInput.clear()
+      await delay(tinyDelayMs)
+
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.sendKeys('10')
+      await delay(tinyDelayMs)
+      await gasLimitInput.sendKeys('5')
+      await delay(tinyDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
       await confirmButton.click()
@@ -477,10 +562,157 @@ describe('MetaMask', function () {
 
     it('finds the transaction in the transactions list', async function () {
       const transactions = await findElements(driver, By.css('.transaction-list-item'))
-      assert.equal(transactions.length, 2)
+      assert.equal(transactions.length, 4)
 
       const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
       await driver.wait(until.elementTextMatches(txValues, /-3\s*ETH/), 10000)
+    })
+
+    it('the transaction has the expected gas price', async function () {
+      const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
+      await txValues.click()
+      await delay(tinyDelayMs)
+      await findElement(driver, By.xpath(`//div[contains(text(), 'Gas Price (GWEI)')]`))
+
+      await findElement(driver, By.xpath(`//span[contains(text(), '7')]`))
+
+      txValues.click()
+    })
+  })
+
+  describe('Navigate transactions', () => {
+    it('adds multiple transactions', async () => {
+      await delay(regularDelayMs)
+
+      await waitUntilXWindowHandles(driver, 2)
+      const windowHandles = await driver.getAllWindowHandles()
+      const extension = windowHandles[0]
+      const dapp = windowHandles[1]
+
+      await driver.switchTo().window(dapp)
+      await delay(regularDelayMs)
+
+      const send3eth = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`), 10000)
+      await send3eth.click()
+      await delay(regularDelayMs)
+
+      const contractDeployment = await findElement(driver, By.xpath(`//button[contains(text(), 'Deploy Contract')]`), 10000)
+      await contractDeployment.click()
+      await delay(regularDelayMs)
+
+      await send3eth.click()
+      await contractDeployment.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await delay(regularDelayMs)
+
+      const transactions = await findElements(driver, By.css('.transaction-list-item'))
+      await transactions[3].click()
+      await delay(regularDelayMs)
+    })
+
+    it('navigates the transactions', async () => {
+      let navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'), 20000)
+      assert.equal(navigateTxButtons.length, 4, 'navigation button present')
+
+      await navigateTxButtons[2].click()
+      let navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      let navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('2'), true, 'changed transaction right')
+
+      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
+      await navigateTxButtons[2].click()
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('3'), true, 'changed transaction right')
+
+      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
+      await navigateTxButtons[2].click()
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('4'), true, 'changed transaction right')
+
+      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
+      await navigateTxButtons[0].click()
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('1'), true, 'navigate to first transaction')
+
+      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
+      await navigateTxButtons[3].click()
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.split('4').length, 3, 'navigate to last transaction')
+
+      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
+      await navigateTxButtons[1].click()
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('3'), true, 'changed transaction left')
+
+      navigateTxButtons = await findElements(driver, By.css('.confirm-page-container-navigation__arrow'))
+      await navigateTxButtons[1].click()
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('2'), true, 'changed transaction left')
+    })
+
+    it('adds a transaction while confirm screen is in focus', async () => {
+      let navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      let navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('2'), true, 'second transaction in focus')
+
+      const windowHandles = await driver.getAllWindowHandles()
+      const extension = windowHandles[0]
+      const dapp = windowHandles[1]
+
+      await driver.switchTo().window(dapp)
+      await delay(regularDelayMs)
+
+      const send3eth = await findElement(driver, By.xpath(`//button[contains(text(), 'Send')]`), 10000)
+      await send3eth.click()
+      await delay(regularDelayMs)
+
+      await driver.switchTo().window(extension)
+      await delay(regularDelayMs)
+
+      navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('3'), true, 'correct transaction in focus')
+    })
+
+    it('confirms a transaction', async () => {
+      const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`), 10000)
+      await confirmButton.click()
+      await delay(regularDelayMs)
+
+      const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      const navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('4'), true, 'transaction confirmed')
+    })
+
+    it('rejects a transaction', async () => {
+      const rejectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Reject')]`), 10000)
+      await rejectButton.click()
+      await delay(regularDelayMs)
+
+      const navigationElement = await findElement(driver, By.css('.confirm-page-container-navigation'))
+      const navigationText = await navigationElement.getText()
+      assert.equal(navigationText.includes('3'), true, 'transaction rejected')
+    })
+
+    it('rejects the rest of the transactions', async () => {
+      const rejectAllButton = await findElement(driver, By.xpath(`//a[contains(text(), 'Reject 3')]`), 10000)
+      await rejectAllButton.click()
+      await delay(regularDelayMs)
+
+      const rejectButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Reject All')]`), 10000)
+      await rejectButton.click()
+      await delay(largeDelayMs * 2)
+
+      const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
+      assert.equal(confirmedTxes.length, 5, '5 transactions present')
     })
   })
 
@@ -529,9 +761,9 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(largeDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
-        return confirmedTxes.length === 3
+        return confirmedTxes.length === 6
       }, 10000)
 
       const txAction = await findElements(driver, By.css('.transaction-list-item__action'))
@@ -568,9 +800,12 @@ describe('MetaMask', function () {
       await delay(regularDelayMs)
 
       const gasModal = await findElement(driver, By.css('span .modal'))
-      await driver.wait(until.elementLocated(By.css('.customize-gas__title')), 10000)
+      await delay(regularDelayMs)
+      const modalTabs = await findElements(driver, By.css('.page-container__tab'))
+      await modalTabs[1].click()
+      await delay(regularDelayMs)
 
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
       await gasPriceInput.clear()
       await gasPriceInput.sendKeys('10')
       await gasLimitInput.clear()
@@ -586,9 +821,9 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
-        return confirmedTxes.length === 4
+        return confirmedTxes.length === 7
       }, 10000)
 
       const txValues = await findElements(driver, By.css('.transaction-list-item__amount--primary'))
@@ -618,9 +853,9 @@ describe('MetaMask', function () {
       await confirmButton.click()
       await delay(regularDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
-        return confirmedTxes.length === 5
+        return confirmedTxes.length === 8
       }, 10000)
 
       const txValues = await findElement(driver, By.css('.transaction-list-item__amount--primary'))
@@ -634,9 +869,9 @@ describe('MetaMask', function () {
       const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
       await delay(regularDelayMs)
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        await driver.wait(until.elementTextMatches(balance, /^92.*\s*ETH.*$/), 10000)
+        await driver.wait(until.elementTextMatches(balance, /^87.*\s*ETH.*$/), 10000)
         const tokenAmount = await balance.getText()
-        assert.ok(/^92.*\s*ETH.*$/.test(tokenAmount))
+        assert.ok(/^87.*\s*ETH.*$/.test(tokenAmount))
         await delay(regularDelayMs)
       }
     })
@@ -659,6 +894,22 @@ describe('MetaMask', function () {
       windowHandles = await driver.getAllWindowHandles()
       const popup = windowHandles[2]
       await driver.switchTo().window(popup)
+      await delay(regularDelayMs)
+
+      const configureGas = await driver.wait(until.elementLocated(By.css('.confirm-detail-row__header-text--edit')), 10000)
+      await configureGas.click()
+      await delay(regularDelayMs)
+
+      const advancedTabButton = await driver.wait(until.elementLocated(By.xpath(`//li[contains(text(), 'Advanced')]`)), 10000)
+      await advancedTabButton.click()
+      await delay(tinyDelayMs)
+
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
+      assert(gasPriceInput.getAttribute('value'), 20)
+      assert(gasLimitInput.getAttribute('value'), 4700000)
+
+      const saveButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
+      await saveButton.click()
       await delay(regularDelayMs)
 
       const confirmButton = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
@@ -704,7 +955,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the balance for the new token', async () => {
-      const balance = await findElement(driver, By.css('.transaction-view-balance .transaction-view-balance__token-balance'))
+      const balance = await findElement(driver, By.css('.transaction-view-balance .transaction-view-balance__primary-balance'))
       await driver.wait(until.elementTextMatches(balance, /^100\s*TST\s*$/))
       const tokenAmount = await balance.getText()
       assert.ok(/^100\s*TST\s*$/.test(tokenAmount))
@@ -725,15 +976,16 @@ describe('MetaMask', function () {
       await inputAmount.sendKeys('50')
 
       // Set the gas limit
-      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
+      const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
       await configureGas.click()
       await delay(regularDelayMs)
 
       gasModal = await driver.findElement(By.css('span .modal'))
+      await delay(regularDelayMs)
     })
 
-    it('opens customizes gas modal', async () => {
-      await driver.wait(until.elementLocated(By.css('.send-v2__customize-gas__title')))
+    it('opens customize gas modal', async () => {
+      await driver.wait(until.elementLocated(By.css('.page-container__title')))
       const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
       await delay(regularDelayMs)
@@ -785,7 +1037,7 @@ describe('MetaMask', function () {
         await driver.wait(until.elementTextMatches(txValues[0], /-50\s*TST/), 10000)
       }
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 1
       }, 10000)
@@ -829,31 +1081,36 @@ describe('MetaMask', function () {
     })
 
     it('customizes gas', async () => {
-      await driver.wait(until.elementLocated(By.css('.customize-gas__title')))
+      const modalTabs = await findElements(driver, By.css('.page-container__tab'))
+      await modalTabs[1].click()
+      await delay(regularDelayMs)
 
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
       await gasPriceInput.clear()
       await delay(tinyDelayMs)
+
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
+      await gasPriceInput.sendKeys(Key.BACK_SPACE)
       await gasPriceInput.sendKeys('10')
       await delay(tinyDelayMs)
       await gasLimitInput.clear()
       await delay(tinyDelayMs)
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'a'))
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
+      await gasLimitInput.sendKeys(Key.BACK_SPACE)
       await gasLimitInput.sendKeys('60000')
       await gasLimitInput.sendKeys(Key.chord(Key.CONTROL, 'e'))
 
-      // Needed for different behaviour of input in different versions of firefox
-      const gasLimitInputValue = await gasLimitInput.getAttribute('value')
-      if (gasLimitInputValue === '600001') {
-        await gasLimitInput.sendKeys(Key.BACK_SPACE)
-      }
-
-      const save = await findElement(driver, By.css('.customize-gas__save'))
+      const save = await findElement(driver, By.css('.page-container__footer-button'))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
       const gasFeeInputs = await findElements(driver, By.css('.confirm-detail-row__primary'))
-      assert.equal(await gasFeeInputs[0].getText(), '0.0006')
+      const renderedGasFee = await gasFeeInputs[0].getText()
+      assert.equal(renderedGasFee, '0.0006')
     })
 
     it('submits the transaction', async function () {
@@ -863,7 +1120,7 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 2
       }, 10000)
@@ -883,8 +1140,8 @@ describe('MetaMask', function () {
       // test cancelled on firefox until https://github.com/mozilla/geckodriver/issues/906 is resolved,
       // or possibly until we use latest version of firefox in the tests
       if (process.env.SELENIUM_BROWSER !== 'firefox') {
-        const tokenBalanceAmount = await findElement(driver, By.css('.transaction-view-balance__token-balance'))
-        assert.equal(await tokenBalanceAmount.getText(), '43 TST')
+        const tokenBalanceAmount = await findElements(driver, By.css('.transaction-view-balance__primary-balance'))
+        await driver.wait(until.elementTextMatches(tokenBalanceAmount[0], /43\s*TST/))
       }
     })
   })
@@ -908,7 +1165,7 @@ describe('MetaMask', function () {
       await driver.switchTo().window(extension)
       await delay(regularDelayMs)
 
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const pendingTxes = await findElements(driver, By.css('.transaction-list__pending-transactions .transaction-list-item'))
         return pendingTxes.length === 1
       }, 10000)
@@ -952,9 +1209,11 @@ describe('MetaMask', function () {
     })
 
     it('customizes gas', async () => {
-      await driver.wait(until.elementLocated(By.css('.customize-gas__title')))
+      const modalTabs = await findElements(driver, By.css('.page-container__tab'))
+      await modalTabs[1].click()
+      await delay(regularDelayMs)
 
-      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.customize-gas-input'))
+      const [gasPriceInput, gasLimitInput] = await findElements(driver, By.css('.advanced-tab__gas-edit-row__input'))
       await gasPriceInput.clear()
       await delay(tinyDelayMs)
       await gasPriceInput.sendKeys('10')
@@ -971,7 +1230,7 @@ describe('MetaMask', function () {
         await gasLimitInput.sendKeys(Key.BACK_SPACE)
       }
 
-      const save = await findElement(driver, By.css('.customize-gas__save'))
+      const save = await findElement(driver, By.css('.page-container__footer-button'))
       await save.click()
       await driver.wait(until.stalenessOf(gasModal))
 
@@ -986,7 +1245,7 @@ describe('MetaMask', function () {
     })
 
     it('finds the transaction in the transactions list', async function () {
-      driver.wait(async () => {
+      await driver.wait(async () => {
         const confirmedTxes = await findElements(driver, By.css('.transaction-list__completed-transactions .transaction-list-item'))
         return confirmedTxes.length === 3
       }, 10000)
@@ -1044,7 +1303,7 @@ describe('MetaMask', function () {
     })
 
     it('renders the balance for the chosen token', async () => {
-      const balance = await findElement(driver, By.css('.transaction-view-balance__token-balance'))
+      const balance = await findElement(driver, By.css('.transaction-view-balance__primary-balance'))
       await driver.wait(until.elementTextMatches(balance, /0\s*BAT/))
       await delay(regularDelayMs)
     })

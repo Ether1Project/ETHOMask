@@ -17,9 +17,9 @@ workflows:
       - test-lint:
           requires:
             - prep-deps-npm
-      - test-deps:
-          requires:
-            - prep-deps-npm
+      # - test-deps:
+      #     requires:
+      #       - prep-deps-npm
       - test-e2e-chrome:
           requires:
             - prep-deps-npm
@@ -28,18 +28,10 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-      - test-e2e-beta-chrome:
-          requires:
-            - prep-deps-npm
-            - prep-build
-      - test-e2e-beta-firefox:
-          requires:
-            - prep-deps-npm
-            - prep-build
-      - test-e2e-beta-drizzle:
-          requires:
-            - prep-deps-npm
-            - prep-build
+      # - test-e2e-beta-drizzle:
+      #     requires:
+      #       - prep-deps-npm
+      #       - prep-build
       - test-unit:
           requires:
             - prep-deps-npm
@@ -47,14 +39,6 @@ workflows:
           requires:
             - prep-deps-npm
             - prep-build
-    #   - test-integration-mascara-chrome:
-    #       requires:
-    #         - prep-deps-npm
-    #         - prep-scss
-    #   - test-integration-mascara-firefox:
-    #       requires:
-    #         - prep-deps-npm
-    #         - prep-scss
       - test-integration-flat-chrome:
           requires:
             - prep-deps-npm
@@ -70,11 +54,7 @@ workflows:
             - test-mozilla-lint
             - test-e2e-chrome
             - test-e2e-firefox
-            - test-e2e-beta-chrome
-            - test-e2e-beta-firefox
-            - test-e2e-beta-drizzle
-            # - test-integration-mascara-chrome
-            # - test-integration-mascara-firefox
+            # - test-e2e-beta-drizzle
             - test-integration-flat-chrome
             - test-integration-flat-firefox
       - job-screens:
@@ -111,7 +91,7 @@ jobs:
       - run:
           name: Install npm 6 + deps via npm
           command: |
-           sudo npm install -g npm@6 && npm install --no-save
+           sudo npm install -g npm@6 && npm install --no-save --no-audit
       - persist_to_workspace:
           root: .
           paths:
@@ -185,17 +165,30 @@ jobs:
           name: Test
           command: npm run lint
 
-  test-deps:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Test
-          command: npx nsp check
+  # test-deps:
+  #   docker:
+  #     - image: circleci/node:8.11.3-browsers
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: Test
+  #         command: sudo npm install -g npm@6 && npm audit
 
+  # test-e2e-beta-drizzle:
+  #   docker:
+  #     - image: circleci/node:8.11.3-browsers
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: test:e2e:drizzle:beta
+  #         command: npm run test:e2e:drizzle:beta
+  #     - store_artifacts:
+  #         path: test-artifacts
+  #         destination: test-artifacts
   test-e2e-chrome:
     docker:
       - image: circleci/node:8.11.3-browsers
@@ -227,50 +220,6 @@ jobs:
           path: test-artifacts
           destination: test-artifacts
 
-  test-e2e-beta-drizzle:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:e2e:drizzle:beta
-          command: npm run test:e2e:drizzle:beta
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-  test-e2e-beta-chrome:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:e2e:chrome:beta
-          command: npm run test:e2e:chrome:beta
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-
-  test-e2e-beta-firefox:
-    docker:
-      - image: circleci/node:8.11.3-browsers
-    steps:
-      - checkout
-      - run:
-          name: Install Firefox
-          command: ./.circleci/scripts/firefox-install
-      - attach_workspace:
-          at: .
-      - run:
-          name: test:e2e:firefox:beta
-          command: npm run test:e2e:firefox:beta
-      - store_artifacts:
-          path: test-artifacts
-          destination: test-artifacts
-
   job-screens:
     docker:
       - image: circleci/node:8.11.3-browsers
@@ -293,9 +242,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-    #   - store_artifacts:
-    #       path: dist/mascara
-    #       destination: builds/mascara
       - store_artifacts:
           path: dist/sourcemaps
           destination: builds/sourcemaps

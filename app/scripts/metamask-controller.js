@@ -19,7 +19,7 @@ const createSubscriptionManager = require('eth-json-rpc-filters/subscriptionMana
 const createOriginMiddleware = require('./lib/createOriginMiddleware')
 const createLoggerMiddleware = require('./lib/createLoggerMiddleware')
 const createProviderMiddleware = require('./lib/createProviderMiddleware')
-const setupMultiplex = require('./lib/stream-utils.js').setupMultiplex
+const {setupMultiplex} = require('./lib/stream-utils.js')
 const KeyringController = require('eth-keyring-controller')
 const NetworkController = require('./controllers/network')
 const PreferencesController = require('./controllers/preferences')
@@ -29,6 +29,7 @@ const ShapeShiftController = require('./controllers/shapeshift')
 const AddressBookController = require('./controllers/address-book')
 const CryptoCompareController = require('./controllers/cryptocompare-api')
 const BlacklistController = require('./controllers/blacklist')
+const CachedBalancesController = require('./controllers/cached-balances')
 const RecentBlocksController = require('./controllers/recent-blocks')
 const MessageManager = require('./lib/message-manager')
 const PersonalMessageManager = require('./lib/personal-message-manager')
@@ -41,15 +42,16 @@ const ProviderApprovalController = require('./controllers/provider-approval')
 const nodeify = require('./lib/nodeify')
 const accountImporter = require('./account-import-strategies')
 const getBuyEthUrl = require('./lib/buy-eth-url')
-const Mutex = require('await-semaphore').Mutex
-const version = require('../manifest.json').version
-const BN = require('ethereumjs-util').BN
+const {Mutex} = require('await-semaphore')
+const {version} = require('../manifest.json')
+const {BN} = require('ethereumjs-util')
 const GWEI_BN = new BN('1000000000')
 const percentile = require('percentile')
 const seedPhraseVerifier = require('./lib/seed-phrase-verifier')
 const log = require('loglevel')
 const TrezorKeyring = require('eth-trezor-keyring')
 const LedgerBridgeKeyring = require('eth-ledger-bridge-keyring')
+const HW_WALLETS_KEYRINGS = [TrezorKeyring.type, LedgerBridgeKeyring.type]
 const EthQuery = require('eth-query')
 const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
@@ -84,7 +86,7 @@ module.exports = class MetamaskController extends EventEmitter {
     this.createVaultMutex = new Mutex()
 
     // network store
-    this.networkController = new NetworkController(initState.NetworkController)
+    this.networkController = new NetworkController(initState.NetworkController, this.platform)
 
     // preferences controller
     this.preferencesController = new PreferencesController({
@@ -117,18 +119,21 @@ module.exports = class MetamaskController extends EventEmitter {
 
     // token exchange rate tracker
     this.tokenRatesController = new TokenRatesController({
+      currency: this.currencyController.store,
       preferences: this.preferencesController.store,
     })
 
     this.recentBlocksController = new RecentBlocksController({
       blockTracker: this.blockTracker,
       provider: this.provider,
+      networkController: this.networkController,
     })
 
     // account tracker watches balances, nonces, and any code at their address.
     this.accountTracker = new AccountTracker({
       provider: this.provider,
       blockTracker: this.blockTracker,
+      network: this.networkController,
     })
 
     // start and stop polling for balances based on activeControllerConnections
@@ -138,6 +143,12 @@ module.exports = class MetamaskController extends EventEmitter {
       } else {
         this.accountTracker.stop()
       }
+    })
+
+    this.cachedBalancesController = new CachedBalancesController({
+      accountTracker: this.accountTracker,
+      getNetwork: this.networkController.getNetworkState.bind(this.networkController),
+      initState: initState.CachedBalancesController,
     })
 
     // ensure accountTracker updates balances after network change
@@ -198,8 +209,8 @@ module.exports = class MetamaskController extends EventEmitter {
     })
     this.networkController.on('networkDidChange', () => {
       this.balancesController.updateAllBalances()
-      var currentCurrency = this.currencyController.getCurrentCurrency()
-      this.setCurrentCurrency(currentCurrency, function() {})
+      const currentCurrency = this.currencyController.getCurrentCurrency()
+      this.setCurrentCurrency(currentCurrency, function () {})
     })
     this.balancesController.updateAllBalances()
 
@@ -239,6 +250,7 @@ module.exports = class MetamaskController extends EventEmitter {
       ShapeShiftController: this.shapeshiftController.store,
       NetworkController: this.networkController.store,
       CryptoCompareController: this.cryptoCompareController.store,
+      CachedBalancesController: this.cachedBalancesController.store,
     })
 
     this.memStore = new ComposableObservableStore(null, {
@@ -246,6 +258,7 @@ module.exports = class MetamaskController extends EventEmitter {
       AccountTracker: this.accountTracker.store,
       TxController: this.txController.memStore,
       BalancesController: this.balancesController.store,
+      CachedBalancesController: this.cachedBalancesController.store,
       TokenRatesController: this.tokenRatesController.store,
       MessageManager: this.messageManager.memStore,
       PersonalMessageManager: this.personalMessageManager.memStore,
@@ -403,6 +416,7 @@ module.exports = class MetamaskController extends EventEmitter {
       // network management
       setProviderType: nodeify(networkController.setProviderType, networkController),
       setCustomRpc: nodeify(this.setCustomRpc, this),
+      updateAndSetCustomRpc: nodeify(this.updateAndSetCustomRpc, this),
       delCustomRpc: nodeify(this.delCustomRpc, this),
 
       // PreferencesController
@@ -414,6 +428,9 @@ module.exports = class MetamaskController extends EventEmitter {
       setAccountLabel: nodeify(preferencesController.setAccountLabel, preferencesController),
       setFeatureFlag: nodeify(preferencesController.setFeatureFlag, preferencesController),
       setPreference: nodeify(preferencesController.setPreference, preferencesController),
+      completeUiMigration: nodeify(preferencesController.completeUiMigration, preferencesController),
+      completeOnboarding: nodeify(preferencesController.completeOnboarding, preferencesController),
+      addKnownMethodData: nodeify(preferencesController.addKnownMethodData, preferencesController),
 
       // BlacklistController
       whitelistPhishingDomain: this.whitelistPhishingDomain.bind(this),
@@ -434,6 +451,7 @@ module.exports = class MetamaskController extends EventEmitter {
       updateAndApproveTransaction: nodeify(txController.updateAndApproveTransaction, txController),
       retryTransaction: nodeify(this.retryTransaction, this),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
+      createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
       isNonceTaken: nodeify(txController.isNonceTaken, txController),
       estimateGas: nodeify(this.estimateGas, this),
@@ -1024,16 +1042,22 @@ module.exports = class MetamaskController extends EventEmitter {
       const cleanMsgParams = await this.typedMessageManager.approveMessage(msgParams)
       const address = sigUtil.normalize(cleanMsgParams.from)
       const keyring = await this.keyringController.getKeyringForAccount(address)
-      const wallet = keyring._getWalletForAccount(address)
-      const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
       let signature
-      switch (version) {
-        case 'V1':
-          signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
-          break
-        case 'V3':
-          signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
-          break
+      // HW Wallet keyrings don't expose private keys
+      // so we need to handle it separately
+      if (!HW_WALLETS_KEYRINGS.includes(keyring.type)) {
+        const wallet = keyring._getWalletForAccount(address)
+        const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
+        switch (version) {
+          case 'V1':
+            signature = sigUtil.signTypedDataLegacy(privKey, { data: cleanMsgParams.data })
+            break
+          case 'V3':
+            signature = sigUtil.signTypedData(privKey, { data: JSON.parse(cleanMsgParams.data) })
+            break
+        }
+      } else {
+        signature = await keyring.signTypedData(address, cleanMsgParams.data)
       }
       this.typedMessageManager.setMsgStatusSigned(msgId, signature)
       return this.getState()
@@ -1126,8 +1150,8 @@ module.exports = class MetamaskController extends EventEmitter {
    * @param {string} txId - The ID of the transaction to speed up.
    * @param {Function} cb - The callback function called with a full state update.
    */
-  async retryTransaction (txId, cb) {
-    await this.txController.retryTransaction(txId)
+  async retryTransaction (txId, gasPrice, cb) {
+    await this.txController.retryTransaction(txId, gasPrice)
     const state = await this.getState()
     return state
   }
@@ -1140,7 +1164,17 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {object} MetaMask state
    */
   async createCancelTransaction (originalTxId, customGasPrice, cb) {
-    await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+    try {
+      await this.txController.createCancelTransaction(originalTxId, customGasPrice)
+      const state = await this.getState()
+      return state
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async createSpeedUpTransaction (originalTxId, customGasPrice, cb) {
+    await this.txController.createSpeedUpTransaction(originalTxId, customGasPrice)
     const state = await this.getState()
     return state
   }
@@ -1473,6 +1507,21 @@ module.exports = class MetamaskController extends EventEmitter {
   }
 
   // network
+  /**
+   * A method for selecting a custom URL for an ethereum RPC provider and updating it
+   * @param {string} rpcUrl - A URL for a valid Ethereum RPC API.
+   * @param {number} chainId - The chainId of the selected network.
+   * @param {string} ticker - The ticker symbol of the selected network.
+   * @param {string} nickname - Optional nickname of the selected network.
+   * @returns {Promise<String>} - The RPC Target URL confirmed.
+   */
+
+  async updateAndSetCustomRpc (rpcUrl, chainId, ticker = 'ETH', nickname) {
+    await this.preferencesController.updateRpc({ rpcUrl, chainId, ticker, nickname })
+    this.networkController.setRpcTarget(rpcUrl, chainId, ticker, nickname)
+    return rpcUrl
+  }
+
 
   /**
    * A method for selecting a custom URL for an ethereum RPC provider.
@@ -1483,8 +1532,15 @@ module.exports = class MetamaskController extends EventEmitter {
    * @returns {Promise<String>} - The RPC Target URL confirmed.
    */
   async setCustomRpc (rpcTarget, chainId, ticker = 'ETHO', nickname = '') {
-    this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname)
-    await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname)
+    const frequentRpcListDetail = this.preferencesController.getFrequentRpcListDetail()
+    const rpcSettings = frequentRpcListDetail.find((rpc) => rpcTarget === rpc.rpcUrl)
+
+    if (rpcSettings) {
+      this.networkController.setRpcTarget(rpcSettings.rpcUrl, rpcSettings.chainId, rpcSettings.ticker, rpcSettings.nickname)
+    } else {
+      this.networkController.setRpcTarget(rpcTarget, chainId, ticker, nickname)
+      await this.preferencesController.addToFrequentRpcList(rpcTarget, chainId, ticker, nickname)
+    }
     return rpcTarget
   }
 
@@ -1580,7 +1636,7 @@ module.exports = class MetamaskController extends EventEmitter {
   /**
    * Locks MetaMask
    */
-  setLocked() {
+  setLocked () {
     this.providerApprovalController.setLocked()
     return this.keyringController.setLocked()
   }

@@ -23,15 +23,21 @@ describe('TransactionListItemDetails Component', () => {
       },
     }
 
+    const transactionGroup = {
+      transactions: [transaction],
+      primaryTransaction: transaction,
+      initialTransaction: transaction,
+    }
+
     const wrapper = shallow(
       <TransactionListItemDetails
-        transaction={transaction}
+        transactionGroup={transactionGroup}
       />,
       { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    assert.equal(wrapper.find(Button).length, 1)
+    assert.equal(wrapper.find(Button).length, 2)
     assert.equal(wrapper.find(SenderToRecipient).length, 1)
     assert.equal(wrapper.find(TransactionBreakdown).length, 1)
     assert.equal(wrapper.find(TransactionActivityLog).length, 1)
@@ -52,15 +58,24 @@ describe('TransactionListItemDetails Component', () => {
       },
     }
 
+    const transactionGroup = {
+      transactions: [transaction],
+      primaryTransaction: transaction,
+      initialTransaction: transaction,
+      nonce: '0xa4',
+      hasRetried: false,
+      hasCancelled: false,
+    }
+
     const wrapper = shallow(
       <TransactionListItemDetails
-        transaction={transaction}
+        transactionGroup={transactionGroup}
         showRetry={true}
       />,
       { context: { t: (str1, str2) => str2 ? str1 + str2 : str1 } }
     )
 
     assert.ok(wrapper.hasClass('transaction-list-item-details'))
-    assert.equal(wrapper.find(Button).length, 2)
+    assert.equal(wrapper.find(Button).length, 3)
   })
 })

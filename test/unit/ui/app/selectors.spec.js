@@ -19,6 +19,7 @@ describe('Selectors', function () {
               'address': '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             },
           },
+          cachedBalances: {},
         },
       }
     })
@@ -148,7 +149,7 @@ describe('Selectors', function () {
 
   it('#getSelectedTokenToFiatRate', () => {
     const selectedTokenToFiatRate = selectors.getSelectedTokenToFiatRate(mockState)
-    assert.equal(selectedTokenToFiatRate, '0.21880988420033493')
+    assert.equal(selectedTokenToFiatRate, '0.21880988420033492152')
   })
 
   describe('#getSelectedTokenContract', () => {

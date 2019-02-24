@@ -1,10 +1,9 @@
 const injectCss = require('inject-css')
-const OldMetaMaskUiCss = require('../../old-ui/css')
 const NewMetaMaskUiCss = require('../../ui/css')
 const startPopup = require('./popup-core')
 const PortStream = require('extension-port-stream')
 const { getEnvironmentType } = require('./lib/util')
-const { ENVIRONMENT_TYPE_NOTIFICATION } = require('./lib/enums')
+const { ENVIRONMENT_TYPE_NOTIFICATION, ENVIRONMENT_TYPE_FULLSCREEN } = require('./lib/enums')
 const extension = require('extensionizer')
 const ExtensionPlatform = require('./platforms/extension')
 const NotificationManager = require('./lib/notification-manager')
@@ -23,7 +22,7 @@ async function start () {
   const release = global.platform.getVersion()
   setupSentry({ release, getState })
   // provide app state to append to error logs
-  function getState() {
+  function getState () {
     // get app state
     const state = window.getCleanAppState()
     // remove unnecessary data
@@ -32,10 +31,6 @@ async function start () {
     // return state to be added to request
     return state
   }
-
-  // inject css
-  // const css = MetaMaskUiCss()
-  // injectCss(css)
 
   // identify window type (popup, notification)
   const windowType = getEnvironmentType(window.location.href)
@@ -51,30 +46,15 @@ async function start () {
   startPopup({ container, connectionStream }, (err, store) => {
     if (err) return displayCriticalError(err)
 
-    // Code commented out until we begin auto adding users to NewUI
-    // const { isMascara, identities = {}, featureFlags = {} } = store.getState().metamask
-    // const firstTime = Object.keys(identities).length === 0
-    const { isMascara, featureFlags = {} } = store.getState().metamask
-    let betaUIState = featureFlags.betaUI
+    const state = store.getState()
+    const { metamask: { completedOnboarding } = {} } = state
 
-    // Code commented out until we begin auto adding users to NewUI
-    // const useBetaCss = isMascara || firstTime || betaUIState
-    const useBetaCss = isMascara || betaUIState
+    if (!completedOnboarding && windowType !== ENVIRONMENT_TYPE_FULLSCREEN) {
+      global.platform.openExtensionInBrowser()
+      return
+    }
 
-    let css = useBetaCss ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
-    let deleteInjectedCss = injectCss(css)
-    let newBetaUIState
-
-    store.subscribe(() => {
-      const state = store.getState()
-      newBetaUIState = state.metamask.featureFlags.betaUI
-      if (newBetaUIState !== betaUIState) {
-        deleteInjectedCss()
-        betaUIState = newBetaUIState
-        css = betaUIState ? NewMetaMaskUiCss() : OldMetaMaskUiCss()
-        deleteInjectedCss = injectCss(css)
-      }
-    })
+    injectCss(NewMetaMaskUiCss())
   })
 
 
