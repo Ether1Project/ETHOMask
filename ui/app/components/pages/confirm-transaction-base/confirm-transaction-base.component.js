@@ -1,8 +1,9 @@
+import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import ConfirmPageContainer, { ConfirmDetailRow } from '../../confirm-page-container'
 import { isBalanceSufficient } from '../../send/send.utils'
-import { DEFAULT_ROUTE } from '../../../routes'
+import { DEFAULT_ROUTE, CONFIRM_TRANSACTION_ROUTE } from '../../../routes'
 import {
   INSUFFICIENT_FUNDS_ERROR_KEY,
   TRANSACTION_ERROR_KEY,
@@ -10,6 +11,7 @@ import {
 import { CONFIRMED_STATUS, DROPPED_STATUS } from '../../../constants/transactions'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../constants/common'
+import AdvancedGasInputs from '../../gas-customization/advanced-gas-inputs'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -55,6 +57,9 @@ export default class ConfirmTransactionBase extends Component {
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
     unapprovedTxCount: PropTypes.number,
+    currentNetworkUnapprovedTxs: PropTypes.object,
+    updateGasAndCalculate: PropTypes.func,
+    customGas: PropTypes.object,
     // Component props
     action: PropTypes.string,
     contentComponent: PropTypes.node,
@@ -79,6 +84,8 @@ export default class ConfirmTransactionBase extends Component {
     titleComponent: PropTypes.node,
     valid: PropTypes.bool,
     warning: PropTypes.string,
+    advancedInlineGasShown: PropTypes.bool,
+    insufficientBalance: PropTypes.bool,
   }
 
   state = {
@@ -163,6 +170,10 @@ export default class ConfirmTransactionBase extends Component {
       hexTransactionFee,
       hexTransactionTotal,
       hideDetails,
+      advancedInlineGasShown,
+      customGas,
+      insufficientBalance,
+      updateGasAndCalculate,
     } = this.props
 
     if (hideDetails) {
@@ -180,6 +191,18 @@ export default class ConfirmTransactionBase extends Component {
               headerTextClassName="confirm-detail-row__header-text--edit"
               onHeaderClick={() => this.handleEditGas()}
             />
+            {advancedInlineGasShown
+              ? <AdvancedGasInputs
+                updateCustomGasPrice={newGasPrice => updateGasAndCalculate({ ...customGas, gasPrice: newGasPrice })}
+                updateCustomGasLimit={newGasLimit => updateGasAndCalculate({ ...customGas, gasLimit: newGasLimit })}
+                customGasPrice={customGas.gasPrice}
+                customGasLimit={customGas.gasLimit}
+                insufficientBalance={insufficientBalance}
+                customPriceIsSafe={true}
+                isSpeedUp={false}
+              />
+              : null
+            }
           </div>
           <div>
             <ConfirmDetailRow
@@ -238,7 +261,7 @@ export default class ConfirmTransactionBase extends Component {
           )
         }
         <div className="confirm-page-container-content__data-box-label">
-          {`${t('hexData')}:`}
+          {`${t('hexData')}: ${ethUtil.toBuffer(data).length} bytes`}
         </div>
         <div className="confirm-page-container-content__data-box">
           { data }
@@ -293,22 +316,35 @@ export default class ConfirmTransactionBase extends Component {
       return
     }
 
-    this.setState({ submitting: true, submitError: null })
-
-    if (onSubmit) {
-      Promise.resolve(onSubmit(txData))
-        .then(this.setState({ submitting: false }))
-    } else {
-      sendTransaction(txData)
-        .then(() => {
-          clearConfirmTransaction()
-          this.setState({ submitting: false })
-          history.push(DEFAULT_ROUTE)
-        })
-        .catch(error => {
-          this.setState({ submitting: false, submitError: error.message })
-        })
-    }
+    this.setState({
+      submitting: true,
+      submitError: null,
+    }, () => {
+      if (onSubmit) {
+        Promise.resolve(onSubmit(txData))
+          .then(() => {
+            this.setState({
+              submitting: false,
+            })
+          })
+      } else {
+        sendTransaction(txData)
+          .then(() => {
+            clearConfirmTransaction()
+            this.setState({
+              submitting: false,
+            }, () => {
+              history.push(DEFAULT_ROUTE)
+            })
+          })
+          .catch(error => {
+            this.setState({
+              submitting: false,
+              submitError: error.message,
+            })
+          })
+      }
+    })
   }
 
   renderTitleComponent () {
@@ -348,6 +384,32 @@ export default class ConfirmTransactionBase extends Component {
     )
   }
 
+  handleNextTx (txId) {
+    const { history, clearConfirmTransaction } = this.props
+    if (txId) {
+      clearConfirmTransaction()
+      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${txId}`)
+    }
+  }
+
+  getNavigateTxData () {
+    const { currentNetworkUnapprovedTxs, txData: { id } = {} } = this.props
+    const enumUnapprovedTxs = Object.keys(currentNetworkUnapprovedTxs).reverse()
+    const currentPosition = enumUnapprovedTxs.indexOf(id.toString())
+
+    return {
+      totalTx: enumUnapprovedTxs.length,
+      positionOfCurrentTx: currentPosition + 1,
+      nextTxId: enumUnapprovedTxs[currentPosition + 1],
+      prevTxId: enumUnapprovedTxs[currentPosition - 1],
+      showNavigation: enumUnapprovedTxs.length > 1,
+      firstTx: enumUnapprovedTxs[0],
+      lastTx: enumUnapprovedTxs[enumUnapprovedTxs.length - 1],
+      ofText: this.context.t('ofTextNofM'),
+      requestsWaitingText: this.context.t('requestsAwaitingAcknowledgement'),
+    }
+  }
+
   render () {
     const {
       isTxReprice,
@@ -376,6 +438,7 @@ export default class ConfirmTransactionBase extends Component {
 
     const { name } = methodData
     const { valid, errorKey } = this.getErrorKey()
+    const { totalTx, positionOfCurrentTx, nextTxId, prevTxId, showNavigation, firstTx, lastTx, ofText, requestsWaitingText } = this.getNavigateTxData()
 
     return (
       <ConfirmPageContainer
@@ -384,7 +447,7 @@ export default class ConfirmTransactionBase extends Component {
         toName={toName}
         toAddress={toAddress}
         showEdit={onEdit && !isTxReprice}
-        action={action || name || this.context.t('unknownFunction')}
+        action={action || getMethodName(name) || this.context.t('contractInteraction')}
         title={title}
         titleComponent={this.renderTitleComponent()}
         subtitle={subtitle}
@@ -401,6 +464,16 @@ export default class ConfirmTransactionBase extends Component {
         errorMessage={errorMessage || submitError}
         errorKey={propsErrorKey || errorKey}
         warning={warning}
+        totalTx={totalTx}
+        positionOfCurrentTx={positionOfCurrentTx}
+        nextTxId={nextTxId}
+        prevTxId={prevTxId}
+        showNavigation={showNavigation}
+        onNextTx={(txId) => this.handleNextTx(txId)}
+        firstTx={firstTx}
+        lastTx={lastTx}
+        ofText={ofText}
+        requestsWaitingText={requestsWaitingText}
         disabled={!propsValid || !valid || submitting}
         onEdit={() => this.handleEdit()}
         onCancelAll={() => this.handleCancelAll()}
@@ -409,4 +482,15 @@ export default class ConfirmTransactionBase extends Component {
       />
     )
   }
+}
+
+export function getMethodName (camelCase) {
+  if (!camelCase || typeof camelCase !== 'string') {
+    return ''
+  }
+
+  return camelCase
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .replace(/([A-Z])([a-z])/g, ' $1$2')
+    .replace(/ +/g, ' ')
 }

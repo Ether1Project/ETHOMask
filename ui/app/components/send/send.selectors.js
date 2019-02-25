@@ -4,12 +4,18 @@ const {
   multiplyCurrencies,
 } = require('../../conversion-util')
 const {
+  getMetaMaskAccounts,
+} = require('../../selectors')
+const {
   estimateGasPriceFromRecentBlocks,
+  calcGasTotal,
 } = require('./send.utils')
+import {
+  getFastPriceEstimateInHexWEI,
+} from '../../selectors/custom-gas'
 
 const selectors = {
   accountsWithSendEtherInfoSelector,
-  // autoAddToBetaUI,
   getAddressBook,
   getAmountConversionRate,
   getBlockGasLimit,
@@ -44,6 +50,7 @@ const selectors = {
   getSendMaxModeState,
   getSendTo,
   getSendToAccounts,
+  getSendWarnings,
   getTokenBalance,
   getTokenExchangeRate,
   getUnapprovedTxs,
@@ -54,10 +61,8 @@ const selectors = {
 module.exports = selectors
 
 function accountsWithSendEtherInfoSelector (state) {
-  const {
-    accounts,
-    identities,
-  } = state.metamask
+  const accounts = getMetaMaskAccounts(state)
+  const { identities } = state.metamask
 
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
     return Object.assign({}, account, identities[key])
@@ -65,23 +70,6 @@ function accountsWithSendEtherInfoSelector (state) {
 
   return accountsWithSendEtherInfo
 }
-
-// function autoAddToBetaUI (state) {
-//   const autoAddTransactionThreshold = 12
-//   const autoAddAccountsThreshold = 2
-//   const autoAddTokensThreshold = 1
-
-//   const numberOfTransactions = state.metamask.selectedAddressTxList.length
-//   const numberOfAccounts = Object.keys(state.metamask.accounts).length
-//   const numberOfTokensAdded = state.metamask.tokens.length
-
-//   const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
-//     (numberOfAccounts > autoAddAccountsThreshold) &&
-//     (numberOfTokensAdded > autoAddTokensThreshold)
-//   const userIsNotInBeta = !state.metamask.featureFlags.betaUI
-
-//   return userIsNotInBeta && userPassesThreshold
-// }
 
 function getAddressBook (state) {
   return state.metamask.addressBook
@@ -130,11 +118,11 @@ function getForceGasMin (state) {
 }
 
 function getGasLimit (state) {
-  return state.metamask.send.gasLimit
+  return state.metamask.send.gasLimit || '0'
 }
 
 function getGasPrice (state) {
-  return state.metamask.send.gasPrice
+  return state.metamask.send.gasPrice || getFastPriceEstimateInHexWEI(state)
 }
 
 function getGasPriceFromRecentBlocks (state) {
@@ -142,7 +130,7 @@ function getGasPriceFromRecentBlocks (state) {
 }
 
 function getGasTotal (state) {
-  return state.metamask.send.gasTotal
+  return calcGasTotal(getGasLimit(state), getGasPrice(state))
 }
 
 function getPrimaryCurrency (state) {
@@ -155,14 +143,14 @@ function getRecentBlocks (state) {
 }
 
 function getSelectedAccount (state) {
-  const accounts = state.metamask.accounts
+  const accounts = getMetaMaskAccounts(state)
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
 }
 
 function getSelectedAddress (state) {
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(state.metamask.accounts)[0]
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
 
   return selectedAddress
 }
@@ -261,6 +249,10 @@ function getSendToAccounts (state) {
   const allAccounts = [...fromAccounts, ...addressBookAccounts]
   // TODO: figure out exactly what the below returns and put a descriptive variable name on it
   return Object.entries(allAccounts).map(([key, account]) => account)
+}
+
+function getSendWarnings (state) {
+  return state.send.warnings
 }
 
 function getTokenBalance (state) {
