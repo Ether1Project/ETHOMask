@@ -121,7 +121,6 @@ describe('AccountListItem Component', function () {
         {
           type: 'PRIMARY',
           value: 'mockBalance',
-          hideTitle: true,
         }
       )
     })

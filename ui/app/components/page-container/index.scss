@@ -6,7 +6,6 @@
   display: flex;
   flex-flow: column;
   border-radius: 8px;
-  overflow-y: auto;
 
   &__header {
     display: flex;
@@ -40,12 +39,6 @@
     padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
-  }
-
-  &__bottom {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
   }
 
   &__footer {
@@ -201,10 +194,10 @@
   .page-container {
     height: 100%;
     width: 100%;
+    overflow-y: auto;
     background-color: $white;
     border-radius: 0;
     flex: 1;
-    overflow-y: auto;
   }
 }
 

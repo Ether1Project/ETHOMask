@@ -1,15 +1,15 @@
 const abi = require('human-standard-token-abi')
 const ethUtil = require('ethereumjs-util')
 const hexToBn = require('../../app/scripts/lib/hex-to-bn')
-import { DateTime } from 'luxon'
+const vreme = new (require('vreme'))()
 
 const MIN_GAS_PRICE_GWEI_BN = new ethUtil.BN(1)
 const GWEI_FACTOR = new ethUtil.BN(1e9)
 const MIN_GAS_PRICE_BN = MIN_GAS_PRICE_GWEI_BN.mul(GWEI_FACTOR)
 
 // formatData :: ( date: <Unix Timestamp> ) -> String
-function formatDate (date, format = 'M/d/y \'at\' T') {
-  return DateTime.fromMillis(date).toFormat(format)
+function formatDate (date) {
+  return vreme.format(new Date(date), '3/16/2014 at 14:30')
 }
 
 var valueTable = {
@@ -60,15 +60,6 @@ module.exports = {
   getTokenAddressFromTokenObject,
   checksumAddress,
   addressSlicer,
-  isEthNetwork,
-}
-
-function isEthNetwork (netId) {
-  if (!netId || netId === '1' || netId === '3' || netId === '4' || netId === '42' || netId === '5777') {
-    return true
-  }
-
-  return false
 }
 
 function valuesFor (obj) {
@@ -92,10 +83,9 @@ function miniAddressSummary (address) {
   return checked ? checked.slice(0, 4) + '...' + checked.slice(-4) : '...'
 }
 
-function isValidAddress (address, network) {
+function isValidAddress (address) {
   var prefixed = ethUtil.addHexPrefix(address)
   if (address === '0x0000000000000000000000000000000000000000') return false
-  if (!isEthNetwork(network)) return (ethUtil.isValidAddress(prefixed) && address === address.toLowerCase())
   return (isAllOneCase(prefixed) && ethUtil.isValidAddress(prefixed)) || ethUtil.isValidChecksumAddress(prefixed)
 }
 
@@ -309,13 +299,10 @@ function getTokenAddressFromTokenObject (token) {
  * Safely checksumms a potentially-null address
  *
  * @param {String} [address] - address to checksum
- * @param {String} [network] - network id
  * @returns {String} - checksummed address
- *
  */
-function checksumAddress (address, network) {
-  const checksummed = address ? ethUtil.toChecksumAddress(address) : ''
-  return checksummed && network && !isEthNetwork(network) ? checksummed.toLowerCase() : checksummed
+function checksumAddress (address) {
+  return address ? ethUtil.toChecksumAddress(address) : ''
 }
 
 function addressSlicer (address = '') {

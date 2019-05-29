@@ -3,6 +3,7 @@ const pify = require('pify')
 const getBuyEthUrl = require('../../app/scripts/lib/buy-eth-url')
 const { getTokenAddressFromTokenObject } = require('./util')
 const {
+  calcGasTotal,
   calcTokenBalance,
   estimateGas,
 } = require('./components/send/send.utils')
@@ -11,7 +12,6 @@ const { fetchLocale } = require('../i18n-helper')
 const log = require('loglevel')
 const { ENVIRONMENT_TYPE_NOTIFICATION } = require('../../app/scripts/lib/enums')
 const { hasUnconfirmedTransactions } = require('./helpers/confirm-transaction/util')
-const gasDuck = require('./ducks/gas.duck')
 const WebcamUtils = require('../lib/webcam-utils')
 
 var actions = {
@@ -85,8 +85,6 @@ var actions = {
   createNewVaultAndKeychain: createNewVaultAndKeychain,
   createNewVaultAndRestore: createNewVaultAndRestore,
   createNewVaultInProgress: createNewVaultInProgress,
-  createNewVaultAndGetSeedPhrase,
-  unlockAndGetSeedPhrase,
   addNewKeyring,
   importNewAccount,
   addNewAccount,
@@ -191,7 +189,6 @@ var actions = {
   UPDATE_SEND_AMOUNT: 'UPDATE_SEND_AMOUNT',
   UPDATE_SEND_MEMO: 'UPDATE_SEND_MEMO',
   UPDATE_SEND_ERRORS: 'UPDATE_SEND_ERRORS',
-  UPDATE_SEND_WARNINGS: 'UPDATE_SEND_WARNINGS',
   UPDATE_MAX_MODE: 'UPDATE_MAX_MODE',
   UPDATE_SEND: 'UPDATE_SEND',
   CLEAR_SEND: 'CLEAR_SEND',
@@ -205,6 +202,7 @@ var actions = {
   setGasTotal,
   setSendTokenBalance,
   updateSendTokenBalance,
+  updateSendFrom,
   updateSendHexData,
   updateSendTo,
   updateSendAmount,
@@ -212,7 +210,6 @@ var actions = {
   setMaxModeTo,
   updateSend,
   updateSendErrors,
-  updateSendWarnings,
   clearSend,
   setSelectedAddress,
   gasLoadingStarted,
@@ -229,7 +226,6 @@ var actions = {
   SET_RPC_TARGET: 'SET_RPC_TARGET',
   SET_DEFAULT_RPC_TARGET: 'SET_DEFAULT_RPC_TARGET',
   SET_PROVIDER_TYPE: 'SET_PROVIDER_TYPE',
-  SET_PREVIOUS_PROVIDER: 'SET_PREVIOUS_PROVIDER',
   showConfigPage,
   SHOW_ADD_TOKEN_PAGE: 'SHOW_ADD_TOKEN_PAGE',
   SHOW_ADD_SUGGESTED_TOKEN_PAGE: 'SHOW_ADD_SUGGESTED_TOKEN_PAGE',
@@ -240,9 +236,7 @@ var actions = {
   removeToken,
   updateTokens,
   removeSuggestedTokens,
-  addKnownMethodData,
   UPDATE_TOKENS: 'UPDATE_TOKENS',
-  updateAndSetCustomRpc: updateAndSetCustomRpc,
   setRpcTarget: setRpcTarget,
   delRpcTarget: delRpcTarget,
   setProviderType: setProviderType,
@@ -317,16 +311,6 @@ var actions = {
   UPDATE_PREFERENCES: 'UPDATE_PREFERENCES',
   setUseNativeCurrencyAsPrimaryCurrencyPreference,
 
-  // Migration of users to new UI
-  setCompletedUiMigration,
-  completeUiMigration,
-  COMPLETE_UI_MIGRATION: 'COMPLETE_UI_MIGRATION',
-
-  // Onboarding
-  setCompletedOnboarding,
-  completeOnboarding,
-  COMPLETE_ONBOARDING: 'COMPLETE_ONBOARDING',
-
   setMouseUserState,
   SET_MOUSE_USER_STATE: 'SET_MOUSE_USER_STATE',
 
@@ -341,8 +325,6 @@ var actions = {
   clearPendingTokens,
 
   createCancelTransaction,
-  createSpeedUpTransaction,
-
   approveProviderRequest,
   rejectProviderRequest,
   clearApprovedOrigins,
@@ -466,7 +448,6 @@ function createNewVaultAndRestore (password, seed) {
       .catch(err => {
         dispatch(actions.displayWarning(err.message))
         dispatch(actions.hideLoadingIndication())
-        return Promise.reject(err)
       })
   }
 }
@@ -501,69 +482,10 @@ function createNewVaultAndKeychain (password) {
   }
 }
 
-function createNewVaultAndGetSeedPhrase (password) {
-  return async dispatch => {
-    dispatch(actions.showLoadingIndication())
-
-    try {
-      await createNewVault(password)
-      const seedWords = await verifySeedPhrase()
-      dispatch(actions.hideLoadingIndication())
-      return seedWords
-    } catch (error) {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.displayWarning(error.message))
-      throw new Error(error.message)
-    }
-  }
-}
-
-function unlockAndGetSeedPhrase (password) {
-  return async dispatch => {
-    dispatch(actions.showLoadingIndication())
-
-    try {
-      await submitPassword(password)
-      const seedWords = await verifySeedPhrase()
-      await forceUpdateMetamaskState(dispatch)
-      dispatch(actions.hideLoadingIndication())
-      return seedWords
-    } catch (error) {
-      dispatch(actions.hideLoadingIndication())
-      dispatch(actions.displayWarning(error.message))
-      throw new Error(error.message)
-    }
-  }
-}
-
 function revealSeedConfirmation () {
   return {
     type: this.REVEAL_SEED_CONFIRMATION,
   }
-}
-
-function submitPassword (password) {
-  return new Promise((resolve, reject) => {
-    background.submitPassword(password, error => {
-      if (error) {
-        return reject(error)
-      }
-
-      resolve()
-    })
-  })
-}
-
-function createNewVault (password) {
-  return new Promise((resolve, reject) => {
-    background.createNewVaultAndKeychain(password, error => {
-      if (error) {
-        return reject(error)
-      }
-
-      resolve(true)
-    })
-  })
 }
 
 function verifyPassword (password) {
@@ -999,7 +921,6 @@ function setGasTotal (gasTotal) {
 }
 
 function updateGasData ({
-  gasPrice,
   blockGasLimit,
   recentBlocks,
   selectedAddress,
@@ -1010,19 +931,34 @@ function updateGasData ({
 }) {
   return (dispatch) => {
     dispatch(actions.gasLoadingStarted())
-    return estimateGas({
-      estimateGasMethod: background.estimateGas,
-      blockGasLimit,
-      selectedAddress,
-      selectedToken,
-      to,
-      value,
-      estimateGasPrice: gasPrice,
-      data,
+    return new Promise((resolve, reject) => {
+      background.getGasPrice((err, data) => {
+        if (err) return reject(err)
+        return resolve(data)
+      })
     })
-    .then(gas => {
+    .then(estimateGasPrice => {
+      return Promise.all([
+        Promise.resolve(estimateGasPrice),
+        estimateGas({
+          estimateGasMethod: background.estimateGas,
+          blockGasLimit,
+          selectedAddress,
+          selectedToken,
+          to,
+          value,
+          estimateGasPrice,
+          data,
+        }),
+      ])
+    })
+    .then(([gasPrice, gas]) => {
+      dispatch(actions.setGasPrice(gasPrice))
       dispatch(actions.setGasLimit(gas))
-      dispatch(gasDuck.setCustomGasLimit(gas))
+      return calcGasTotal(gas, gasPrice)
+    })
+    .then((gasEstimate) => {
+      dispatch(actions.setGasTotal(gasEstimate))
       dispatch(updateSendErrors({ gasLoadingError: null }))
       dispatch(actions.gasLoadingFinished())
     })
@@ -1059,7 +995,7 @@ function updateSendTokenBalance ({
       .then(usersToken => {
         if (usersToken) {
           const newTokenBalance = calcTokenBalance({ selectedToken, usersToken })
-          dispatch(setSendTokenBalance(newTokenBalance))
+          dispatch(setSendTokenBalance(newTokenBalance.toString(10)))
         }
       })
       .catch(err => {
@@ -1076,17 +1012,17 @@ function updateSendErrors (errorObject) {
   }
 }
 
-function updateSendWarnings (warningObject) {
-  return {
-    type: actions.UPDATE_SEND_WARNINGS,
-    value: warningObject,
-  }
-}
-
 function setSendTokenBalance (tokenBalance) {
   return {
     type: actions.UPDATE_SEND_TOKEN_BALANCE,
     value: tokenBalance,
+  }
+}
+
+function updateSendFrom (from) {
+  return {
+    type: actions.UPDATE_SEND_FROM,
+    value: from,
   }
 }
 
@@ -1573,6 +1509,7 @@ const backgroundSetLocked = () => {
       if (error) {
         return reject(error)
       }
+
       resolve()
     })
   })
@@ -1803,12 +1740,6 @@ function removeSuggestedTokens () {
   }
 }
 
-function addKnownMethodData (fourBytePrefix, methodData) {
-  return (dispatch) => {
-    background.addKnownMethodData(fourBytePrefix, methodData)
-  }
-}
-
 function updateTokens (newTokens) {
   return {
     type: actions.UPDATE_TOKENS,
@@ -1874,13 +1805,13 @@ function markAccountsFound () {
   return callBackgroundThenUpdate(background.markAccountsFound)
 }
 
-function retryTransaction (txId, gasPrice) {
+function retryTransaction (txId) {
   log.debug(`background.retryTransaction`)
   let newTxId
 
-  return dispatch => {
+  return (dispatch) => {
     return new Promise((resolve, reject) => {
-      background.retryTransaction(txId, gasPrice, (err, newState) => {
+      background.retryTransaction(txId, (err, newState) => {
         if (err) {
           dispatch(actions.displayWarning(err.message))
           reject(err)
@@ -1920,42 +1851,18 @@ function createCancelTransaction (txId, customGasPrice) {
   }
 }
 
-function createSpeedUpTransaction (txId, customGasPrice) {
-  log.debug('background.createSpeedUpTransaction')
-  let newTx
-
-  return dispatch => {
-    return new Promise((resolve, reject) => {
-      background.createSpeedUpTransaction(txId, customGasPrice, (err, newState) => {
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          reject(err)
-        }
-
-        const { selectedAddressTxList } = newState
-        newTx = selectedAddressTxList[selectedAddressTxList.length - 1]
-        resolve(newState)
-      })
-    })
-    .then(newState => dispatch(actions.updateMetamaskState(newState)))
-    .then(() => newTx)
-  }
-}
-
 //
 // config
 //
 
 function setProviderType (type) {
-  return (dispatch, getState) => {
-    const { type: currentProviderType } = getState().metamask.provider
+  return (dispatch) => {
     log.debug(`background.setProviderType`, type)
     background.setProviderType(type, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
       }
-      dispatch(setPreviousProvider(currentProviderType))
       dispatch(actions.updateProviderType(type))
       dispatch(actions.setSelectedToken())
     })
@@ -1970,33 +1877,10 @@ function updateProviderType (type) {
   }
 }
 
-function setPreviousProvider (type) {
-  return {
-    type: actions.SET_PREVIOUS_PROVIDER,
-    value: type,
-  }
-}
-
-function updateAndSetCustomRpc (newRpc, chainId, ticker = 'ETHO', nickname) {
-  return (dispatch) => {
-    log.debug(`background.updateAndSetCustomRpc: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.updateAndSetCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
-      if (err) {
-        log.error(err)
-        return dispatch(actions.displayWarning('Had a problem changing networks!'))
-      }
-      dispatch({
-        type: actions.SET_RPC_TARGET,
-        value: newRpc,
-      })
-    })
-  }
-}
-
-function setRpcTarget (newRpc, chainId, ticker = 'ETHO', nickname) {
+function setRpcTarget (newRpc, chainId, ticker = 'ETHO', nickname = '') {
   return (dispatch) => {
     log.debug(`background.setRpcTarget: ${newRpc} ${chainId} ${ticker} ${nickname}`)
-    background.setCustomRpc(newRpc, chainId, ticker, nickname || newRpc, (err, result) => {
+    background.setCustomRpc(newRpc, chainId, ticker, nickname, (err, result) => {
       if (err) {
         log.error(err)
         return dispatch(actions.displayWarning('Had a problem changing networks!'))
@@ -2067,13 +1951,12 @@ function hideModal (payload) {
   }
 }
 
-function showSidebar ({ transitionName, type, props }) {
+function showSidebar ({ transitionName, type }) {
   return {
     type: actions.SIDEBAR_OPEN,
     value: {
       transitionName,
       type,
-      props,
     },
   }
 }
@@ -2454,56 +2337,6 @@ function setUseNativeCurrencyAsPrimaryCurrencyPreference (value) {
   return setPreference('useNativeCurrencyAsPrimaryCurrency', value)
 }
 
-function setCompletedOnboarding () {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.completeOnboarding(err => {
-        dispatch(actions.hideLoadingIndication())
-
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.completeOnboarding())
-        resolve()
-      })
-    })
-  }
-}
-
-function completeOnboarding () {
-  return {
-    type: actions.COMPLETE_ONBOARDING,
-  }
-}
-
-function setCompletedUiMigration () {
-  return dispatch => {
-    dispatch(actions.showLoadingIndication())
-    return new Promise((resolve, reject) => {
-      background.completeUiMigration(err => {
-        dispatch(actions.hideLoadingIndication())
-
-        if (err) {
-          dispatch(actions.displayWarning(err.message))
-          return reject(err)
-        }
-
-        dispatch(actions.completeUiMigration())
-        resolve()
-      })
-    })
-  }
-}
-
-function completeUiMigration () {
-  return {
-    type: actions.COMPLETE_UI_MIGRATION,
-  }
-}
-
 function setNetworkNonce (networkNonce) {
   return {
     type: actions.SET_NETWORK_NONCE,
@@ -2655,15 +2488,15 @@ function setPendingTokens (pendingTokens) {
   }
 }
 
-function approveProviderRequest (tabID) {
+function approveProviderRequest (origin) {
   return (dispatch) => {
-    background.approveProviderRequest(tabID)
+    background.approveProviderRequest(origin)
   }
 }
 
-function rejectProviderRequest (tabID) {
+function rejectProviderRequest (origin) {
   return (dispatch) => {
-    background.rejectProviderRequest(tabID)
+    background.rejectProviderRequest(origin)
   }
 }
 

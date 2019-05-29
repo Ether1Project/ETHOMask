@@ -237,7 +237,7 @@ describe('send selectors', () => {
     it('should return the send.gasTotal', () => {
       assert.equal(
         getGasTotal(mockState),
-        'a9ff56'
+        '0xb451dc41b578'
       )
     })
   })

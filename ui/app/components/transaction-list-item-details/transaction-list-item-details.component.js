@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import copyToClipboard from 'copy-to-clipboard'
 import SenderToRecipient from '../sender-to-recipient'
-import { FLAT_VARIANT } from '../sender-to-recipient/sender-to-recipient.constants'
+import { CARDS_VARIANT } from '../sender-to-recipient/sender-to-recipient.constants'
 import TransactionActivityLog from '../transaction-activity-log'
 import TransactionBreakdown from '../transaction-breakdown'
 import Button from '../button'
@@ -19,59 +18,41 @@ export default class TransactionListItemDetails extends PureComponent {
     onRetry: PropTypes.func,
     showCancel: PropTypes.bool,
     showRetry: PropTypes.bool,
-    transactionGroup: PropTypes.object,
-  }
-
-  state = {
-    justCopied: false,
+    transaction: PropTypes.object,
   }
 
   handleEtherscanClick = () => {
-    const { transactionGroup: { primaryTransaction } } = this.props
-    const { hash, metamaskNetworkId } = primaryTransaction
+    const { hash, metamaskNetworkId } = this.props.transaction
 
     const prefix = prefixForNetwork(metamaskNetworkId)
     const etherscanUrl = `https://explorer.ether1.org/tx/${hash}`
-
     global.platform.openWindow({ url: etherscanUrl })
+    this.setState({ showTransactionDetails: true })
   }
 
   handleCancel = event => {
-    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onCancel } = this.props
+    const { onCancel } = this.props
 
     event.stopPropagation()
-    onCancel(id)
+    onCancel()
   }
 
   handleRetry = event => {
-    const { transactionGroup: { initialTransaction: { id } = {} } = {}, onRetry } = this.props
+    const { onRetry } = this.props
 
     event.stopPropagation()
-    onRetry(id)
-  }
-
-  handleCopyTxId = () => {
-    const { transactionGroup} = this.props
-    const { primaryTransaction: transaction } = transactionGroup
-    const { hash } = transaction
-
-    this.setState({ justCopied: true }, () => {
-      copyToClipboard(hash)
-      setTimeout(() => this.setState({ justCopied: false }), 1000)
-    })
+    onRetry()
   }
 
   render () {
     const { t } = this.context
-    const { justCopied } = this.state
-    const { transactionGroup, showCancel, showRetry, onCancel, onRetry } = this.props
-    const { primaryTransaction: transaction } = transactionGroup
+    const { transaction, showCancel, showRetry } = this.props
     const { txParams: { to, from } = {} } = transaction
 
     return (
       <div className="transaction-list-item-details">
         <div className="transaction-list-item-details__header">
-          <div>{ t('details') }</div>
+          <div>Details</div>
           <div className="transaction-list-item-details__header-buttons">
             {
               showRetry && (
@@ -95,18 +76,6 @@ export default class TransactionListItemDetails extends PureComponent {
                 </Button>
               )
             }
-            <Tooltip title={justCopied ? t('copiedTransactionId') : t('copyTransactionId')}>
-              <Button
-                type="raised"
-                onClick={this.handleCopyTxId}
-                className="transaction-list-item-details__header-button"
-              >
-                <img
-                  className="transaction-list-item-details__header-button__copy-icon"
-                  src="/images/copy-to-clipboard.svg"
-                />
-              </Button>
-            </Tooltip>
             <Tooltip title={t('viewOnEtherscan')}>
               <Button
                 type="raised"
@@ -118,27 +87,23 @@ export default class TransactionListItemDetails extends PureComponent {
             </Tooltip>
           </div>
         </div>
-        <div className="transaction-list-item-details__body">
-          <div className="transaction-list-item-details__sender-to-recipient-container">
-            <SenderToRecipient
-              variant={FLAT_VARIANT}
-              addressOnly
-              recipientAddress={to}
-              senderAddress={from}
-            />
-          </div>
-          <div className="transaction-list-item-details__cards-container">
-            <TransactionBreakdown
-              transaction={transaction}
-              className="transaction-list-item-details__transaction-breakdown"
-            />
-            <TransactionActivityLog
-              transactionGroup={transactionGroup}
-              className="transaction-list-item-details__transaction-activity-log"
-              onCancel={onCancel}
-              onRetry={onRetry}
-            />
-          </div>
+        <div className="transaction-list-item-details__sender-to-recipient-container">
+          <SenderToRecipient
+            variant={CARDS_VARIANT}
+            addressOnly
+            recipientAddress={to}
+            senderAddress={from}
+          />
+        </div>
+        <div className="transaction-list-item-details__cards-container">
+          <TransactionBreakdown
+            transaction={transaction}
+            className="transaction-list-item-details__transaction-breakdown"
+          />
+          <TransactionActivityLog
+            transaction={transaction}
+            className="transaction-list-item-details__transaction-activity-log"
+          />
         </div>
       </div>
     )

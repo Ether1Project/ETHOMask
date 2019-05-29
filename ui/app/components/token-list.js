@@ -134,17 +134,17 @@ TokenList.prototype.createFreshTokenTracker = function () {
   })
 }
 
-TokenList.prototype.componentDidUpdate = function (prevProps) {
+TokenList.prototype.componentDidUpdate = function (nextProps) {
   const {
     network: oldNet,
     userAddress: oldAddress,
     tokens,
-  } = prevProps
+  } = this.props
   const {
     network: newNet,
     userAddress: newAddress,
     tokens: newTokens,
-  } = this.props
+  } = nextProps
 
   const isLoading = newNet === 'loading'
   const missingInfo = !oldNet || !newNet || !oldAddress || !newAddress

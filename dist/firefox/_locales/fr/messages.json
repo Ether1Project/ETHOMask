@@ -204,22 +204,22 @@
     "message": "Connecter"
   },
   "connecting": {
-    "message": "Connexion..."
+    "message": "Connection..."
   },
   "connectingToKovan": {
-    "message": "Connexion au réseau de test Kovan"
+    "message": "Connection au réseau de test Kovan"
   },
   "connectingToMainnet": {
-    "message": "Connexion au réseau principal Ether-1"
+    "message": "Connection au réseau principal Ether-1"
   },
   "connectingToRopsten": {
-    "message": "Connexion au réseau de test Ropsten"
+    "message": "Connection au réseau de test Ropsten"
   },
   "connectingToRinkeby": {
-    "message": "Connexion au réseau de test Rinkeby"
+    "message": "Connection au réseau de test Rinkeby"
   },
   "connectingToUnknown": {
-    "message": "Connexion à un réseau inconnu"
+    "message": "Connection à un réseau inconnu"
   },
   "connectToLedger": {
     "message": "Connecter un Ledger"
@@ -1120,8 +1120,8 @@
   "supportCenter": {
     "message": "Visitez notre centre d'aide"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Le symbol doit avoir entre 0 et 12 caractères."
+  "symbolBetweenZeroTen": {
+    "message": "Le symbol doit avoir entre 0 et 10 caractères."
   },
   "takesTooLong": {
     "message": "Cela prend trop de temps ?"
@@ -1303,7 +1303,7 @@
   "welcomeBack": {
     "message": "Bienvenue à nouveau !"
   },
-  "welcome": {
+  "welcomeBeta": {
     "message": "Bienvenue dans la Beta de MetaMask"
   },
   "whatsThis": {

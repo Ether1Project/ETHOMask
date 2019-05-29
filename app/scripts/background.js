@@ -41,7 +41,6 @@ const {
 const firstTimeState = Object.assign({}, rawFirstTimeState, global.METAMASK_TEST_CONFIG)
 
 const STORAGE_KEY = 'metamask-config'
-const METAMASK_DEBUG = process.env.METAMASK_DEBUG
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
@@ -267,6 +266,7 @@ function setupController (initState, initLangCode) {
     platform,
     encryptor: isEdge ? new EdgeEncryptor() : undefined,
   })
+  global.metamaskController = controller
 
   const provider = controller.provider
   setupEnsIpfsResolver({ provider })
@@ -332,10 +332,6 @@ function setupController (initState, initLangCode) {
     [ENVIRONMENT_TYPE_FULLSCREEN]: true,
   }
 
-  const metamaskBlacklistedPorts = [
-    'trezor-connect',
-  ]
-
   const isClientOpenStatus = () => {
     return popupIsOpen || Boolean(Object.keys(openMetamaskTabsIDs).length) || notificationIsOpen
   }
@@ -355,10 +351,6 @@ function setupController (initState, initLangCode) {
   function connectRemote (remotePort) {
     const processName = remotePort.name
     const isMetaMaskInternalProcess = metamaskInternalProcessHash[processName]
-
-    if (metamaskBlacklistedPorts.includes(remotePort.name)) {
-      return false
-    }
 
     if (isMetaMaskInternalProcess) {
       const portStream = new PortStream(remotePort)
@@ -414,20 +406,18 @@ function setupController (initState, initLangCode) {
   controller.messageManager.on('updateBadge', updateBadge)
   controller.personalMessageManager.on('updateBadge', updateBadge)
   controller.typedMessageManager.on('updateBadge', updateBadge)
-  controller.providerApprovalController.store.on('update', updateBadge)
 
   /**
    * Updates the Web Extension's "badge" number, on the little fox in the toolbar.
    * The number reflects the current number of pending transactions or message signatures needing user approval.
    */
   function updateBadge () {
-    let label = ''
-    const unapprovedTxCount = controller.txController.getUnapprovedTxCount()
-    const unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
-    const unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
-    const unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
-    const pendingProviderRequests = controller.providerApprovalController.store.getState().providerRequests.length
-    const count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs + pendingProviderRequests
+    var label = ''
+    var unapprovedTxCount = controller.txController.getUnapprovedTxCount()
+    var unapprovedMsgCount = controller.messageManager.unapprovedMsgCount
+    var unapprovedPersonalMsgs = controller.personalMessageManager.unapprovedPersonalMsgCount
+    var unapprovedTypedMsgs = controller.typedMessageManager.unapprovedTypedMessagesCount
+    var count = unapprovedTxCount + unapprovedMsgCount + unapprovedPersonalMsgs + unapprovedTypedMsgs
     if (count) {
       label = String(count)
     }
@@ -448,9 +438,8 @@ function setupController (initState, initLangCode) {
 function triggerUi () {
   extension.tabs.query({ active: true }, tabs => {
     const currentlyActiveMetamaskTab = Boolean(tabs.find(tab => openMetamaskTabsIDs[tab.id]))
-    if ((!popupIsOpen || !notificationIsOpen) && !currentlyActiveMetamaskTab) {
+    if (!popupIsOpen && !currentlyActiveMetamaskTab && !notificationIsOpen) {
       notificationManager.showPopup()
-      notificationIsOpen = true
     }
   })
 }
@@ -463,7 +452,7 @@ function openPopup () {
   triggerUi()
   return new Promise(
     (resolve) => {
-      const interval = setInterval(() => {
+      var interval = setInterval(() => {
         if (!notificationIsOpen) {
           clearInterval(interval)
           resolve()
@@ -472,10 +461,3 @@ function openPopup () {
     }
   )
 }
-
-// On first install, open a new tab with MetaMask
-extension.runtime.onInstalled.addListener(({reason}) => {
-  if ((reason === 'install') && (!METAMASK_DEBUG)) {
-    platform.openExtensionInBrowser()
-  }
-})

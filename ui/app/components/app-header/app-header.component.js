@@ -1,13 +1,20 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import classnames from 'classnames'
+import { matchPath } from 'react-router-dom'
 import Identicon from '../identicon'
-import { DEFAULT_ROUTE } from '../../routes'
+
+const {
+  ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_POPUP,
+} = require('../../../../app/scripts/lib/enums')
+const { DEFAULT_ROUTE, INITIALIZE_ROUTE, CONFIRM_TRANSACTION_ROUTE } = require('../../routes')
 const NetworkIndicator = require('../network')
 
 export default class AppHeader extends PureComponent {
   static propTypes = {
     history: PropTypes.object,
+    location: PropTypes.object,
     network: PropTypes.string,
     provider: PropTypes.object,
     networkDropdownOpen: PropTypes.bool,
@@ -16,8 +23,6 @@ export default class AppHeader extends PureComponent {
     toggleAccountMenu: PropTypes.func,
     selectedAddress: PropTypes.string,
     isUnlocked: PropTypes.bool,
-    hideNetworkIndicator: PropTypes.bool,
-    disabled: PropTypes.bool,
   }
 
   static contextTypes = {
@@ -35,15 +40,23 @@ export default class AppHeader extends PureComponent {
       : hideNetworkDropdown()
   }
 
+  isConfirming () {
+    const { location } = this.props
+
+    return Boolean(matchPath(location.pathname, {
+      path: CONFIRM_TRANSACTION_ROUTE, exact: false,
+    }))
+  }
+
   renderAccountMenu () {
-    const { isUnlocked, toggleAccountMenu, selectedAddress, disabled } = this.props
+    const { isUnlocked, toggleAccountMenu, selectedAddress } = this.props
 
     return isUnlocked && (
       <div
         className={classnames('account-menu__icon', {
-          'account-menu__icon--disabled': disabled,
+          'account-menu__icon--disabled': this.isConfirming(),
         })}
-        onClick={() => disabled || toggleAccountMenu()}
+        onClick={() => this.isConfirming() || toggleAccountMenu()}
       >
         <Identicon
           address={selectedAddress}
@@ -53,15 +66,37 @@ export default class AppHeader extends PureComponent {
     )
   }
 
+  hideAppHeader () {
+    const { location } = this.props
+
+    const isInitializing = Boolean(matchPath(location.pathname, {
+      path: INITIALIZE_ROUTE, exact: false,
+    }))
+
+    if (isInitializing) {
+      return true
+    }
+
+    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_NOTIFICATION) {
+      return true
+    }
+
+    if (window.METAMASK_UI_TYPE === ENVIRONMENT_TYPE_POPUP && this.isConfirming()) {
+      return true
+    }
+  }
+
   render () {
     const {
-      history,
       network,
       provider,
+      history,
       isUnlocked,
-      hideNetworkIndicator,
-      disabled,
     } = this.props
+
+    if (this.hideAppHeader()) {
+      return null
+    }
 
     return (
       <div
@@ -73,7 +108,7 @@ export default class AppHeader extends PureComponent {
           >
             <img
               className="app-header__metafox-logo app-header__metafox-logo--horizontal"
-              src="/images/logo/metamask-logo-horizontal.svg"
+              src="/images/logo/metamask-logo-horizontal-beta.svg"
               height={30}
             />
             <img
@@ -84,18 +119,14 @@ export default class AppHeader extends PureComponent {
             />
           </div>
           <div className="app-header__account-menu-container">
-            {
-              !hideNetworkIndicator && (
-                <div className="app-header__network-component-wrapper">
-                  <NetworkIndicator
-                    network={network}
-                    provider={provider}
-                    onClick={event => this.handleNetworkIndicatorClick(event)}
-                    disabled={disabled}
-                  />
-                </div>
-              )
-            }
+            <div className="app-header__network-component-wrapper">
+              <NetworkIndicator
+                network={network}
+                provider={provider}
+                onClick={event => this.handleNetworkIndicatorClick(event)}
+                disabled={this.isConfirming()}
+              />
+            </div>
             { this.renderAccountMenu() }
           </div>
         </div>

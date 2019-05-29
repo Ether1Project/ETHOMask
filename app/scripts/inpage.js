@@ -5,7 +5,6 @@ const log = require('loglevel')
 const LocalMessageDuplexStream = require('post-message-stream')
 const setupDappAutoReload = require('./lib/auto-reload.js')
 const MetamaskInpageProvider = require('metamask-inpage-provider')
-const createStandardProvider = require('./createStandardProvider').default
 
 let isEnabled = false
 let warned = false
@@ -17,6 +16,12 @@ restoreContextAfterImports()
 
 log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
 
+console.warn('ATTENTION: In an effort to improve user privacy, MetaMask ' +
+'stopped exposing user accounts to dapps if "privacy mode" is enabled on ' +
+'November 2nd, 2018. Dapps should now call provider.enable() in order to view and use ' +
+'accounts. Please see https://bit.ly/2QQHXvF for complete information and up-to-date ' +
+'example code.')
+
 /**
  * Adds a postMessage listener for a specific message type
  *
@@ -24,13 +29,12 @@ log.setDefaultLevel(process.env.METAMASK_DEBUG ? 'debug' : 'warn')
  * @param {Function} handler - event handler
  * @param {boolean} remove - removes this handler after being triggered
  */
-function onMessage (messageType, callback, remove) {
-  const handler = function ({ data }) {
+function onMessage(messageType, handler, remove) {
+  window.addEventListener('message', function ({ data }) {
     if (!data || data.type !== messageType) { return }
     remove && window.removeEventListener('message', handler)
-    callback.apply(window, arguments)
-  }
-  window.addEventListener('message', handler)
+    handler.apply(window, arguments)
+  })
 }
 
 //
@@ -38,13 +42,13 @@ function onMessage (messageType, callback, remove) {
 //
 
 // setup background connection
-const metamaskStream = new LocalMessageDuplexStream({
+var metamaskStream = new LocalMessageDuplexStream({
   name: 'inpage',
   target: 'contentscript',
 })
 
 // compose the inpage provider
-const inpageProvider = new MetamaskInpageProvider(metamaskStream)
+var inpageProvider = new MetamaskInpageProvider(metamaskStream)
 
 // set a high max listener count to avoid unnecesary warnings
 inpageProvider.setMaxListeners(100)
@@ -55,9 +59,7 @@ onMessage('metamasksetlocked', () => { isEnabled = false })
 // set up a listener for privacy mode responses
 onMessage('ethereumproviderlegacy', ({ data: { selectedAddress } }) => {
   isEnabled = true
-  setTimeout(() => {
-    inpageProvider.publicConfigStore.updateState({ selectedAddress })
-  }, 0)
+  inpageProvider.publicConfigStore.updateState({ selectedAddress })
 }, true)
 
 // augment the provider with its enable method
@@ -65,15 +67,10 @@ inpageProvider.enable = function ({ force } = {}) {
   return new Promise((resolve, reject) => {
     providerHandle = ({ data: { error, selectedAddress } }) => {
       if (typeof error !== 'undefined') {
-        reject({
-          message: error,
-          code: 4001,
-        })
+        reject(error)
       } else {
         window.removeEventListener('message', providerHandle)
-        setTimeout(() => {
-          inpageProvider.publicConfigStore.updateState({ selectedAddress })
-        }, 0)
+        inpageProvider.publicConfigStore.updateState({ selectedAddress })
 
         // wait for the background to update with an account
         inpageProvider.sendAsync({ method: 'eth_accounts', params: [] }, (error, response) => {
@@ -107,7 +104,7 @@ inpageProvider._metamask = new Proxy({
    *
    * @returns {Promise<boolean>} - Promise resolving to true if this domain has been previously approved
    */
-  isApproved: function () {
+  isApproved: function() {
     return new Promise((resolve) => {
       isApprovedHandle = ({ data: { caching, isApproved } }) => {
         if (caching) {
@@ -136,7 +133,7 @@ inpageProvider._metamask = new Proxy({
     })
   },
 }, {
-  get: function (obj, prop) {
+  get: function(obj, prop) {
     !warned && console.warn('Heads up! ethereum._metamask exposes methods that have ' +
     'not been standardized yet. This means that these methods may not be implemented ' +
     'in other dapp browsers and may be removed from MetaMask in the future.')
@@ -153,10 +150,10 @@ const proxiedInpageProvider = new Proxy(inpageProvider, {
   deleteProperty: () => true,
 })
 
-window.ethereum = createStandardProvider(proxiedInpageProvider)
+window.ethereum = proxiedInpageProvider
 
 // detect eth_requestAccounts and pipe to enable for now
-function detectAccountRequest (method) {
+function detectAccountRequest(method) {
   const originalMethod = inpageProvider[method]
   inpageProvider[method] = function ({ method }) {
     if (method === 'eth_requestAccounts') {
@@ -180,7 +177,7 @@ if (typeof window.web3 !== 'undefined') {
      and try again.`)
 }
 
-const web3 = new Web3(proxiedInpageProvider)
+var web3 = new Web3(proxiedInpageProvider)
 web3.setProvider = function () {
   log.debug('MetaMask - overrode web3.setProvider')
 }
@@ -217,7 +214,7 @@ inpageProvider.publicConfigStore.subscribe(function (state) {
 // need to make sure we aren't affected by overlapping namespaces
 // and that we dont affect the app with our namespace
 // mostly a fix for web3's BigNumber if AMD's "define" is defined...
-let __define
+var __define
 
 /**
  * Caches reference to global define object and deletes it to

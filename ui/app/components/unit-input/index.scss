@@ -1,7 +1,4 @@
 .unit-input {
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
   min-height: 54px;
   border: 1px solid #dedede;
   border-radius: 4px;
@@ -27,10 +24,6 @@
     display: none;
   }
 
-  &__inputs {
-    flex: 1 0 auto;
-  }
-
   &__input {
     color: #4d4d4d;
     font-size: 1rem;
@@ -43,10 +36,6 @@
   &__input-container {
     display: flex;
     align-items: center;
-  }
-
-  &__suffix {
-    margin-left: 3px;
   }
 
   &--error {

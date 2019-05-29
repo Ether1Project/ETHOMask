@@ -10,7 +10,6 @@ export default class UserPreferencedCurrencyDisplay extends PureComponent {
     value: PropTypes.string,
     numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hideLabel: PropTypes.bool,
-    hideTitle: PropTypes.bool,
     style: PropTypes.object,
     showEthLogo: PropTypes.bool,
     ethLogoHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

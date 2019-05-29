@@ -77,7 +77,6 @@ AccountDetailsModal.prototype.render = function () {
       h(QrView, {
         Qr: {
           data: address,
-          network: network,
         },
       }),
 

@@ -5,30 +5,18 @@ import classnames from 'classnames'
 export default class ButtonGroup extends PureComponent {
   static propTypes = {
     defaultActiveButtonIndex: PropTypes.number,
-    noButtonActiveByDefault: PropTypes.bool,
     disabled: PropTypes.bool,
     children: PropTypes.array,
     className: PropTypes.string,
     style: PropTypes.object,
-    newActiveButtonIndex: PropTypes.number,
   }
 
   static defaultProps = {
     className: 'button-group',
-    defaultActiveButtonIndex: 0,
   }
 
   state = {
-    activeButtonIndex: this.props.noButtonActiveByDefault
-      ? null
-      : this.props.defaultActiveButtonIndex,
-  }
-
-  componentDidUpdate (_, prevState) {
-    // Provides an API for dynamically updating the activeButtonIndex
-    if (typeof this.props.newActiveButtonIndex === 'number' && prevState.activeButtonIndex !== this.props.newActiveButtonIndex) {
-      this.setState({ activeButtonIndex: this.props.newActiveButtonIndex })
-    }
+    activeButtonIndex: this.props.defaultActiveButtonIndex || 0,
   }
 
   handleButtonClick (activeButtonIndex) {

@@ -741,8 +741,8 @@
   "supportCenter": {
     "message": "Visitar o nosso Centro de Suporte"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Símbolo deve conter entre 0 e 12 characters."
+  "symbolBetweenZeroTen": {
+    "message": "Símbolo deve conter entre 0 e 10 characters."
   },
   "takesTooLong": {
     "message": "A demorar muito?"
@@ -849,8 +849,8 @@
   "warning": {
     "message": "Aviso"
   },
-  "welcome": {
-    "message": "Bem-vindo ao MetaMask"
+  "welcomeBeta": {
+    "message": "Bem-vindo ao MetaMask Beta"
   },
   "whatsThis": {
     "message": "O que é isto?"

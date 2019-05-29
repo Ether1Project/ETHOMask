@@ -11,7 +11,6 @@ import { removeLeadingZeroes } from '../send/send.utils'
 export default class UnitInput extends PureComponent {
   static propTypes = {
     children: PropTypes.node,
-    actionComponent: PropTypes.node,
     error: PropTypes.bool,
     onBlur: PropTypes.func,
     onChange: PropTypes.func,
@@ -67,11 +66,11 @@ export default class UnitInput extends PureComponent {
     const valueString = String(value)
     const valueLength = valueString.length || 1
     const decimalPointDeficit = valueString.match(/\./) ? -0.5 : 0
-    return (valueLength + decimalPointDeficit + 0.5) + 'ch'
+    return (valueLength + decimalPointDeficit + 0.75) + 'ch'
   }
 
   render () {
-    const { error, placeholder, suffix, actionComponent, children } = this.props
+    const { error, placeholder, suffix, children } = this.props
     const { value } = this.state
 
     return (
@@ -79,29 +78,26 @@ export default class UnitInput extends PureComponent {
         className={classnames('unit-input', { 'unit-input--error': error })}
         onClick={this.handleFocus}
       >
-        <div className="unit-input__inputs">
-          <div className="unit-input__input-container">
-            <input
-              type="number"
-              className="unit-input__input"
-              value={value}
-              placeholder={placeholder}
-              onChange={this.handleChange}
-              onBlur={this.handleBlur}
-              style={{ width: this.getInputWidth(value) }}
-              ref={ref => { this.unitInput = ref }}
-            />
-            {
-              suffix && (
-                <div className="unit-input__suffix">
-                  { suffix }
-                </div>
-              )
-            }
-          </div>
-          { children }
+        <div className="unit-input__input-container">
+          <input
+            type="number"
+            className="unit-input__input"
+            value={value}
+            placeholder={placeholder}
+            onChange={this.handleChange}
+            onBlur={this.handleBlur}
+            style={{ width: this.getInputWidth(value) }}
+            ref={ref => { this.unitInput = ref }}
+          />
+          {
+            suffix && (
+              <div className="unit-input__suffix">
+                { suffix }
+              </div>
+            )
+          }
         </div>
-        {actionComponent}
+        { children }
       </div>
     )
   }

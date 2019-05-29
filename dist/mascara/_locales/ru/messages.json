@@ -816,8 +816,8 @@
   "supportCenter": {
     "message": "Перейти в наш Центр поддержки"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Символ должен быть от 0 до 12 символов."
+  "symbolBetweenZeroTen": {
+    "message": "Символ должен быть от 0 до 10 символов."
   },
   "takesTooLong": {
     "message": "Слишком долго?"
@@ -927,8 +927,8 @@
   "warning": {
     "message": "Предупреждение"
   },
-  "welcome": {
-    "message": "Добро пожаловать в MetaMask"
+  "welcomeBeta": {
+    "message": "Добро пожаловать в MetaMask Beta"
   },
   "whatsThis": {
     "message": "Что это?"

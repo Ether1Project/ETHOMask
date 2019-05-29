@@ -9,7 +9,6 @@ export default class PageContainer extends PureComponent {
     // PageContainerHeader props
     backButtonString: PropTypes.string,
     backButtonStyles: PropTypes.object,
-    headerCloseText: PropTypes.string,
     onBackButtonClick: PropTypes.func,
     onClose: PropTypes.func,
     showBackButton: PropTypes.bool,
@@ -23,7 +22,6 @@ export default class PageContainer extends PureComponent {
     // PageContainerFooter props
     cancelText: PropTypes.string,
     disabled: PropTypes.bool,
-    hideCancel: PropTypes.bool,
     onCancel: PropTypes.func,
     onSubmit: PropTypes.func,
     submitText: PropTypes.string,
@@ -60,8 +58,7 @@ export default class PageContainer extends PureComponent {
 
   renderActiveTabContent () {
     const { tabsComponent } = this.props
-    let { children } = tabsComponent.props
-    children = children.filter(child => child)
+    const { children } = tabsComponent.props
     const { activeTabIndex } = this.state
 
     return children[activeTabIndex]
@@ -95,8 +92,6 @@ export default class PageContainer extends PureComponent {
       onSubmit,
       submitText,
       disabled,
-      headerCloseText,
-      hideCancel,
     } = this.props
 
     return (
@@ -110,21 +105,17 @@ export default class PageContainer extends PureComponent {
           backButtonStyles={backButtonStyles}
           backButtonString={backButtonString}
           tabs={this.renderTabs()}
-          headerCloseText={headerCloseText}
         />
-        <div className="page-container__bottom">
-          <div className="page-container__content">
-            { this.renderContent() }
-          </div>
-          <PageContainerFooter
-            onCancel={onCancel}
-            cancelText={cancelText}
-            hideCancel={hideCancel}
-            onSubmit={onSubmit}
-            submitText={submitText}
-            disabled={disabled}
-          />
+        <div className="page-container__content">
+          { this.renderContent() }
         </div>
+        <PageContainerFooter
+          onCancel={onCancel}
+          cancelText={cancelText}
+          onSubmit={onSubmit}
+          submitText={submitText}
+          disabled={disabled}
+        />
       </div>
     )
   }

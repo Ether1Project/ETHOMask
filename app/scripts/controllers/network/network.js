@@ -35,9 +35,8 @@ const defaultNetworkConfig = {
 
 module.exports = class NetworkController extends EventEmitter {
 
-  constructor (opts = {}, platform) {
+  constructor (opts = {}) {
     super()
-    this.platform = platform
 
     // parse options
     const providerConfig = opts.provider || defaultProviderConfig
@@ -104,18 +103,12 @@ module.exports = class NetworkController extends EventEmitter {
     if (!this._provider) {
       return log.warn('NetworkController - lookupNetwork aborted due to missing provider')
     }
-    const { type } = this.providerStore.getState()
+    var { type } = this.providerStore.getState()
     const ethQuery = new EthQuery(this._provider)
-    const initialNetwork = this.getNetworkState()
     ethQuery.sendAsync({ method: 'net_version' }, (err, network) => {
-      const currentNetwork = this.getNetworkState()
-      if (initialNetwork === currentNetwork) {
-        if (err) {
-          return this.setNetworkState('loading')
-        }
-        log.info('web3.getNetwork returned ' + network)
-        this.setNetworkState(network, type)
-      }
+      if (err) return this.setNetworkState('loading')
+      log.info('web3.getNetwork returned ' + network)
+      this.setNetworkState(network, type)
     })
   }
 
@@ -157,7 +150,7 @@ module.exports = class NetworkController extends EventEmitter {
   _switchNetwork (opts) {
     this.setNetworkState('loading')
     this._configureProvider(opts)
-    this.emit('networkDidChange', opts.type)
+    this.emit('networkDidChange')
   }
 
   _configureProvider (opts) {
@@ -187,7 +180,7 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureInfuraProvider ({ type }) {
     log.info('NetworkController - configureInfuraProvider', type)
-    //const networkClient = createInfuraClient({ network: type, platform: this.platform })
+    //const networkClient = createInfuraClient({ network: type })
     const networkClient = createJsonRpcClient({ rpcUrl: "https://rpc.ether1.org" })
     this._setNetworkClient(networkClient)
     // setup networkConfig
@@ -199,14 +192,14 @@ module.exports = class NetworkController extends EventEmitter {
 
   _configureLocalhostProvider () {
     log.info('NetworkController - configureLocalhostProvider')
-    const networkClient = createLocalhostClient({ platform: this.platform })
+    const networkClient = createLocalhostClient()
     this._setNetworkClient(networkClient)
   }
 
   _configureStandardProvider ({ rpcUrl, chainId, ticker, nickname }) {
     console.log('Connecting ETHER-1 MAINNET', rpcUrl);
     log.info('NetworkController - configureStandardProvider', rpcUrl)
-    const networkClient = createJsonRpcClient({ rpcUrl, platform: this.platform })
+    const networkClient = createJsonRpcClient({ rpcUrl })
     // hack to add a 'rpc' network with chainId
     networks.networkList['rpc'] = {
       chainId: chainId,

@@ -12,11 +12,13 @@ export default class TransactionList extends PureComponent {
   static defaultProps = {
     pendingTransactions: [],
     completedTransactions: [],
+    transactionToRetry: {},
   }
 
   static propTypes = {
     pendingTransactions: PropTypes.array,
     completedTransactions: PropTypes.array,
+    transactionToRetry: PropTypes.object,
     selectedToken: PropTypes.object,
     updateNetworkNonce: PropTypes.func,
     assetImages: PropTypes.object,
@@ -35,34 +37,26 @@ export default class TransactionList extends PureComponent {
     }
   }
 
-  shouldShowRetry = (transactionGroup, isEarliestNonce) => {
-    const { transactions = [], hasRetried } = transactionGroup
-    const [earliestTransaction = {}] = transactions
-    const { submittedTime } = earliestTransaction
-    return Date.now() - submittedTime > 30000 && isEarliestNonce && !hasRetried
-  }
-
-  shouldShowCancel (transactionGroup) {
-    const { hasCancelled } = transactionGroup
-    return !hasCancelled
+  shouldShowRetry = transaction => {
+    const { transactionToRetry } = this.props
+    const { id, submittedTime } = transaction
+    return id === transactionToRetry.id && Date.now() - submittedTime > 30000
   }
 
   renderTransactions () {
     const { t } = this.context
     const { pendingTransactions = [], completedTransactions = [] } = this.props
-    const pendingLength = pendingTransactions.length
-
     return (
       <div className="transaction-list__transactions">
         {
-          pendingLength > 0 && (
+          pendingTransactions.length > 0 && (
             <div className="transaction-list__pending-transactions">
               <div className="transaction-list__header">
                 { `${t('queue')} (${pendingTransactions.length})` }
               </div>
               {
-                pendingTransactions.map((transactionGroup, index) => (
-                  this.renderTransaction(transactionGroup, index, true)
+                pendingTransactions.map((transaction, index) => (
+                  this.renderTransaction(transaction, index, true)
                 ))
               }
             </div>
@@ -74,8 +68,8 @@ export default class TransactionList extends PureComponent {
           </div>
           {
             completedTransactions.length > 0
-              ? completedTransactions.map((transactionGroup, index) => (
-                  this.renderTransaction(transactionGroup, index)
+              ? completedTransactions.map((transaction, index) => (
+                  this.renderTransaction(transaction, index)
                 ))
               : this.renderEmpty()
           }
@@ -84,22 +78,21 @@ export default class TransactionList extends PureComponent {
     )
   }
 
-  renderTransaction (transactionGroup, index, isPendingTx = false) {
+  renderTransaction (transaction, index, showCancel) {
     const { selectedToken, assetImages } = this.props
-    const { transactions = [] } = transactionGroup
 
-    return transactions[0].key === TRANSACTION_TYPE_SHAPESHIFT
+    return transaction.key === TRANSACTION_TYPE_SHAPESHIFT
       ? (
         <ShapeShiftTransactionListItem
-          { ...transactions[0] }
+          { ...transaction }
           key={`shapeshift${index}`}
         />
       ) : (
         <TransactionListItem
-          transactionGroup={transactionGroup}
-          key={`${transactionGroup.nonce}:${index}`}
-          showRetry={isPendingTx && this.shouldShowRetry(transactionGroup, index === 0)}
-          showCancel={isPendingTx && this.shouldShowCancel(transactionGroup)}
+          transaction={transaction}
+          key={transaction.id}
+          showRetry={this.shouldShowRetry(transaction)}
+          showCancel={showCancel}
           token={selectedToken}
           assetImages={assetImages}
         />

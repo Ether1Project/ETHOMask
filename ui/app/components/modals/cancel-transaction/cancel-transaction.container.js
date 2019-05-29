@@ -28,29 +28,31 @@ const mapStateToProps = (state, ownProps) => {
     transactionId,
     transactionStatus,
     originalGasPrice,
-    defaultNewGasPrice,
     newGasFee,
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    createCancelTransaction: (txId, customGasPrice) => {
-      return dispatch(createCancelTransaction(txId, customGasPrice))
-    },
+    createCancelTransaction: txId => dispatch(createCancelTransaction(txId)),
     showTransactionConfirmedModal: () => dispatch(showModal({ name: 'TRANSACTION_CONFIRMED' })),
   }
 }
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { transactionId, defaultNewGasPrice, ...restStateProps } = stateProps
-  const { createCancelTransaction, ...restDispatchProps } = dispatchProps
+  const { transactionId, ...restStateProps } = stateProps
+  const {
+    createCancelTransaction: dispatchCreateCancelTransaction,
+    ...restDispatchProps
+  } = dispatchProps
 
   return {
     ...restStateProps,
     ...restDispatchProps,
     ...ownProps,
-    createCancelTransaction: () => createCancelTransaction(transactionId, defaultNewGasPrice),
+    createCancelTransaction: newGasPrice => {
+      return dispatchCreateCancelTransaction(transactionId, newGasPrice)
+    },
   }
 }
 

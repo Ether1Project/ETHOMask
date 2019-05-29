@@ -32,33 +32,23 @@ describe('MetaMask', function () {
   this.bail(true)
 
   before(async function () {
-    let extensionUrl
     switch (process.env.SELENIUM_BROWSER) {
       case 'chrome': {
         const extPath = path.resolve('dist/chrome')
         driver = buildChromeWebDriver(extPath, { responsive: true })
         extensionId = await getExtensionIdChrome(driver)
-        await delay(largeDelayMs)
-        extensionUrl = `chrome-extension://${extensionId}/home.html`
+        await driver.get(`chrome-extension://${extensionId}/popup.html`)
         break
       }
       case 'firefox': {
         const extPath = path.resolve('dist/firefox')
         driver = buildFirefoxWebdriver({ responsive: true })
         await installWebExt(driver, extPath)
-        await delay(largeDelayMs)
+        await delay(700)
         extensionId = await getExtensionIdFirefox(driver)
-        extensionUrl = `moz-extension://${extensionId}/home.html`
-        break
+        await driver.get(`moz-extension://${extensionId}/popup.html`)
       }
     }
-    // Depending on the state of the application built into the above directory (extPath) and the value of
-    // METAMASK_DEBUG we will see different post-install behaviour and possibly some extra windows. Here we
-    // are closing any extraneous windows to reset us to a single window before continuing.
-    const [tab1] = await driver.getAllWindowHandles()
-    await closeAllWindowHandlesExcept(driver, [tab1])
-    await driver.switchTo().window(tab1)
-    await driver.get(extensionUrl)
   })
 
   afterEach(async function () {
@@ -79,17 +69,73 @@ describe('MetaMask', function () {
     await driver.quit()
   })
 
-  describe('Going through the first time flow', () => {
-    it('clicks the continue button on the welcome screen', async () => {
-      const welcomeScreenBtn = await findElement(driver, By.css('.welcome-page .first-time-flow__button'))
-      welcomeScreenBtn.click()
-      await delay(largeDelayMs)
+  describe('New UI setup', async function () {
+    it('switches to first tab', async function () {
+      await delay(tinyDelayMs)
+      const [firstTab] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(firstTab)
+      await delay(regularDelayMs)
     })
 
+    it('selects the new UI option', async () => {
+      try {
+        const overlay = await findElement(driver, By.css('.full-flex-height'))
+        await driver.wait(until.stalenessOf(overlay))
+      } catch (e) {}
+
+      let button
+      try {
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      } catch (e) {
+        await loadExtension(driver, extensionId)
+        await delay(largeDelayMs)
+        button = await findElement(driver, By.xpath("//button[contains(text(), 'Try it now')]"))
+      }
+      await button.click()
+      await delay(regularDelayMs)
+
+      // Close all other tabs
+      const [tab0, tab1, tab2] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(tab0)
+      await delay(tinyDelayMs)
+
+      let selectedUrl = await driver.getCurrentUrl()
+      await delay(tinyDelayMs)
+      if (tab0 && selectedUrl.match(/popup.html/)) {
+        await closeAllWindowHandlesExcept(driver, tab0)
+      } else if (tab1) {
+        await driver.switchTo().window(tab1)
+        selectedUrl = await driver.getCurrentUrl()
+        await delay(tinyDelayMs)
+        if (selectedUrl.match(/popup.html/)) {
+          await closeAllWindowHandlesExcept(driver, tab1)
+        } else if (tab2) {
+          await driver.switchTo().window(tab2)
+          selectedUrl = await driver.getCurrentUrl()
+          selectedUrl.match(/popup.html/) && await closeAllWindowHandlesExcept(driver, tab2)
+        }
+      } else {
+        throw new Error('popup.html not found')
+      }
+      await delay(regularDelayMs)
+      const [appTab] = await driver.getAllWindowHandles()
+      await driver.switchTo().window(appTab)
+      await delay(tinyDelayMs)
+
+      await loadExtension(driver, extensionId)
+      await delay(regularDelayMs)
+
+      const continueBtn = await findElement(driver, By.css('.welcome-screen__button'))
+      await continueBtn.click()
+      await delay(regularDelayMs)
+    })
+  })
+
+  describe('Going through the first time flow', () => {
     it('accepts a secure password', async () => {
-      const passwordBox = await findElement(driver, By.css('.first-time-flow__form #create-password'))
-      const passwordBoxConfirm = await findElement(driver, By.css('.first-time-flow__form #confirm-password'))
-      const button = await findElement(driver, By.css('.first-time-flow__form button'))
+      const passwordBox = await findElement(driver, By.css('.create-password #create-password'))
+      const passwordBoxConfirm = await findElement(driver, By.css('.create-password #confirm-password'))
+      const button = await findElement(driver, By.css('.create-password button'))
 
       await passwordBox.sendKeys('correct horse battery staple')
       await passwordBoxConfirm.sendKeys('correct horse battery staple')
@@ -98,21 +144,19 @@ describe('MetaMask', function () {
     })
 
     it('clicks through the unique image screen', async () => {
-      await findElement(driver, By.css('.first-time-flow__unique-image'))
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+      const nextScreen = await findElement(driver, By.css('.unique-image button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the ToS', async () => {
       // terms of use
-      await findElement(driver, By.css('.first-time-flow__markdown'))
-      const canClickThrough = await driver.findElement(By.css('button.first-time-flow__button')).isEnabled()
+      const canClickThrough = await driver.findElement(By.css('.tou button')).isEnabled()
       assert.equal(canClickThrough, false, 'disabled continue button')
       const bottomOfTos = await findElement(driver, By.linkText('Attributions'))
       await driver.executeScript('arguments[0].scrollIntoView(true)', bottomOfTos)
       await delay(regularDelayMs)
-      const acceptTos = await findElement(driver, By.css('button.first-time-flow__button'))
+      const acceptTos = await findElement(driver, By.css('.tou button'))
       driver.wait(until.elementIsEnabled(acceptTos))
       await acceptTos.click()
       await delay(regularDelayMs)
@@ -120,17 +164,17 @@ describe('MetaMask', function () {
 
     it('clicks through the privacy notice', async () => {
       // privacy notice
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+      const nextScreen = await findElement(driver, By.css('.tou button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     it('clicks through the phishing notice', async () => {
       // phishing notice
-      const noticeElement = await driver.findElement(By.css('.first-time-flow__markdown'))
+      const noticeElement = await driver.findElement(By.css('.markdown'))
       await driver.executeScript('arguments[0].scrollTop = arguments[0].scrollHeight', noticeElement)
       await delay(regularDelayMs)
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+      const nextScreen = await findElement(driver, By.css('.tou button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
@@ -138,23 +182,24 @@ describe('MetaMask', function () {
     let seedPhrase
 
     it('reveals the seed phrase', async () => {
-      const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
+      const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
       await driver.wait(until.elementLocated(byRevealButton, 10000))
       const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
       await revealSeedPhraseButton.click()
       await delay(regularDelayMs)
 
-      seedPhrase = await driver.findElement(By.css('.reveal-seed-phrase__secret-words')).getText()
+      seedPhrase = await driver.findElement(By.css('.backup-phrase__secret-words')).getText()
       assert.equal(seedPhrase.split(' ').length, 12)
       await delay(regularDelayMs)
 
-      const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+      const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
       await nextScreen.click()
       await delay(regularDelayMs)
     })
 
     async function clickWordAndWait (word) {
-      const xpath = `//div[contains(@class, 'confirm-seed-phrase__seed-word--shuffled') and not(contains(@class, 'confirm-seed-phrase__seed-word--selected')) and contains(text(), '${word}')]`
+      const xpathClass = 'backup-phrase__confirm-seed-option backup-phrase__confirm-seed-option--unselected'
+      const xpath = `//button[@class='${xpathClass}' and contains(text(), '${word}')]`
       const word0 = await findElement(driver, By.xpath(xpath), 10000)
 
       await word0.click()
@@ -164,13 +209,13 @@ describe('MetaMask', function () {
     async function retypeSeedPhrase (words, wasReloaded, count = 0) {
       try {
         if (wasReloaded) {
-          const byRevealButton = By.css('.reveal-seed-phrase__secret-blocker .reveal-seed-phrase__reveal-button')
+          const byRevealButton = By.css('.backup-phrase__secret-blocker .backup-phrase__reveal-button')
           await driver.wait(until.elementLocated(byRevealButton, 10000))
           const revealSeedPhraseButton = await findElement(driver, byRevealButton, 10000)
           await revealSeedPhraseButton.click()
           await delay(regularDelayMs)
 
-          const nextScreen = await findElement(driver, By.css('button.first-time-flow__button'))
+          const nextScreen = await findElement(driver, By.css('.backup-phrase button'))
           await nextScreen.click()
           await delay(regularDelayMs)
         }
@@ -192,7 +237,6 @@ describe('MetaMask', function () {
       const words = seedPhrase.split(' ')
 
       await retypeSeedPhrase(words)
-      await delay(regularDelayMs)
 
       const confirm = await findElement(driver, By.xpath(`//button[contains(text(), 'Confirm')]`))
       await confirm.click()
@@ -278,24 +322,19 @@ describe('MetaMask', function () {
 
       const inputValue = await inputAmount.getAttribute('value')
       assert.equal(inputValue, '1')
-      await delay(regularDelayMs)
-    })
 
-    it('opens and closes the gas modal', async function () {
       // Set the gas limit
-      const configureGas = await findElement(driver, By.css('.advanced-gas-options-btn'))
+      const configureGas = await findElement(driver, By.css('.send-v2__gas-fee-display button'))
       await configureGas.click()
       await delay(regularDelayMs)
 
       const gasModal = await driver.findElement(By.css('span .modal'))
 
-      const save = await findElement(driver, By.css('.page-container__header-close-text'))
+      const save = await findElement(driver, By.xpath(`//button[contains(text(), 'Save')]`))
       await save.click()
-      await driver.wait(until.stalenessOf(gasModal), 10000)
+      await driver.wait(until.stalenessOf(gasModal))
       await delay(regularDelayMs)
-    })
 
-    it('clicks through to the confirm screen', async function () {
       // Continue to next screen
       const nextScreen = await findElement(driver, By.xpath(`//button[contains(text(), 'Next')]`))
       await nextScreen.click()

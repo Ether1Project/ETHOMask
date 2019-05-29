@@ -12,7 +12,6 @@ const duckActionSpies = {
   closeToDropdown: sinon.spy(),
   openToDropdown: sinon.spy(),
   updateSendErrors: sinon.spy(),
-  updateSendWarnings: sinon.spy(),
 }
 
 proxyquire('../send-to-row.container.js', {
@@ -25,7 +24,6 @@ proxyquire('../send-to-row.container.js', {
   },
   '../../send.selectors.js': {
     getCurrentNetwork: (s) => `mockNetwork:${s}`,
-    getSelectedToken: (s) => `mockSelectedToken:${s}`,
     getSendHexData: (s) => s,
     getSendTo: (s) => `mockTo:${s}`,
     getSendToAccounts: (s) => `mockToAccounts:${s}`,
@@ -33,8 +31,6 @@ proxyquire('../send-to-row.container.js', {
   './send-to-row.selectors.js': {
     getToDropdownOpen: (s) => `mockToDropdownOpen:${s}`,
     sendToIsInError: (s) => `mockInError:${s}`,
-    sendToIsInWarning: (s) => `mockInWarning:${s}`,
-    getTokens: (s) => `mockTokens:${s}`,
   },
   '../../../../actions': actionSpies,
   '../../../../ducks/send.duck': duckActionSpies,
@@ -48,13 +44,10 @@ describe('send-to-row container', () => {
       assert.deepEqual(mapStateToProps('mockState'), {
         hasHexData: true,
         inError: 'mockInError:mockState',
-        inWarning: 'mockInWarning:mockState',
         network: 'mockNetwork:mockState',
-        selectedToken: 'mockSelectedToken:mockState',
         to: 'mockTo:mockState',
         toAccounts: 'mockToAccounts:mockState',
         toDropdownOpen: 'mockToDropdownOpen:mockState',
-        tokens: 'mockTokens:mockState',
       })
     })
 
@@ -113,18 +106,6 @@ describe('send-to-row container', () => {
         assert.equal(
           duckActionSpies.updateSendErrors.getCall(0).args[0],
           'mockToErrorObject'
-        )
-      })
-    })
-
-    describe('updateSendToWarning()', () => {
-      it('should dispatch an action', () => {
-        mapDispatchToPropsObject.updateSendToWarning('mockToWarningObject')
-        assert(dispatchSpy.calledOnce)
-        assert(duckActionSpies.updateSendWarnings.calledOnce)
-        assert.equal(
-          duckActionSpies.updateSendWarnings.getCall(0).args[0],
-          'mockToWarningObject'
         )
       })
     })

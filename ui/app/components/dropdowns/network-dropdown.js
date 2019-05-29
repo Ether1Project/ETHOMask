@@ -277,6 +277,7 @@ NetworkDropdown.prototype.getNetworkName = function () {
 NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
   const props = this.props
   const reversedRpcListDetail = rpcListDetail.slice().reverse()
+  const network = props.network
 
   return reversedRpcListDetail.map((entry) => {
     const rpc = entry.rpcUrl
@@ -287,7 +288,7 @@ NetworkDropdown.prototype.renderCommonRpc = function (rpcListDetail, provider) {
     if ((rpc === 'http://localhost:8545') || currentRpcTarget) {
       return null
     } else {
-      const chainId = entry.chainId
+      const chainId = entry.chainId || network
       return h(
         DropdownMenuItem,
         {

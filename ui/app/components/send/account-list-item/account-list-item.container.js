@@ -4,9 +4,6 @@ import {
     getCurrentCurrency,
     getNativeCurrency,
 } from '../send.selectors.js'
-import {
-  isBalanceCached,
-} from '../../../selectors'
 import AccountListItem from './account-list-item.component'
 
 export default connect(mapStateToProps)(AccountListItem)
@@ -16,6 +13,5 @@ function mapStateToProps (state) {
     conversionRate: getConversionRate(state),
     currentCurrency: getCurrentCurrency(state),
     nativeCurrency: getNativeCurrency(state),
-    balanceIsCached: isBalanceCached(state),
   }
 }
