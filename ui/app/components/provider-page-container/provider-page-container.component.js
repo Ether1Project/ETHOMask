@@ -10,7 +10,6 @@ export default class ProviderPageContainer extends PureComponent {
     rejectProviderRequest: PropTypes.func.isRequired,
     siteImage: PropTypes.string,
     siteTitle: PropTypes.string.isRequired,
-    tabID: PropTypes.string.isRequired,
   };
 
   static contextTypes = {
@@ -18,13 +17,13 @@ export default class ProviderPageContainer extends PureComponent {
   };
 
   onCancel = () => {
-    const { tabID, rejectProviderRequest } = this.props
-    rejectProviderRequest(tabID)
+    const { origin, rejectProviderRequest } = this.props
+    rejectProviderRequest(origin)
   }
 
   onSubmit = () => {
-    const { approveProviderRequest, tabID } = this.props
-    approveProviderRequest(tabID)
+    const { approveProviderRequest, origin } = this.props
+    approveProviderRequest(origin)
   }
 
   render () {

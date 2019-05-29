@@ -520,13 +520,6 @@
     color: $red;
   }
 
-  &__warning {
-    font-size: 12px;
-    line-height: 12px;
-    left: 8px;
-    color: $orange;
-  }
-
   &__error-border {
     color: $red;
   }
@@ -559,8 +552,6 @@
 
   &__form-field {
     flex: 1 1 auto;
-    min-width: 0;
-    max-width: 277px;
 
     .currency-display {
       color: $tundora;
@@ -587,9 +578,8 @@
     font-family: Roboto;
     font-size: 16px;
     line-height: 22px;
-    width: 95px;
+    width: 88px;
     font-weight: 400;
-    flex: 0 0 auto;
   }
 
   &__from-dropdown {
@@ -692,7 +682,6 @@
       display: flex;
       align-items: center;
     }
-
   }
 
   &__sliders-icon-container {
@@ -926,16 +915,6 @@
       display: none;
     }
   }
-
-}
-
-.advanced-gas-options-btn {
-  display: flex;
-  justify-content: flex-end;
-  font-size: 14px;
-  color: #2f9ae0;
-  cursor: pointer;
-  margin-top: 16px;
 }
 
 .sliders-icon-container {
@@ -952,23 +931,6 @@
   top: 14px;
   cursor: pointer;
   font-size: 1em;
-}
-
-.gas-fee-reset {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 24px;
-  border-radius: 4px;
-  background-color: #fff;
-  position: absolute;
-  right: 12px;
-  top: 14px;
-  cursor: pointer;
-  font-size: 1em;
-  font-size: 14px;
-  color: #2f9ae0;
-  font-family: Roboto;
 }
 
 .sliders-icon {

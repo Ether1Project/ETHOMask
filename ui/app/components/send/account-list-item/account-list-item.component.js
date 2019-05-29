@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import classnames from 'classnames'
 import { checksumAddress } from '../../../util'
 import Identicon from '../../identicon'
 import UserPreferencedCurrencyDisplay from '../../user-preferenced-currency-display'
 import { PRIMARY, SECONDARY } from '../../../constants/common'
-import Tooltip from '../../tooltip-v2'
 
 export default class AccountListItem extends Component {
 
@@ -18,7 +16,6 @@ export default class AccountListItem extends Component {
     displayBalance: PropTypes.bool,
     handleClick: PropTypes.func,
     icon: PropTypes.node,
-    balanceIsCached: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -33,14 +30,13 @@ export default class AccountListItem extends Component {
       displayBalance = true,
       handleClick,
       icon = null,
-      balanceIsCached,
     } = this.props
 
     const { name, address, balance } = account || {}
 
     return (<div
       className={`account-list-item ${className}`}
-      onClick={() => handleClick && handleClick({ name, address, balance })}
+      onClick={() => handleClick({ name, address, balance })}
     >
 
       <div className="account-list-item__top-row">
@@ -62,34 +58,16 @@ export default class AccountListItem extends Component {
 
       {
         displayBalance && (
-          <Tooltip
-            position="left"
-            title={this.context.t('balanceOutdated')}
-            disabled={!balanceIsCached}
-            style={{
-              left: '-20px !important',
-            }}
-          >
-            <div className={classnames('account-list-item__account-balances', {
-              'account-list-item__cached-balances': balanceIsCached,
-            })}>
-              <div className="account-list-item__primary-cached-container">
-                <UserPreferencedCurrencyDisplay
-                  type={PRIMARY}
-                  value={balance}
-                  hideTitle={true}
-                />
-                {
-                  balanceIsCached ? <span className="account-list-item__cached-star">*</span> : null
-                }
-              </div>
-              <UserPreferencedCurrencyDisplay
-                type={SECONDARY}
-                value={balance}
-                hideTitle={true}
-              />
-            </div>
-          </Tooltip>
+          <div className="account-list-item__account-balances">
+            <UserPreferencedCurrencyDisplay
+              type={PRIMARY}
+              value={balance}
+            />
+            <UserPreferencedCurrencyDisplay
+              type={SECONDARY}
+              value={balance}
+            />
+          </div>
         )
       }
 

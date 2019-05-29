@@ -828,8 +828,8 @@
   "supportCenter": {
     "message": "Destek merkezimizi ziyaret edin"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Sembol 0 ve 12 karakter aralığında olmalıdır."
+  "symbolBetweenZeroTen": {
+    "message": "Sembol 0 ve 10 karakter aralığında olmalıdır."
   },
   "takesTooLong": {
     "message": "Çok mu uzun sürüyor?"
@@ -942,8 +942,8 @@
   "warning": {
     "message": "Uyarı"
   },
-  "welcome": {
-    "message": "MetaMask'ya Hoşgeldiniz"
+  "welcomeBeta": {
+    "message": "MetaMask Beta'ya Hoşgeldiniz"
   },
   "whatsThis": {
     "message": "Bu nedir?"

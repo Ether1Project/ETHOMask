@@ -741,8 +741,8 @@
   "supportCenter": {
     "message": "Bezoek ons ​​ondersteuningscentrum"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Het symbool moet tussen 0 en 12 tekens lang zijn."
+  "symbolBetweenZeroTen": {
+    "message": "Het symbool moet tussen 0 en 10 tekens lang zijn."
   },
   "takesTooLong": {
     "message": "Duurt te lang?"
@@ -849,8 +849,8 @@
   "warning": {
     "message": "Waarschuwing"
   },
-  "welcome": {
-    "message": "Welkom bij MetaMask"
+  "welcomeBeta": {
+    "message": "Welkom bij MetaMask Beta"
   },
   "whatsThis": {
     "message": "Wat is dit?"

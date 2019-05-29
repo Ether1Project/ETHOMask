@@ -7,7 +7,7 @@ const PongStream = require('ping-pong-stream/pong')
 const ObjectMultiplex = require('obj-multiplex')
 const extension = require('extensionizer')
 const PortStream = require('extension-port-stream')
-const {Transform: TransformStream} = require('stream')
+const TransformStream = require('stream').Transform
 
 const inpageContent = fs.readFileSync(path.join(__dirname, '..', '..', 'dist', 'chrome', 'inpage.js')).toString()
 const inpageSuffix = '//# sourceURL=' + extension.extension.getURL('inpage.js') + '\n'
@@ -158,7 +158,7 @@ function listenForProviderRequest () {
         window.postMessage({ type: 'ethereumproviderlegacy', selectedAddress }, '*')
         break
       case 'reject-provider-request':
-        window.postMessage({ type: 'ethereumprovider', error: 'User denied account authorization' }, '*')
+        window.postMessage({ type: 'ethereumprovider', error: 'User rejected provider access' }, '*')
         break
       case 'answer-is-approved':
         window.postMessage({ type: 'ethereumisapproved', isApproved, caching }, '*')
@@ -170,11 +170,6 @@ function listenForProviderRequest () {
         isEnabled = false
         window.postMessage({ type: 'metamasksetlocked' }, '*')
         break
-      case 'ethereum-ping-success':
-        window.postMessage({ type: 'ethereumpingsuccess' }, '*')
-        break
-      case 'ethereum-ping-error':
-        window.postMessage({ type: 'ethereumpingerror' }, '*')
     }
   })
 }
@@ -252,7 +247,7 @@ function suffixCheck () {
  * @returns {boolean} {@code true} if the documentElement is an html node or if none exists
  */
 function documentElementCheck () {
-  const documentElement = document.documentElement.nodeName
+  var documentElement = document.documentElement.nodeName
   if (documentElement) {
     return documentElement.toLowerCase() === 'html'
   }
@@ -265,7 +260,7 @@ function documentElementCheck () {
  * @returns {boolean} {@code true} if the current domain is blacklisted
  */
 function blacklistedDomainCheck () {
-  const blacklistedDomains = [
+  var blacklistedDomains = [
     'uscourts.gov',
     'dropbox.com',
     'webbyawards.com',
@@ -276,8 +271,8 @@ function blacklistedDomainCheck () {
     'ani.gamer.com.tw',
     'blueskybooking.com',
   ]
-  const currentUrl = window.location.href
-  let currentRegex
+  var currentUrl = window.location.href
+  var currentRegex
   for (let i = 0; i < blacklistedDomains.length; i++) {
     const blacklistedDomain = blacklistedDomains[i].replace('.', '\\.')
     currentRegex = new RegExp(`(?:https?:\\/\\/)(?:(?!${blacklistedDomain}).)*$`)
@@ -305,11 +300,6 @@ function getSiteName (window) {
   const siteName = document.querySelector('head > meta[property="og:site_name"]')
   if (siteName) {
     return siteName.content
-  }
-
-  const metaTitle = document.querySelector('head > meta[name="title"]')
-  if (metaTitle) {
-    return metaTitle.content
   }
 
   return document.title

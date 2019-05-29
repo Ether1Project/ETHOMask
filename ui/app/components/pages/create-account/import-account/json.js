@@ -7,7 +7,6 @@ const connect = require('react-redux').connect
 const actions = require('../../../../actions')
 const FileInput = require('react-simple-file-input').default
 const { DEFAULT_ROUTE } = require('../../../../routes')
-const { getMetaMaskAccounts } = require('../../../../selectors')
 const HELP_LINK = 'https://support.metamask.io/kb/article/7-importing-accounts'
 import Button from '../../../button'
 
@@ -104,6 +103,11 @@ class JsonImportSubview extends Component {
     const passwordInput = document.getElementById('json-password-box')
     const password = passwordInput.value
 
+    if (!password) {
+      const message = this.context.t('needImportPassword')
+      return displayWarning(message)
+    }
+
     importNewJsonAccount([ fileContents, password ])
       .then(({ selectedAddress }) => {
         if (selectedAddress) {
@@ -132,7 +136,7 @@ JsonImportSubview.propTypes = {
 const mapStateToProps = state => {
   return {
     error: state.appState.warning,
-    firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
+    firstAddress: Object.keys(state.metamask.accounts)[0],
   }
 }
 

@@ -17,11 +17,10 @@ export default class CurrencyDisplay extends PureComponent {
     value: PropTypes.string,
     numberOfDecimals: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     hideLabel: PropTypes.bool,
-    hideTitle: PropTypes.bool,
   }
 
   render () {
-    const { className, displayValue, prefix, prefixComponent, style, suffix, hideTitle } = this.props
+    const { className, displayValue, prefix, prefixComponent, style, suffix } = this.props
     const text = `${prefix || ''}${displayValue}`
     const title = `${text} ${suffix}`
 
@@ -29,9 +28,9 @@ export default class CurrencyDisplay extends PureComponent {
       <div
         className={classnames('currency-display-component', className)}
         style={style}
-        title={!hideTitle && title || null}
+        title={title}
       >
-        { prefixComponent }
+        { prefixComponent}
         <span className="currency-display-component__text">{ text }</span>
         {
           suffix && (

@@ -17,10 +17,9 @@ export default class CurrencyInput extends PureComponent {
     nativeCurrency: PropTypes.string,
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
+    suffix: PropTypes.string,
     useFiat: PropTypes.bool,
     value: PropTypes.string,
-    fiatSuffix: PropTypes.string,
-    nativeSuffix: PropTypes.string,
   }
 
   constructor (props) {
@@ -32,7 +31,6 @@ export default class CurrencyInput extends PureComponent {
     this.state = {
       decimalValue,
       hexValue,
-      isSwapped: false,
     }
   }
 
@@ -48,8 +46,8 @@ export default class CurrencyInput extends PureComponent {
   }
 
   getDecimalValue (props) {
-    const { value: hexValue, currentCurrency, conversionRate } = props
-    const decimalValueString = this.shouldUseFiat()
+    const { value: hexValue, useFiat, currentCurrency, conversionRate } = props
+    const decimalValueString = useFiat
       ? getValueFromWeiHex({
         value: hexValue, toCurrency: currentCurrency, conversionRate, numberOfDecimals: 2,
       })
@@ -60,23 +58,10 @@ export default class CurrencyInput extends PureComponent {
     return Number(decimalValueString) || 0
   }
 
-  shouldUseFiat = () => {
-    const { useFiat } = this.props
-    const { isSwapped } = this.state || {}
-    return isSwapped ? !useFiat : useFiat
-  }
-
-  swap = () => {
-    const { isSwapped, decimalValue } = this.state
-    this.setState({isSwapped: !isSwapped}, () => {
-      this.handleChange(decimalValue)
-    })
-  }
-
   handleChange = decimalValue => {
-    const { currentCurrency: fromCurrency, conversionRate, onChange } = this.props
+    const { useFiat, currentCurrency: fromCurrency, conversionRate, onChange } = this.props
 
-    const hexValue = this.shouldUseFiat()
+    const hexValue = useFiat
       ? getWeiHexFromDecimalValue({
         value: decimalValue, fromCurrency, conversionRate, invertConversionRate: true,
       })
@@ -93,11 +78,11 @@ export default class CurrencyInput extends PureComponent {
   }
 
   renderConversionComponent () {
-    const { currentCurrency, nativeCurrency } = this.props
+    const { useFiat, currentCurrency, nativeCurrency } = this.props
     const { hexValue } = this.state
     let currency, numberOfDecimals
 
-    if (this.shouldUseFiat()) {
+    if (useFiat) {
       // Display ETH
       currency = nativeCurrency || ETH
       numberOfDecimals = 6
@@ -118,25 +103,19 @@ export default class CurrencyInput extends PureComponent {
   }
 
   render () {
-    const { fiatSuffix, nativeSuffix, ...restProps } = this.props
+    const { suffix, ...restProps } = this.props
     const { decimalValue } = this.state
 
     return (
-        <UnitInput
-          {...restProps}
-          suffix={this.shouldUseFiat() ? fiatSuffix : nativeSuffix}
-          onChange={this.handleChange}
-          onBlur={this.handleBlur}
-          value={decimalValue}
-          actionComponent={(
-            <div
-              className="currency-input__swap-component"
-              onClick={this.swap}
-            />
-          )}
-        >
-          { this.renderConversionComponent() }
-        </UnitInput>
+      <UnitInput
+        {...restProps}
+        suffix={suffix}
+        onChange={this.handleChange}
+        onBlur={this.handleBlur}
+        value={decimalValue}
+      >
+        { this.renderConversionComponent() }
+      </UnitInput>
     )
   }
 }

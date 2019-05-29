@@ -24,7 +24,6 @@ import {
 
 import { getSymbolAndDecimals } from '../token-util'
 import { conversionUtil } from '../conversion-util'
-import { addHexPrefix } from 'ethereumjs-util'
 
 // Actions
 const createActionType = action => `metamask/confirm-transaction/${action}`
@@ -257,8 +256,6 @@ export function setFetchingData (isFetching) {
 }
 
 export function updateGasAndCalculate ({ gasLimit, gasPrice }) {
-  gasLimit = addHexPrefix(gasLimit)
-  gasPrice = addHexPrefix(gasPrice)
   return (dispatch, getState) => {
     const { confirmTransaction: { txData } } = getState()
     const newTxData = {
@@ -373,16 +370,11 @@ export function setTransactionToConfirm (transactionId) {
           dispatch(setFetchingData(true))
           const methodData = await getMethodData(data)
           dispatch(updateMethodData(methodData))
-        } catch (error) {
-          dispatch(updateMethodData({}))
-          dispatch(setFetchingData(false))
-        }
-
-        try {
           const toSmartContract = await isSmartContractAddress(to)
           dispatch(updateToSmartContract(toSmartContract))
           dispatch(setFetchingData(false))
         } catch (error) {
+          dispatch(updateMethodData({}))
           dispatch(setFetchingData(false))
         }
 

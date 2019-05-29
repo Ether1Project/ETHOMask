@@ -5,7 +5,7 @@ import * as actions from '../../../../../ui/app/actions'
 describe('MetaMask Reducers', () => {
 
   it('init state', () => {
-    const initState = reduceMetamask({metamask: {}}, {})
+    const initState = reduceMetamask({metamask:{}}, {})
     assert(initState)
   })
 
@@ -502,15 +502,17 @@ describe('MetaMask Reducers', () => {
     assert.equal(state.useBlockie, true)
   })
 
-  it('updates an arbitrary feature flag', () => {
+  it('updates feature flag', () => {
     const state = reduceMetamask({}, {
       type: actions.UPDATE_FEATURE_FLAGS,
       value: {
-        foo: true,
+        betaUI: true,
+        skipAnnounceBetaUI: true,
       },
     })
 
-    assert.equal(state.featureFlags.foo, true)
+    assert.equal(state.featureFlags.betaUI, true)
+    assert.equal(state.featureFlags.skipAnnounceBetaUI, true)
   })
 
   it('updates network endpoint type', () => {

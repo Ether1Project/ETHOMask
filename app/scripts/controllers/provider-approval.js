@@ -22,27 +22,23 @@ class ProviderApprovalController {
     this.platform = platform
     this.preferencesController = preferencesController
     this.publicConfigStore = publicConfigStore
-    this.store = new ObservableStore({
-      providerRequests: [],
-    })
+    this.store = new ObservableStore()
 
     if (platform && platform.addMessageListener) {
-      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }, { tab }) => {
-        if (tab && tab.id) {
-          switch (action) {
-            case 'init-provider-request':
-              this._handleProviderRequest(origin, siteTitle, siteImage, force, tab.id)
-              break
-            case 'init-is-approved':
-              this._handleIsApproved(origin, tab.id)
-              break
-            case 'init-is-unlocked':
-              this._handleIsUnlocked(tab.id)
-              break
-            case 'init-privacy-request':
-              this._handlePrivacyRequest(tab.id)
-              break
-          }
+      platform.addMessageListener(({ action = '', force, origin, siteTitle, siteImage }) => {
+        switch (action) {
+          case 'init-provider-request':
+            this._handleProviderRequest(origin, siteTitle, siteImage, force)
+            break
+          case 'init-is-approved':
+            this._handleIsApproved(origin)
+            break
+          case 'init-is-unlocked':
+            this._handleIsUnlocked()
+            break
+          case 'init-privacy-request':
+            this._handlePrivacyRequest()
+            break
         }
       })
     }
@@ -55,11 +51,11 @@ class ProviderApprovalController {
    * @param {string} siteTitle - The title of the document requesting full provider access
    * @param {string} siteImage - The icon of the window requesting full provider access
    */
-  _handleProviderRequest (origin, siteTitle, siteImage, force, tabID) {
-    this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage, tabID }] })
+  _handleProviderRequest (origin, siteTitle, siteImage, force) {
+    this.store.updateState({ providerRequests: [{ origin, siteTitle, siteImage }] })
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
     if (!force && this.approvedOrigins[origin] && this.caching && isUnlocked) {
-      this.approveProviderRequest(tabID)
+      this.approveProviderRequest(origin)
       return
     }
     this.openPopup && this.openPopup()
@@ -70,32 +66,32 @@ class ProviderApprovalController {
    *
    * @param {string} origin - Origin of the window
    */
-  _handleIsApproved (origin, tabID) {
+  _handleIsApproved (origin) {
     this.platform && this.platform.sendMessage({
       action: 'answer-is-approved',
       isApproved: this.approvedOrigins[origin] && this.caching,
       caching: this.caching,
-    }, { id: tabID })
+    }, { active: true })
   }
 
   /**
    * Called by a tab to determine if MetaMask is currently locked or unlocked
    */
-  _handleIsUnlocked (tabID) {
+  _handleIsUnlocked () {
     const isUnlocked = this.keyringController.memStore.getState().isUnlocked
-    this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { id: tabID })
+    this.platform && this.platform.sendMessage({ action: 'answer-is-unlocked', isUnlocked }, { active: true })
   }
 
   /**
    * Called to check privacy mode; if privacy mode is off, this will automatically enable the provider (legacy behavior)
    */
-  _handlePrivacyRequest (tabID) {
+  _handlePrivacyRequest () {
     const privacyMode = this.preferencesController.getFeatureFlags().privacyMode
     if (!privacyMode) {
       this.platform && this.platform.sendMessage({
         action: 'approve-legacy-provider-request',
         selectedAddress: this.publicConfigStore.getState().selectedAddress,
-      }, { id: tabID })
+      }, { active: true })
       this.publicConfigStore.emit('update', this.publicConfigStore.getState())
     }
   }
@@ -103,18 +99,17 @@ class ProviderApprovalController {
   /**
    * Called when a user approves access to a full Ethereum provider API
    *
-   * @param {string} tabID - ID of the target window that approved provider access
+   * @param {string} origin - Origin of the target window to approve provider access
    */
-  approveProviderRequest (tabID) {
+  approveProviderRequest (origin) {
     this.closePopup && this.closePopup()
-    const requests = this.store.getState().providerRequests
-    const origin = requests.find(request => request.tabID === tabID).origin
+    const requests = this.store.getState().providerRequests || []
     this.platform && this.platform.sendMessage({
       action: 'approve-provider-request',
       selectedAddress: this.publicConfigStore.getState().selectedAddress,
-    }, { id: tabID })
+    }, { active: true })
     this.publicConfigStore.emit('update', this.publicConfigStore.getState())
-    const providerRequests = requests.filter(request => request.tabID !== tabID)
+    const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })
     this.approvedOrigins[origin] = true
   }
@@ -122,14 +117,13 @@ class ProviderApprovalController {
   /**
    * Called when a tab rejects access to a full Ethereum provider API
    *
-   * @param {string} tabID - ID of the target window that rejected provider access
+   * @param {string} origin - Origin of the target window to reject provider access
    */
-  rejectProviderRequest (tabID) {
+  rejectProviderRequest (origin) {
     this.closePopup && this.closePopup()
-    const requests = this.store.getState().providerRequests
-    const origin = requests.find(request => request.tabID === tabID).origin
-    this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { id: tabID })
-    const providerRequests = requests.filter(request => request.tabID !== tabID)
+    const requests = this.store.getState().providerRequests || []
+    this.platform && this.platform.sendMessage({ action: 'reject-provider-request' }, { active: true })
+    const providerRequests = requests.filter(request => request.origin !== origin)
     this.store.updateState({ providerRequests })
     delete this.approvedOrigins[origin]
   }

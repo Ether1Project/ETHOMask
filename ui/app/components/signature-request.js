@@ -10,7 +10,7 @@ const { compose } = require('recompose')
 const { withRouter } = require('react-router-dom')
 const { ObjectInspector } = require('react-inspector')
 
-import AccountDropdownMini from './account-dropdown-mini'
+const AccountDropdownMini = require('./dropdowns/account-dropdown-mini')
 
 const actions = require('../actions')
 const { conversionUtil } = require('../conversion-util')
@@ -63,6 +63,7 @@ function SignatureRequest (props) {
 
   this.state = {
     selectedAccount: props.selectedAccount,
+    accountDropdownOpen: false,
   }
 }
 
@@ -81,7 +82,10 @@ SignatureRequest.prototype.renderHeader = function () {
 }
 
 SignatureRequest.prototype.renderAccountDropdown = function () {
-  const { selectedAccount } = this.state
+  const {
+    selectedAccount,
+    accountDropdownOpen,
+  } = this.state
 
   const {
     accounts,
@@ -94,7 +98,10 @@ SignatureRequest.prototype.renderAccountDropdown = function () {
     h(AccountDropdownMini, {
       selectedAccount,
       accounts,
-      disabled: true,
+      onSelect: selectedAccount => this.setState({ selectedAccount }),
+      dropdownOpen: accountDropdownOpen,
+      openDropdown: () => this.setState({ accountDropdownOpen: true }),
+      closeDropdown: () => this.setState({ accountDropdownOpen: false }),
     }),
 
   ])
@@ -157,7 +164,7 @@ SignatureRequest.prototype.msgHexToText = function (hex) {
   try {
     const stripped = ethUtil.stripHexPrefix(hex)
     const buff = Buffer.from(stripped, 'hex')
-    return buff.length === 32 ? hex : buff.toString('utf8')
+    return buff.toString('utf8')
   } catch (e) {
     return hex
   }
@@ -272,7 +279,6 @@ SignatureRequest.prototype.renderFooter = function () {
     h(Button, {
       type: 'primary',
       large: true,
-      className: 'request-signature__footer__sign-button',
       onClick: event => {
         sign(event).then(() => {
           this.props.clearConfirmTransaction()

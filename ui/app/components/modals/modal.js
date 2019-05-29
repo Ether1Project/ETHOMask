@@ -4,7 +4,6 @@ const inherits = require('util').inherits
 const connect = require('react-redux').connect
 const FadeModal = require('boron').FadeModal
 const actions = require('../../actions')
-const { resetCustomData: resetCustomGasData } = require('../../ducks/gas.duck')
 const isMobileView = require('../../../lib/is-mobile-view')
 const { getEnvironmentType } = require('../../../../app/scripts/lib/util')
 const { ENVIRONMENT_TYPE_POPUP } = require('../../../../app/scripts/lib/enums')
@@ -18,16 +17,18 @@ const ExportPrivateKeyModal = require('./export-private-key-modal')
 const NewAccountModal = require('./new-account-modal')
 const ShapeshiftDepositTxModal = require('./shapeshift-deposit-tx-modal.js')
 const HideTokenConfirmationModal = require('./hide-token-confirmation-modal')
+const CustomizeGasModal = require('../customize-gas-modal')
 const NotifcationModal = require('./notification-modal')
 const QRScanner = require('./qr-scanner')
 
 import ConfirmRemoveAccount from './confirm-remove-account'
 import ConfirmResetAccount from './confirm-reset-account'
 import TransactionConfirmed from './transaction-confirmed'
+import ConfirmCustomizeGasModal from './customize-gas'
 import CancelTransaction from './cancel-transaction'
+import WelcomeBeta from './welcome-beta'
 import RejectTransactions from './reject-transactions'
 import ClearApprovedOrigins from './clear-approved-origins'
-import ConfirmCustomizeGasModal from '../gas-customization/gas-modal-page-container'
 
 const modalContainerBaseStyle = {
   transform: 'translate3d(-50%, 0, 0px)',
@@ -121,8 +122,7 @@ const MODALS = {
       display: 'flex',
     },
     laptopModalStyle: {
-      width: 'initial',
-      maxWidth: '850px',
+      width: '850px',
       top: 'calc(10% + 10px)',
       left: '0',
       right: '0',
@@ -200,6 +200,19 @@ const MODALS = {
     },
   },
 
+  BETA_UI_NOTIFICATION_MODAL: {
+    contents: h(WelcomeBeta),
+    mobileModalStyle: {
+      ...modalContainerMobileStyle,
+    },
+    laptopModalStyle: {
+      ...modalContainerLaptopStyle,
+    },
+    contentStyle: {
+      borderRadius: '8px',
+    },
+  },
+
   CLEAR_APPROVED_ORIGINS: {
     contents: h(ClearApprovedOrigins),
     mobileModalStyle: {
@@ -218,40 +231,6 @@ const MODALS = {
       h(NotifcationModal, {
         header: 'oldUI',
         message: 'oldUIMessage',
-      }),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
-    },
-  },
-
-  GAS_PRICE_INFO_MODAL: {
-    contents: [
-      h(NotifcationModal, {
-        header: 'gasPriceNoDenom',
-        message: 'gasPriceInfoModalContent',
-      }),
-    ],
-    mobileModalStyle: {
-      width: '95%',
-      top: getEnvironmentType(window.location.href) === ENVIRONMENT_TYPE_POPUP ? '52vh' : '36.5vh',
-    },
-    laptopModalStyle: {
-      width: '449px',
-      top: 'calc(33% + 45px)',
-    },
-  },
-
-  GAS_LIMIT_INFO_MODAL: {
-    contents: [
-      h(NotifcationModal, {
-        header: 'gasLimit',
-        message: 'gasLimitInfoModalContent',
       }),
     ],
     mobileModalStyle: {
@@ -316,7 +295,7 @@ const MODALS = {
 
   CUSTOMIZE_GAS: {
     contents: [
-      h(ConfirmCustomizeGasModal),
+      h(CustomizeGasModal),
     ],
     mobileModalStyle: {
       width: '100vw',
@@ -328,20 +307,35 @@ const MODALS = {
       margin: '0 auto',
     },
     laptopModalStyle: {
-      width: 'auto',
-      height: '0px',
+      width: '720px',
+      height: '377px',
       top: '80px',
-      left: '0px',
       transform: 'none',
+      left: '0',
+      right: '0',
       margin: '0 auto',
-      position: 'relative',
     },
-    contentStyle: {
-      borderRadius: '8px',
+  },
+
+  CONFIRM_CUSTOMIZE_GAS: {
+    contents: h(ConfirmCustomizeGasModal),
+    mobileModalStyle: {
+      width: '100vw',
+      height: '100vh',
+      top: '0',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
     },
-    customOnHideOpts: {
-      action: resetCustomGasData,
-      args: [],
+    laptopModalStyle: {
+      width: '720px',
+      height: '377px',
+      top: '80px',
+      transform: 'none',
+      left: '0',
+      right: '0',
+      margin: '0 auto',
     },
   },
 
@@ -418,11 +412,8 @@ function mapStateToProps (state) {
 
 function mapDispatchToProps (dispatch) {
   return {
-    hideModal: (customOnHideOpts) => {
+    hideModal: () => {
       dispatch(actions.hideModal())
-      if (customOnHideOpts && customOnHideOpts.action) {
-        dispatch(customOnHideOpts.action(...customOnHideOpts.args))
-      }
     },
     hideWarning: () => {
       dispatch(actions.hideWarning())
@@ -454,7 +445,7 @@ Modal.prototype.render = function () {
         if (modal.onHide) {
           modal.onHide(this.props)
         }
-        this.onHide(modal.customOnHideOpts)
+        this.onHide()
       },
       ref: (ref) => {
         this.modalRef = ref
@@ -476,11 +467,11 @@ Modal.prototype.componentWillReceiveProps = function (nextProps) {
   }
 }
 
-Modal.prototype.onHide = function (customOnHideOpts) {
+Modal.prototype.onHide = function () {
   if (this.props.onHideCallback) {
     this.props.onHideCallback()
   }
-  this.props.hideModal(customOnHideOpts)
+  this.props.hideModal()
 }
 
 Modal.prototype.hide = function () {

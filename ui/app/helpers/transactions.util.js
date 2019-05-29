@@ -2,10 +2,6 @@ import ethUtil from 'ethereumjs-util'
 import MethodRegistry from 'eth-method-registry'
 import abi from 'human-standard-token-abi'
 import abiDecoder from 'abi-decoder'
-import {
-  TRANSACTION_TYPE_CANCEL,
-  TRANSACTION_STATUS_CONFIRMED,
-} from '../../../app/scripts/controllers/transactions/enums'
 
 import {
   TOKEN_METHOD_TRANSFER,
@@ -17,7 +13,7 @@ import {
   SEND_TOKEN_ACTION_KEY,
   TRANSFER_FROM_ACTION_KEY,
   SIGNATURE_REQUEST_KEY,
-  CONTRACT_INTERACTION_KEY,
+  UNKNOWN_FUNCTION_KEY,
   CANCEL_ATTEMPT_ACTION_KEY,
 } from '../constants/transactions'
 
@@ -60,18 +56,6 @@ export function isConfirmDeployContract (txData = {}) {
 }
 
 /**
- * Returns four-byte method signature from data
- *
- * @param {string} data - The hex data (@code txParams.data) of a transaction
- * @returns {string} - The four-byte method signature
- */
-export function getFourBytePrefix (data = '') {
-  const prefixedData = ethUtil.addHexPrefix(data)
-  const fourBytePrefix = prefixedData.slice(0, 10)
-  return fourBytePrefix
-}
-
-/**
  * Returns the action of a transaction as a key to be passed into the translator.
  * @param {Object} transaction - txData object
  * @param {Object} methodData - Data returned from eth-method-registry
@@ -103,7 +87,7 @@ export async function getTransactionActionKey (transaction, methodData) {
     const methodName = name && name.toLowerCase()
 
     if (!methodName) {
-      return CONTRACT_INTERACTION_KEY
+      return UNKNOWN_FUNCTION_KEY
     }
 
     switch (methodName) {
@@ -164,15 +148,11 @@ export function sumHexes (...args) {
  * @returns {string}
  */
 export function getStatusKey (transaction) {
-  const { txReceipt: { status: receiptStatus } = {}, type, status } = transaction
+  const { txReceipt: { status } = {} } = transaction
 
   // There was an on-chain failure
-  if (receiptStatus === '0x0') {
+  if (status === '0x0') {
     return 'failed'
-  }
-
-  if (status === TRANSACTION_STATUS_CONFIRMED && type === TRANSACTION_TYPE_CANCEL) {
-    return 'cancelled'
   }
 
   return transaction.status

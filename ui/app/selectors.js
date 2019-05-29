@@ -1,7 +1,9 @@
 const abi = require('human-standard-token-abi')
+
 import {
   transactionsSelector,
 } from './selectors/transactions'
+
 const {
   multiplyCurrencies,
 } = require('./conversion-util')
@@ -28,27 +30,17 @@ const selectors = {
   getSendAmount,
   getSelectedTokenToFiatRate,
   getSelectedTokenContract,
+  autoAddToBetaUI,
   getSendMaxModeState,
   getCurrentViewContext,
   getTotalUnapprovedCount,
   preferencesSelector,
-  getMetaMaskAccounts,
-  getCurrentEthBalance,
-  getNetworkIdentifier,
-  isBalanceCached,
-  getAdvancedInlineGasShown,
 }
 
 module.exports = selectors
 
-function getNetworkIdentifier (state) {
-  const { metamask: { provider: { type, nickname, rpcTarget } } } = state
-
-  return nickname || rpcTarget || type
-}
-
 function getSelectedAddress (state) {
-  const selectedAddress = state.metamask.selectedAddress || Object.keys(getMetaMaskAccounts(state))[0]
+  const selectedAddress = state.metamask.selectedAddress || Object.keys(state.metamask.accounts)[0]
 
   return selectedAddress
 }
@@ -60,41 +52,8 @@ function getSelectedIdentity (state) {
   return identities[selectedAddress]
 }
 
-function getMetaMaskAccounts (state) {
-  const currentAccounts = state.metamask.accounts
-  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
-  const selectedAccounts = {}
-
-  Object.keys(currentAccounts).forEach(accountID => {
-    const account = currentAccounts[accountID]
-    if (account && account.balance === null || account.balance === undefined) {
-      selectedAccounts[accountID] = {
-        ...account,
-        balance: cachedBalances && cachedBalances[accountID],
-      }
-    } else {
-      selectedAccounts[accountID] = account
-    }
-  })
-  return selectedAccounts
-}
-
-function isBalanceCached (state) {
-  const selectedAccountBalance = state.metamask.accounts[getSelectedAddress(state)].balance
-  const cachedBalance = getSelectedAccountCachedBalance(state)
-
-  return Boolean(!selectedAccountBalance && cachedBalance)
-}
-
-function getSelectedAccountCachedBalance (state) {
-  const cachedBalances = state.metamask.cachedBalances[state.metamask.network]
-  const selectedAddress = getSelectedAddress(state)
-
-  return cachedBalances && cachedBalances[selectedAddress]
-}
-
 function getSelectedAccount (state) {
-  const accounts = getMetaMaskAccounts(state)
+  const accounts = state.metamask.accounts
   const selectedAddress = getSelectedAddress(state)
 
   return accounts[selectedAddress]
@@ -142,8 +101,10 @@ function getAddressBook (state) {
 }
 
 function accountsWithSendEtherInfoSelector (state) {
-  const accounts = getMetaMaskAccounts(state)
-  const { identities } = state.metamask
+  const {
+    accounts,
+    identities,
+  } = state.metamask
 
   const accountsWithSendEtherInfo = Object.entries(accounts).map(([key, account]) => {
     return Object.assign({}, account, identities[key])
@@ -157,10 +118,6 @@ function getCurrentAccountWithSendEtherInfo (state) {
   const accounts = accountsWithSendEtherInfoSelector(state)
 
   return accounts.find(({ address }) => address === currentAddress)
-}
-
-function getCurrentEthBalance (state) {
-  return getCurrentAccountWithSendEtherInfo(state).balance
 }
 
 function getGasIsLoading (state) {
@@ -211,6 +168,23 @@ function getSelectedTokenContract (state) {
     : null
 }
 
+function autoAddToBetaUI (state) {
+  const autoAddTransactionThreshold = 12
+  const autoAddAccountsThreshold = 2
+  const autoAddTokensThreshold = 1
+
+  const numberOfTransactions = state.metamask.selectedAddressTxList.length
+  const numberOfAccounts = Object.keys(state.metamask.accounts).length
+  const numberOfTokensAdded = state.metamask.tokens.length
+
+  const userPassesThreshold = (numberOfTransactions > autoAddTransactionThreshold) &&
+    (numberOfAccounts > autoAddAccountsThreshold) &&
+    (numberOfTokensAdded > autoAddTokensThreshold)
+  const userIsNotInBeta = !state.metamask.featureFlags.betaUI
+
+  return userIsNotInBeta && userPassesThreshold
+}
+
 function getCurrentViewContext (state) {
   const { currentView = {} } = state.appState
   return currentView.context
@@ -230,8 +204,4 @@ function getTotalUnapprovedCount ({ metamask }) {
 
 function preferencesSelector ({ metamask }) {
   return metamask.preferences
-}
-
-function getAdvancedInlineGasShown (state) {
-  return Boolean(state.metamask.featureFlags.advancedInlineGas)
 }

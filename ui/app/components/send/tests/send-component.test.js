@@ -3,23 +3,16 @@ import assert from 'assert'
 import proxyquire from 'proxyquire'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
-import timeout from '../../../../lib/test-timeout'
 
 import SendHeader from '../send-header/send-header.container'
 import SendContent from '../send-content/send-content.component'
 import SendFooter from '../send-footer/send-footer.container'
 
-const mockBasicGasEstimates = {
-  blockTime: 'mockBlockTime',
-}
-
 const propsMethodSpies = {
-  updateAndSetGasLimit: sinon.spy(),
+  updateAndSetGasTotal: sinon.spy(),
   updateSendErrors: sinon.spy(),
   updateSendTokenBalance: sinon.spy(),
   resetSendState: sinon.spy(),
-  fetchBasicGasEstimates: sinon.stub().returns(Promise.resolve(mockBasicGasEstimates)),
-  fetchGasEstimates: sinon.spy(),
 }
 const utilsMethodStubs = {
   getAmountErrorObject: sinon.stub().returns({ amount: 'mockAmountError' }),
@@ -44,8 +37,6 @@ describe('Send Component', function () {
       blockGasLimit={'mockBlockGasLimit'}
       conversionRate={10}
       editingTransactionId={'mockEditingTransactionId'}
-      fetchBasicGasEstimates={propsMethodSpies.fetchBasicGasEstimates}
-      fetchGasEstimates={propsMethodSpies.fetchGasEstimates}
       from={ { address: 'mockAddress', balance: 'mockBalance' } }
       gasLimit={'mockGasLimit'}
       gasPrice={'mockGasPrice'}
@@ -59,7 +50,7 @@ describe('Send Component', function () {
       showHexData={true}
       tokenBalance={'mockTokenBalance'}
       tokenContract={'mockTokenContract'}
-      updateAndSetGasLimit={propsMethodSpies.updateAndSetGasLimit}
+      updateAndSetGasTotal={propsMethodSpies.updateAndSetGasTotal}
       updateSendErrors={propsMethodSpies.updateSendErrors}
       updateSendTokenBalance={propsMethodSpies.updateSendTokenBalance}
       resetSendState={propsMethodSpies.resetSendState}
@@ -72,8 +63,7 @@ describe('Send Component', function () {
     utilsMethodStubs.doesAmountErrorRequireUpdate.resetHistory()
     utilsMethodStubs.getAmountErrorObject.resetHistory()
     utilsMethodStubs.getGasFeeErrorObject.resetHistory()
-    propsMethodSpies.fetchBasicGasEstimates.resetHistory()
-    propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    propsMethodSpies.updateAndSetGasTotal.resetHistory()
     propsMethodSpies.updateSendErrors.resetHistory()
     propsMethodSpies.updateSendTokenBalance.resetHistory()
   })
@@ -82,20 +72,12 @@ describe('Send Component', function () {
     assert(SendTransactionScreen.prototype.componentDidMount.calledOnce)
   })
 
-  describe('componentDidMount', () => {
-    it('should call props.fetchBasicGasAndTimeEstimates', () => {
-      propsMethodSpies.fetchBasicGasEstimates.resetHistory()
-      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 0)
-      wrapper.instance().componentDidMount()
-      assert.equal(propsMethodSpies.fetchBasicGasEstimates.callCount, 1)
-    })
-
-    it('should call this.updateGas', async () => {
+  describe('componentWillMount', () => {
+    it('should call this.updateGas', () => {
       SendTransactionScreen.prototype.updateGas.resetHistory()
       propsMethodSpies.updateSendErrors.resetHistory()
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 0)
-      wrapper.instance().componentDidMount()
-      await timeout(250)
+      wrapper.instance().componentWillMount()
       assert.equal(SendTransactionScreen.prototype.updateGas.callCount, 1)
     })
   })
@@ -176,12 +158,14 @@ describe('Send Component', function () {
       assert.deepEqual(
         utilsMethodStubs.getGasFeeErrorObject.getCall(0).args[0],
         {
+          amount: 'mockAmount',
           amountConversionRate: 'mockAmountConversionRate',
           balance: 'mockBalance',
           conversionRate: 10,
           gasTotal: 'mockGasTotal',
           primaryCurrency: 'mockPrimaryCurrency',
           selectedToken: 'mockSelectedToken',
+          tokenBalance: 'mockTokenBalance',
         }
       )
     })
@@ -289,12 +273,12 @@ describe('Send Component', function () {
   })
 
   describe('updateGas', () => {
-    it('should call updateAndSetGasLimit with the correct params if no to prop is passed', () => {
-      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    it('should call updateAndSetGasTotal with the correct params if no to prop is passed', () => {
+      propsMethodSpies.updateAndSetGasTotal.resetHistory()
       wrapper.instance().updateGas()
-      assert.equal(propsMethodSpies.updateAndSetGasLimit.callCount, 1)
+      assert.equal(propsMethodSpies.updateAndSetGasTotal.callCount, 1)
       assert.deepEqual(
-        propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0],
+        propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0],
         {
           blockGasLimit: 'mockBlockGasLimit',
           editingTransactionId: 'mockEditingTransactionId',
@@ -310,20 +294,20 @@ describe('Send Component', function () {
       )
     })
 
-    it('should call updateAndSetGasLimit with the correct params if a to prop is passed', () => {
-      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    it('should call updateAndSetGasTotal with the correct params if a to prop is passed', () => {
+      propsMethodSpies.updateAndSetGasTotal.resetHistory()
       wrapper.setProps({ to: 'someAddress' })
       wrapper.instance().updateGas()
       assert.equal(
-        propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to,
+        propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0].to,
         'someaddress',
       )
     })
 
-    it('should call updateAndSetGasLimit with to set to lowercase if passed', () => {
-      propsMethodSpies.updateAndSetGasLimit.resetHistory()
+    it('should call updateAndSetGasTotal with to set to lowercase if passed', () => {
+      propsMethodSpies.updateAndSetGasTotal.resetHistory()
       wrapper.instance().updateGas({ to: '0xABC' })
-      assert.equal(propsMethodSpies.updateAndSetGasLimit.getCall(0).args[0].to, '0xabc')
+      assert.equal(propsMethodSpies.updateAndSetGasTotal.getCall(0).args[0].to, '0xabc')
     })
   })
 

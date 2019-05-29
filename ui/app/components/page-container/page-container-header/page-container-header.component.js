@@ -12,7 +12,6 @@ export default class PageContainerHeader extends Component {
     backButtonStyles: PropTypes.object,
     backButtonString: PropTypes.string,
     tabs: PropTypes.node,
-    headerCloseText: PropTypes.string,
   }
 
   renderTabs () {
@@ -42,7 +41,7 @@ export default class PageContainerHeader extends Component {
   }
 
   render () {
-    const { title, subtitle, onClose, tabs, headerCloseText } = this.props
+    const { title, subtitle, onClose, tabs } = this.props
 
     return (
       <div className={
@@ -67,12 +66,10 @@ export default class PageContainerHeader extends Component {
         }
 
         {
-          onClose && headerCloseText
-            ? <div className="page-container__header-close-text" onClick={() => onClose()}>{ headerCloseText }</div>
-            : onClose && <div
-              className="page-container__header-close"
-              onClick={() => onClose()}
-            />
+          onClose && <div
+            className="page-container__header-close"
+            onClick={() => onClose()}
+          />
         }
 
         { this.renderTabs() }

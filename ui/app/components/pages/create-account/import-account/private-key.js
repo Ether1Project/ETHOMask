@@ -7,7 +7,6 @@ const PropTypes = require('prop-types')
 const connect = require('react-redux').connect
 const actions = require('../../../../actions')
 const { DEFAULT_ROUTE } = require('../../../../routes')
-const { getMetaMaskAccounts } = require('../../../../selectors')
 import Button from '../../../button'
 
 PrivateKeyImportView.contextTypes = {
@@ -23,7 +22,7 @@ module.exports = compose(
 function mapStateToProps (state) {
   return {
     error: state.appState.warning,
-    firstAddress: Object.keys(getMetaMaskAccounts(state))[0],
+    firstAddress: Object.keys(state.metamask.accounts)[0],
   }
 }
 

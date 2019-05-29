@@ -137,12 +137,11 @@ export const tokenAmountAndToAddressSelector = createSelector(
       const valueParam = params.find(param => param.name === TOKEN_PARAM_VALUE)
       toAddress = toParam ? toParam.value : params[0].value
       const value = valueParam ? Number(valueParam.value) : Number(params[1].value)
+      tokenAmount = roundExponential(value)
 
       if (tokenDecimals) {
-        tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
+        tokenAmount = calcTokenAmount(value, tokenDecimals)
       }
-
-      tokenAmount = roundExponential(tokenAmount)
     }
 
     return {
@@ -164,7 +163,7 @@ export const approveTokenAmountAndToAddressSelector = createSelector(
       const value = Number(params.find(param => param.name === TOKEN_PARAM_VALUE).value)
 
       if (tokenDecimals) {
-        tokenAmount = calcTokenAmount(value, tokenDecimals).toNumber()
+        tokenAmount = calcTokenAmount(value, tokenDecimals)
       }
 
       tokenAmount = roundExponential(tokenAmount)
@@ -189,7 +188,7 @@ export const sendTokenTokenAmountAndToAddressSelector = createSelector(
       let value = Number(params.find(param => param.name === TOKEN_PARAM_VALUE).value)
 
       if (tokenDecimals) {
-        value = calcTokenAmount(value, tokenDecimals).toNumber()
+        value = calcTokenAmount(value, tokenDecimals)
       }
 
       tokenAmount = roundExponential(value)

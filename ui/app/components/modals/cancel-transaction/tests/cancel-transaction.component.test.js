@@ -34,7 +34,6 @@ describe('CancelTransaction Component', () => {
         defaultNewGasPrice="0x3b9aca00"
         createCancelTransaction={createCancelTransactionSpy}
         hideModal={hideModalSpy}
-        showTransactionConfirmedModal={() => {}}
       />,
       { context: { t }}
     )

@@ -14,11 +14,10 @@ import {
   GAS_LIMIT_TOO_LOW_ERROR_KEY,
 } from '../../../constants/error-keys'
 import { getHexGasTotal } from '../../../helpers/confirm-transaction/util'
-import { isBalanceSufficient, calcGasTotal } from '../../send/send.utils'
+import { isBalanceSufficient } from '../../send/send.utils'
 import { conversionGreaterThan } from '../../../conversion-util'
 import { MIN_GAS_LIMIT_DEC } from '../../send/send.constants'
-import { checksumAddress, addressSlicer, valuesFor } from '../../../util'
-import { getMetaMaskAccounts, getAdvancedInlineGasShown } from '../../../selectors'
+import { addressSlicer, valuesFor } from '../../../util'
 
 const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
   return {
@@ -29,7 +28,7 @@ const casedContractMap = Object.keys(contractMap).reduce((acc, base) => {
 
 const mapStateToProps = (state, props) => {
   const { toAddress: propsToAddress } = props
-  const { confirmTransaction, metamask, gas } = state
+  const { confirmTransaction, metamask } = state
   const {
     ethTransactionAmount,
     ethTransactionFee,
@@ -47,18 +46,12 @@ const mapStateToProps = (state, props) => {
     nonce,
   } = confirmTransaction
   const { txParams = {}, lastGasPrice, id: transactionId } = txData
-  const {
-    from: fromAddress,
-    to: txParamsToAddress,
-    gasPrice,
-    gas: gasLimit,
-    value: amount,
-  } = txParams
-  const accounts = getMetaMaskAccounts(state)
+  const { from: fromAddress, to: txParamsToAddress } = txParams
   const {
     conversionRate,
     identities,
     currentCurrency,
+    accounts,
     selectedAddress,
     selectedAddressTxList,
     assetImages,
@@ -66,22 +59,12 @@ const mapStateToProps = (state, props) => {
     unapprovedTxs,
   } = metamask
   const assetImage = assetImages[txParamsToAddress]
-
-  const {
-    customGasLimit,
-    customGasPrice,
-  } = gas
-
   const { balance } = accounts[selectedAddress]
   const { name: fromName } = identities[selectedAddress]
   const toAddress = propsToAddress || txParamsToAddress
   const toName = identities[toAddress]
     ? identities[toAddress].name
-    : (
-      casedContractMap[toAddress]
-        ? casedContractMap[toAddress].name
-        : addressSlicer(checksumAddress(toAddress))
-    )
+    : casedContractMap[toAddress] ? casedContractMap[toAddress].name : addressSlicer(toAddress)
 
   const isTxReprice = Boolean(lastGasPrice)
 
@@ -90,16 +73,9 @@ const mapStateToProps = (state, props) => {
 
   const currentNetworkUnapprovedTxs = R.filter(
     ({ metamaskNetworkId }) => metamaskNetworkId === network,
-    unapprovedTxs,
+    valuesFor(unapprovedTxs),
   )
-  const unapprovedTxCount = valuesFor(currentNetworkUnapprovedTxs).length
-
-  const insufficientBalance = !isBalanceSufficient({
-    amount,
-    gasTotal: calcGasTotal(gasLimit, gasPrice),
-    balance,
-    conversionRate,
-  })
+  const unapprovedTxCount = currentNetworkUnapprovedTxs.length
 
   return {
     balance,
@@ -128,13 +104,6 @@ const mapStateToProps = (state, props) => {
     assetImage,
     unapprovedTxs,
     unapprovedTxCount,
-    currentNetworkUnapprovedTxs,
-    customGas: {
-      gasLimit: customGasLimit || gasLimit,
-      gasPrice: customGasPrice || gasPrice,
-    },
-    advancedInlineGasShown: getAdvancedInlineGasShown(state),
-    insufficientBalance,
   }
 }
 
@@ -146,7 +115,7 @@ const mapDispatchToProps = dispatch => {
       return dispatch(showModal({ name: 'TRANSACTION_CONFIRMED', onSubmit }))
     },
     showCustomizeGasModal: ({ txData, onSubmit, validate }) => {
-      return dispatch(showModal({ name: 'CUSTOMIZE_GAS', txData, onSubmit, validate }))
+      return dispatch(showModal({ name: 'CONFIRM_CUSTOMIZE_GAS', txData, onSubmit, validate }))
     },
     updateGasAndCalculate: ({ gasLimit, gasPrice }) => {
       return dispatch(updateGasAndCalculate({ gasLimit, gasPrice }))
@@ -221,11 +190,10 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     ...ownProps,
     showCustomizeGasModal: () => dispatchShowCustomizeGasModal({
       txData,
-      onSubmit: customGas => dispatchUpdateGasAndCalculate(customGas),
+      onSubmit: txData => dispatchUpdateGasAndCalculate(txData),
       validate: validateEditGas,
     }),
     cancelAllTransactions: () => dispatchCancelAllTransactions(valuesFor(unapprovedTxs)),
-    updateGasAndCalculate: dispatchUpdateGasAndCalculate,
   }
 }
 

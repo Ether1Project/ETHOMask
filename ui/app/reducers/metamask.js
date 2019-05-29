@@ -33,7 +33,7 @@ function reduceMetamask (state, action) {
       gasLimit: null,
       gasPrice: null,
       gasTotal: null,
-      tokenBalance: '0x0',
+      tokenBalance: null,
       from: '',
       to: '',
       amount: '0x0',
@@ -54,8 +54,6 @@ function reduceMetamask (state, action) {
     preferences: {
       useNativeCurrencyAsPrimaryCurrency: true,
     },
-    completedOnboarding: false,
-    knownMethodData: {},
   }, state.metamask)
 
   switch (action.type) {
@@ -376,18 +374,6 @@ function reduceMetamask (state, action) {
     case actions.UPDATE_PREFERENCES: {
       return extend(metamaskState, {
         preferences: { ...action.payload },
-      })
-    }
-
-    case actions.COMPLETE_ONBOARDING: {
-      return extend(metamaskState, {
-        completedOnboarding: true,
-      })
-    }
-
-    case actions.COMPLETE_UI_MIGRATION: {
-      return extend(metamaskState, {
-        completedUiMigration: true,
       })
     }
 

@@ -2,6 +2,8 @@ import React from 'react'
 import assert from 'assert'
 import { shallow } from 'enzyme'
 import TransactionBreakdown from '../transaction-breakdown.component'
+import TransactionBreakdownRow from '../transaction-breakdown-row'
+import Card from '../../card'
 
 describe('TransactionBreakdown Component', () => {
   it('should render properly', () => {
@@ -29,5 +31,7 @@ describe('TransactionBreakdown Component', () => {
 
     assert.ok(wrapper.hasClass('transaction-breakdown'))
     assert.ok(wrapper.hasClass('test-class'))
+    assert.equal(wrapper.find(Card).length, 1)
+    assert.equal(wrapper.find(Card).find(TransactionBreakdownRow).length, 4)
   })
 })

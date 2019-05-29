@@ -17,9 +17,6 @@
   "confirmClear": {
     "message": "Are you sure you want to clear approved websites?"
   },
-  "contractInteraction": {
-    "message": "Contract Interaction"
-  },
   "clearApprovalDataSuccess": {
     "message": "Approved website data cleared successfully."
   },
@@ -43,9 +40,6 @@
   },
   "accept": {
     "message": "Accept"
-  },
-  "acceleratingATransaction": {
-    "message": "* Accelerating a transaction by using a higher gas price increases its chances of getting processed by the network faster, but it is not always guaranteed."
   },
   "accessingYourCamera": {
     "message": "Accessing your camera..."
@@ -71,9 +65,6 @@
   "address": {
     "message": "Address"
   },
-  "advancedOptions": {
-    "message": "Advanced Options"
-  },
   "addCustomToken": {
     "message": "Add custom token"
   },
@@ -89,20 +80,14 @@
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
-  "advanced": {
-    "message": "Advanced"
-  },
   "amount": {
     "message": "Amount"
   },
   "amountPlusGas": {
     "message": "Amount + Gas"
   },
-  "amountPlusTxFee": {
-    "message": "Amount + TX Fee"
-  },
   "appDescription": {
-    "message": "An Ether-1 Wallet in your Browser",
+    "message": "Ether-1 Browser Extension",
     "description": "The description of the application"
   },
   "appName": {
@@ -130,26 +115,17 @@
   "available": {
     "message": "Available"
   },
-  "average": {
-    "message": "Average"
-  },
   "back": {
     "message": "Back"
   },
   "balance": {
     "message": "Balance"
   },
-  "balanceOutdated": {
-    "message": "Balance may be outdated"
-  },
   "balances": {
     "message": "Token balance(s)"
   },
   "balanceIsInsufficientGas": {
     "message": "Insufficient balance for current gas total"
-  },
-  "basic": {
-    "message": "Basic"
   },
   "beta": {
     "message": "BETA"
@@ -194,9 +170,6 @@
   "cancellationGasFee": {
     "message": "Cancellation Gas Fee"
   },
-  "cancelled": {
-    "message": "Cancelled"
-  },
   "cancelN": {
     "message": "Cancel all $1 transactions"
   },
@@ -209,9 +182,6 @@
   "clickToAdd": {
     "message": "Click on $1 to add them to your account"
   },
-  "clickToRevealSeed": {
-    "message": "Click here to reveal secret words"
-  },
   "close": {
     "message": "Close"
   },
@@ -221,9 +191,6 @@
   "confirm": {
     "message": "Confirm"
   },
-  "confirmationTime": {
-    "message": "Confirmation time (sec)"
-  },
   "confirmed": {
     "message": "Confirmed"
   },
@@ -232,9 +199,6 @@
   },
   "confirmPassword": {
     "message": "Confirm Password"
-  },
-  "confirmSecretBackupPhrase": {
-    "message": "Confirm your Secret Backup Phrase"
   },
   "confirmTransaction": {
     "message": "Confirm Transaction"
@@ -250,9 +214,6 @@
   },
   "connecting": {
     "message": "Connecting..."
-  },
-  "connectingTo": {
-    "message": "Connecting to $1"
   },
   "connectingToKovan": {
     "message": "Connecting to Kovan Test Network"
@@ -305,12 +266,6 @@
   "copyAddress": {
     "message": "Copy address to clipboard"
   },
-  "copyTransactionId": {
-    "message": "Copy Transaction ID"
-  },
-  "copiedTransactionId": {
-    "message": "Copied Transaction ID"
-  },
   "copyToClipboard": {
     "message": "Copy to clipboard"
   },
@@ -329,15 +284,12 @@
   "createDen": {
     "message": "Create"
   },
-  "createPassword": {
-    "message": "Create Password"
-  },
   "crypto": {
     "message": "Crypto",
     "description": "Exchange type (cryptocurrencies)"
   },
-  "currencyConversion": {
-    "message": "Currency Conversion"
+  "currentConversion": {
+    "message": "Current Conversion"
   },
   "currentLanguage": {
     "message": "Current Language"
@@ -350,9 +302,6 @@
   },
   "customGas": {
     "message": "Customize Gas"
-  },
-  "customGasSubTitle": {
-    "message": "Increasing fee may decrease processing times, but it is not guaranteed."
   },
   "customToken": {
     "message": "Custom Token"
@@ -421,9 +370,6 @@
   "downloadGoogleChrome": {
     "message": "Download Google Chrome"
   },
-  "downloadSecretBackup": {
-    "message": "Download this Secret Backup Phrase and keep it stored safely on an external encrypted hard drive or storage medium."
-  },
   "downloadStateLogs": {
     "message": "Download State Logs"
   },
@@ -466,9 +412,6 @@
   "etherscanView": {
     "message": "View account on Ether-1 Explorer"
   },
-  "estimatedProcessingTimes": {
-    "message": "Estimated Processing Times"
-  },
   "exchangeRate": {
     "message": "Exchange Rate"
   },
@@ -483,18 +426,6 @@
   },
   "failed": {
     "message": "Failed"
-  },
-  "fast": {
-    "message": "Fast"
-  },
-  "faster": {
-    "message": "Faster"
-  },
-  "fastest": {
-    "message": "Fastest"
-  },
-  "feeChartTitle": {
-    "message": "Live Transaction Fee Predictions"
   },
   "fiat": {
     "message": "Fiat",
@@ -535,9 +466,6 @@
   "gasLimitCalculation": {
     "message": "We calculate the suggested gas limit based on network success rates."
   },
-  "gasLimitInfoModalContent": {
-    "message": "Gas limit is the maximum amount of units of gas you are willing to spend."
-  },
   "gasLimitRequired": {
     "message": "Gas Limit Required"
   },
@@ -552,15 +480,6 @@
   },
   "gasPrice": {
     "message": "Gas Price (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas Price Extremely Low"
-  },
-  "gasPriceInfoModalContent": {
-    "message": "Gas price specifies the amount of Ether you are willing to pay for each unit of gas."
-  },
-  "gasPriceNoDenom": {
-    "message": "Gas Price"
   },
   "gasPriceCalculation": {
     "message": "We calculate the suggested gas prices based on network success rates."
@@ -638,9 +557,6 @@
   "importAccountMsg": {
     "message": " Imported accounts will not be associated with your originally created MetaMask account seedphrase. Learn more about imported accounts "
   },
-  "importAccountSeedPhrase": {
-    "message": "Import an Account with Seed Phrase"
-  },
   "importAnAccount": {
     "message": "Import an account"
   },
@@ -654,9 +570,6 @@
   "importUsingSeed": {
     "message": "Import using account seed phrase"
   },
-  "importWithSeedPhrase": {
-    "message": "Import with seed phrase"
-  },
   "info": {
     "message": "Info"
   },
@@ -665,9 +578,6 @@
   },
   "initialTransactionConfirmed": {
     "message": "Your initial transaction was confirmed by the network. Click OK to go back."
-  },
-  "insufficientBalance": {
-    "message": "Insufficient balance."
   },
   "insufficientFunds": {
     "message": "Insufficient funds."
@@ -680,12 +590,6 @@
   },
   "invalidAddressRecipient": {
     "message": "Recipient address is invalid"
-  },
-  "knownAddressRecipient": {
-    "message": "Known contract address."
-  },
-  "invalidAddressRecipientNotEthNetwork": {
-    "message": "Not ETH network, set to lowercase"
   },
   "invalidGasParams": {
     "message": "Invalid Gas Parameters"
@@ -740,9 +644,6 @@
   "limit": {
     "message": "Limit"
   },
-  "liveGasPricePredictions": {
-    "message": "Live Gas Price Predictions"
-  },
   "loading": {
     "message": "Loading..."
   },
@@ -767,9 +668,6 @@
   "mainnet": {
     "message": "Main ether-1 Network"
   },
-  "memorizePhrase": {
-    "message": "Memorize this phrase."
-  },
   "menu": {
     "message": "Menu"
   },
@@ -790,9 +688,6 @@
   },
   "missingYourTokens": {
     "message": "Don't see your tokens?"
-  },
-  "minutesShorthand": {
-    "message": "Min"
   },
   "myAccounts": {
     "message": "My Accounts"
@@ -860,12 +755,6 @@
   "optionalNickname": {
     "message": "Nickname (optional)"
   },
-  "newTotal": {
-    "message": "New Total"
-  },
-  "newTransactionFee": {
-    "message": "New Transaction Fee"
-  },
   "next": {
     "message": "Next"
   },
@@ -895,9 +784,6 @@
   },
   "noWebcamFound": {
     "message": "Your computer's webcam was not found. Please try again."
-  },
-  "ofTextNofM": {
-    "message": "of"
   },
   "oldUI": {
     "message": "Old UI"
@@ -930,9 +816,6 @@
   },
   "parameters": {
     "message": "Parameters"
-  },
-  "originalTotal": {
-    "message": "Original Total"
   },
   "password": {
     "message": "Password"
@@ -1049,9 +932,6 @@
   "restoreAccountWithSeed": {
     "message": "Restore your Account with Seed Phrase"
   },
-  "requestsAwaitingAcknowledgement": {
-    "message": "requests waiting to be acknowledged"
-  },
   "required": {
     "message": "Required"
   },
@@ -1107,12 +987,6 @@
   "save": {
     "message": "Save"
   },
-  "slow": {
-    "message": "Slow"
-  },
-  "slower": {
-    "message": "Slower"
-  },
   "saveAsCsvFile": {
     "message": "Save as CSV File"
   },
@@ -1135,23 +1009,8 @@
   "searchResults": {
     "message": "Search Results"
   },
-  "secretBackupPhrase": {
-    "message": "Secret Backup Phrase"
-  },
-  "secretBackupPhraseDescription": {
-    "message": "Your secret backup phrase makes it easy to back up and restore your account."
-  },
-  "secretBackupPhraseWarning": {
-    "message": "WARNING: Never disclose your backup phrase. Anyone with this phrase can take your Ether forever."
-  },
   "secretPhrase": {
     "message": "Enter your secret twelve word phrase here to restore your vault."
-  },
-  "secondsShorthand": {
-    "message": "Sec"
-  },
-  "seedPhrasePlaceholder": {
-    "message": "Separate each word with a single space"
   },
   "seedPhraseReq": {
     "message": "Seed phrases are 12 words long"
@@ -1161,9 +1020,6 @@
   },
   "selectCurrency": {
     "message": "Select Currency"
-  },
-  "selectEachPhrase": {
-    "message": "Please select each phrase in order to make sure it is correct."
   },
   "selectLocale": {
     "message": "Select Locale"
@@ -1176,9 +1032,6 @@
   },
   "send": {
     "message": "Send"
-  },
-  "sendAmount": {
-    "message": "Send Amount"
   },
   "sendETH": {
     "message": "Send ETH"
@@ -1207,9 +1060,6 @@
   "selectAnAccountHelp": {
     "message": "Select the account to view in MetaMask"
   },
-  "selectAHigherGasFee": {
-    "message": "Select a higher gas fee to accelerate the processing of your transaction.*"
-  },
   "selectHdPath": {
     "message": "Select HD Path"
   },
@@ -1224,12 +1074,6 @@
   },
   "shapeshiftBuy": {
     "message": "Buy with Shapeshift"
-  },
-  "showAdvancedGasInline": {
-    "message": "Advanced gas controls"
-  },
-  "showAdvancedGasInlineDescription": {
-    "message": "Select this to show gas price and limit controls directly on the send and confirm screens."
   },
   "showPrivateKeys": {
     "message": "Show Private Keys"
@@ -1264,9 +1108,6 @@
   "sigRequested": {
     "message": "Signature Requested"
   },
-  "somethingWentWrong": {
-    "message": "Oops! Something went wrong."
-  },
   "spaceBetween": {
     "message": "there can only be a space between words"
   },
@@ -1278,15 +1119,6 @@
   },
   "speedUpSubtitle": {
     "message": "Increase your gas price to attempt to overwrite and speed up your transaction"
-  },
-  "speedUpCancellation": {
-    "message": "Speed up this cancellation"
-  },
-  "speedUpTransaction": {
-    "message": "Speed up this transaction"
-  },
-  "switchNetworks": {
-    "message": "Switch Networks"
   },
   "status": {
     "message": "Status"
@@ -1318,9 +1150,6 @@
   "step3HardwareWalletMsg": {
     "message": "Use your hardware account like you would with any ether-1 account. Log in to dApps, send Eth, buy and store ERC20 tokens and Non-Fungible tokens like CryptoKitties."
   },
-  "storePhrase": {
-    "message": "Store this phrase in a password manager like 1Password."
-  },
   "submit": {
     "message": "Submit"
   },
@@ -1330,8 +1159,8 @@
   "supportCenter": {
     "message": "Visit our Support Center"
   },
-  "symbolBetweenZeroTwelve": {
-    "message": "Symbol must be between 0 and 12 characters."
+  "symbolBetweenZeroTen": {
+    "message": "Symbol must be between 0 and 10 characters."
   },
   "takesTooLong": {
     "message": "Taking too long?"
@@ -1341,9 +1170,6 @@
   },
   "testFaucet": {
     "message": "Test Faucet"
-  },
-  "tips": {
-    "message": "Tips"
   },
   "to": {
     "message": "To"
@@ -1364,9 +1190,6 @@
   "tokenBalance": {
     "message": "Your Token Balance is:"
   },
-  "tokenContractAddress": {
-    "message": "Token Contract Address"
-  },
   "tokenSelection": {
     "message": "Search for tokens or select from our list of popular tokens."
   },
@@ -1383,37 +1206,28 @@
     "message": "transaction"
   },
   "transactionConfirmed": {
-    "message": "Transaction confirmed at $2."
+    "message": "Transaction confirmed on $2."
   },
   "transactionCreated": {
-    "message": "Transaction created with a value of $1 at $2."
+    "message": "Transaction created with a value of $1 on $2."
   },
   "transactionWithNonce": {
     "message": "Transaction $1"
   },
   "transactionDropped": {
-    "message": "Transaction dropped at $2."
+    "message": "Transaction dropped on $2."
   },
   "transactionSubmitted": {
-    "message": "Transaction submitted with gas fee of $1 at $2."
-  },
-  "transactionResubmitted": {
-    "message": "Transaction resubmitted with gas fee increased to $1 at $2"
+    "message": "Transaction submitted on $2."
   },
   "transactionUpdated": {
-    "message": "Transaction updated at $2."
+    "message": "Transaction updated on $2."
   },
   "transactionUpdatedGas": {
-    "message": "Transaction updated with a gas fee of $1 at $2."
+    "message": "Transaction updated with a gas price of $1 on $2."
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
-  },
-  "transactionCancelAttempted": {
-    "message": "Transaction cancel attempted with gas fee of $1 at $2"
-  },
-  "transactionCancelSuccess": {
-    "message": "Transaction successfully cancelled at $2"
   },
   "transactions": {
     "message": "transactions"
@@ -1424,17 +1238,11 @@
   "transactionErrorNoContract": {
     "message": "Trying to call a function on a non-contract address."
   },
-  "transactionFee": {
-    "message": "Transaction Fee"
-  },
   "transactionMemo": {
     "message": "Transaction memo (optional)"
   },
   "transactionNumber": {
     "message": "Transaction Number"
-  },
-  "transactionTime": {
-    "message": "Transaction Time"
   },
   "transfer": {
     "message": "Transfer"
@@ -1461,9 +1269,6 @@
   "typePassword": {
     "message": "Type your MetaMask password"
   },
-  "uiMigrationAnnouncement": {
-    "message": "Welcome to the new MetaMask UI. If you have feedback about the UI or feature requests, please reach out to our support team or on GitHub."
-  },
   "uiWelcome": {
     "message": "Welcome to the New UI (Beta)"
   },
@@ -1481,6 +1286,9 @@
   },
   "unknown": {
     "message": "Unknown"
+  },
+  "unknownFunction": {
+    "message": "Unknown Function"
   },
   "unknownNetwork": {
     "message": "Unknown Private Network"
@@ -1543,14 +1351,11 @@
   "welcomeBack": {
     "message": "Welcome Back!"
   },
-  "welcome": {
-    "message": "Welcome to MetaMask"
+  "welcomeBeta": {
+    "message": "Welcome to MetaMask Beta"
   },
   "whatsThis": {
     "message": "What's this?"
-  },
-  "writePhrase": {
-    "message": "Write this phrase on a piece of paper and store in a secure location. If you want even more security, write it down on multiple pieces of paper and store each in 2 - 3 different locations."
   },
   "yesLetsTry": {
     "message": "Yes, let's try"
@@ -1566,17 +1371,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Your private seed phrase"
-  },
-  "yourUniqueAccountImage": {
-    "message": "Your unique account image"
-  },
-  "yourUniqueAccountImageDescription1": {
-    "message": "This image was programmatically generated for you by your new account number."
-  },
-  "yourUniqueAccountImageDescription2": {
-    "message": "You’ll see this image everytime you need to confirm a transaction."
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message":"Zero gas price on speed up"
   }
 }

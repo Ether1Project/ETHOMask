@@ -2,7 +2,7 @@ module.exports = {
   'metamask': {
     'isInitialized': true,
     'isUnlocked': true,
-    'featureFlags': {'sendHexData': true},
+    'featureFlags': {'betaUI': true, 'sendHexData': true},
     'rpcTarget': 'https://rawtestrpc.metamask.io/',
     'identities': {
       '0xfdea65c8e26263f6d9a1b5de9555d2931a33b825': {
@@ -22,7 +22,6 @@ module.exports = {
         'name': 'Send Account 4',
       },
     },
-    'cachedBalances': {},
     'currentBlockGasLimit': '0x4c1878',
     'currentCurrency': 'USD',
     'conversionRate': 1200.88200327,

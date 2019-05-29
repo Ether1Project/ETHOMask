@@ -131,7 +131,7 @@ describe('CurrencyDisplay container', () => {
           },
           result: {
             nativeCurrency: 'ETH',
-            displayValue: '0.000000001',
+            displayValue: '1e-9',
             suffix: undefined,
           },
         },

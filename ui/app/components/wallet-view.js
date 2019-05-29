@@ -12,7 +12,7 @@ import Identicon from './identicon'
 const Tooltip = require('./tooltip-v2.js').default
 const copyToClipboard = require('copy-to-clipboard')
 const actions = require('../actions')
-import BalanceComponent from './balance'
+const BalanceComponent = require('./balance-component')
 const TokenList = require('./token-list')
 const selectors = require('../selectors')
 const { ADD_TOKEN_ROUTE } = require('../routes')
@@ -38,7 +38,7 @@ function mapStateToProps (state) {
     network: state.metamask.network,
     sidebarOpen: state.appState.sidebar.isOpen,
     identities: state.metamask.identities,
-    accounts: selectors.getMetaMaskAccounts(state),
+    accounts: state.metamask.accounts,
     tokens: state.metamask.tokens,
     keyrings: state.metamask.keyrings,
     selectedAddress: selectors.getSelectedAddress(state),
@@ -125,11 +125,10 @@ WalletView.prototype.render = function () {
     showAccountDetailModal,
     hideSidebar,
     identities,
-    network,
   } = this.props
   // temporary logs + fake extra wallets
 
-  const checksummedAddress = checksumAddress(selectedAddress, network)
+  const checksummedAddress = checksumAddress(selectedAddress)
 
   if (!selectedAddress) {
     throw new Error('selectedAddress should not be ' + String(selectedAddress))

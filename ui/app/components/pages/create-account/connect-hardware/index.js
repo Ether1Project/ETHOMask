@@ -3,7 +3,6 @@ const PropTypes = require('prop-types')
 const h = require('react-hyperscript')
 const connect = require('react-redux').connect
 const actions = require('../../../../actions')
-const { getMetaMaskAccounts } = require('../../../../selectors')
 const ConnectScreen = require('./connect-screen')
 const AccountList = require('./account-list')
 const { DEFAULT_ROUTE } = require('../../../../routes')
@@ -51,8 +50,9 @@ class ConnectHardwareForm extends Component {
   }
 
   connectToHardwareWallet = (device) => {
-    // Ledger hardware wallets are not supported on firefox
-    if (getPlatform() === PLATFORM_FIREFOX && device === 'ledger') {
+    // None of the hardware wallets are supported
+    // At least for now
+    if (getPlatform() === PLATFORM_FIREFOX) {
       this.setState({ browserSupported: false, error: null})
       return null
     }
@@ -126,7 +126,7 @@ class ConnectHardwareForm extends Component {
       .catch(e => {
         if (e === 'Window blocked') {
           this.setState({ browserSupported: false, error: null})
-        } else if (e !== 'Window closed' && e !== 'Popup closed') {
+        } else if (e !== 'Window closed') {
           this.setState({ error: e.toString() })
         }
       })
@@ -225,9 +225,8 @@ ConnectHardwareForm.propTypes = {
 
 const mapStateToProps = state => {
   const {
-    metamask: { network, selectedAddress, identities = {} },
+    metamask: { network, selectedAddress, identities = {}, accounts = [] },
   } = state
-  const accounts = getMetaMaskAccounts(state)
   const numberOfExistingAccounts = Object.keys(identities).length
   const {
     appState: { defaultHdPaths },

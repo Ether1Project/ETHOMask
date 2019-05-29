@@ -4,13 +4,12 @@ import classnames from 'classnames'
 import Identicon from '../identicon'
 import Tooltip from '../tooltip-v2'
 import copyToClipboard from 'copy-to-clipboard'
-import { DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT } from './sender-to-recipient.constants'
+import { DEFAULT_VARIANT, CARDS_VARIANT } from './sender-to-recipient.constants'
 import { checksumAddress } from '../../util'
 
 const variantHash = {
   [DEFAULT_VARIANT]: 'sender-to-recipient--default',
   [CARDS_VARIANT]: 'sender-to-recipient--cards',
-  [FLAT_VARIANT]: 'sender-to-recipient--flat',
 }
 
 export default class SenderToRecipient extends PureComponent {
@@ -20,7 +19,7 @@ export default class SenderToRecipient extends PureComponent {
     recipientName: PropTypes.string,
     recipientAddress: PropTypes.string,
     t: PropTypes.func,
-    variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT, FLAT_VARIANT]),
+    variant: PropTypes.oneOf([DEFAULT_VARIANT, CARDS_VARIANT]),
     addressOnly: PropTypes.bool,
     assetImage: PropTypes.string,
   }
@@ -129,8 +128,15 @@ export default class SenderToRecipient extends PureComponent {
   }
 
   renderArrow () {
-    return this.props.variant === DEFAULT_VARIANT
+    return this.props.variant === CARDS_VARIANT
       ? (
+        <div className="sender-to-recipient__arrow-container">
+          <img
+            height={20}
+            src="./images/caret-right.svg"
+          />
+        </div>
+      ) : (
         <div className="sender-to-recipient__arrow-container">
           <div className="sender-to-recipient__arrow-circle">
             <img
@@ -140,13 +146,6 @@ export default class SenderToRecipient extends PureComponent {
             />
           </div>
         </div>
-      ) : (
-        <div className="sender-to-recipient__arrow-container">
-          <img
-            height={20}
-            src="./images/caret-right.svg"
-          />
-        </div>
       )
   }
 
@@ -155,7 +154,7 @@ export default class SenderToRecipient extends PureComponent {
     const checksummedSenderAddress = checksumAddress(senderAddress)
 
     return (
-      <div className={classnames('sender-to-recipient', variantHash[variant])}>
+      <div className={classnames(variantHash[variant])}>
         <div
           className={classnames('sender-to-recipient__party sender-to-recipient__party--sender')}
           onClick={() => {
